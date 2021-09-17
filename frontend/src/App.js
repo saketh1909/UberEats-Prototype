@@ -1,13 +1,11 @@
-import logo from './logo.svg';
-import './App.css';
+//import './App.css';
+import CustomerSignUp from './Components/CustomerSignUp';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Welcome to React
-        </p>
+      <header>
+        <CustomerSignUp/>
       </header>
     </div>
   );
