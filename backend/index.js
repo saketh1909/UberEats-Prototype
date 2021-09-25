@@ -24,6 +24,15 @@ app.post('/customerSignup',customerController.customerSignup);
 app.post('/restaurantLogin',restaurantController.restaurantLogin);
 
 app.post('/restaurantSignup',restaurantController.restaurantSignup);
+
+app.get('/restaurantProfile',restaurantController.restaurantProfile);
+
+app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile);
+
+
+
+
+
 var server = app.listen(3000, function () {
     console.log("Server listening on port 3000");
 });

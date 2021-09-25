@@ -33,8 +33,36 @@ module.exports.restaurantSignup=async(req,res)=>{
         if(error){
             res.send(error);
         }else{
-            console.log("Success");
             res.send("Insertion Successful");
         }
     })
+}
+
+module.exports.restaurantProfile=async(req,res)=>{
+    var restaurantID=req.query.restaurantID;
+    await connection.query("SELECT * from RestaurantDetails WHERE RestaurantID="+restaurantID,async function(error,results){
+        if(error){
+            res.send(error);
+        }else{
+            res.send(results);
+        }
+    })
+}
+module.exports.updateRestaurantProfile=async(req,res)=>{
+    var details=req.body;
+    var sql='UPDATE RestaurantDetails SET ';
+    for (const [key, value] of Object.entries(details)) {
+        if(key=="restaurantID") continue;
+        sql+=key + "='" + value + "' ,";
+      }
+      sql=sql.slice(0,-1);
+      sql+="WHERE RestaurantID="+details.restaurantID;
+      //console.log(sql);
+      await connection.query(sql,async function(error,results){
+        if(error){
+            res.send(error);
+        }else{
+            res.send(results);
+        }
+      })
 }
