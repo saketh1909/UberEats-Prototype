@@ -29,7 +29,7 @@ app.get('/restaurantProfile',restaurantController.restaurantProfile);
 
 app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile);
 
-
+app.post('/addDish',restaurantController.addDish);
 
 
 

@@ -1,5 +1,6 @@
 
 var connection=require('../connection.js');
+const uuidv4 = require("uuid/v4")
 module.exports.customerLogin= async(req,res)=>{
     const {email,password}=req.body;
     await connection.query(`SELECT * from CustomerDetails`, async function(error,results){
@@ -29,8 +30,8 @@ module.exports.customerLogin= async(req,res)=>{
 }
 module.exports.customerSignup=async(req,res)=>{
     //console.log("request body",req.body);
-    const {password,email,name}=req.body;
-    let sql="INSERT INTO `CustomerDetails` (Password,Email,Name) VALUES ('"+password+"','"+email+"','"+name+"')";
+    const {password,email,name,dateOfBirth}=req.body;
+    let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name,DateOfBirth) VALUES ('"+uuidv4()+"','"+password+"','"+email+"','"+name+"','"+dateOfBirth+"')";
     //console.log(sql);
     await connection.query(sql,async function(error,results){
         if(error){
