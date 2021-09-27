@@ -85,3 +85,61 @@ module.exports.addDish=async(req,res)=>{
         }
     })
 }
+
+module.exports.getOrders=async(req,res)=>{
+    var restaurantID=req.query.restaurantID;
+    var sql=`SELECT * from Orders WHERE RestaurantID='${restaurantID}'`;
+    await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            
+            res.statusCode=200;
+            res.send(results);
+        }
+    })
+}
+
+module.exports.updateOrderStatus=async(req,res)=>{
+    var orderDetails=req.body;
+    if(orderDetails.orderMode=='pickUp'){
+        var sql=`UPDATE Orders SET OrderPickUpStatus='${orderDetails.status}'   where OrderID='${orderDetails.orderID}'`;
+        await connection.query(sql,async function(error,results){
+            if(error){
+                res.statusCode=404;
+                res.send(error);
+            }else{
+                
+                res.statusCode=200;
+                res.send("Update Successful");
+            }
+        });
+    }else{
+        var sql=`UPDATE Orders SET OrderDeliveryStatus='${orderDetails.status}'   where OrderID='${orderDetails.orderID}'`;
+        await connection.query(sql,async function(error,results){
+            if(error){
+                res.statusCode=404;
+                res.send(error);
+            }else{
+                
+                res.statusCode=200;
+                res.send("Update Successful");
+            }
+        });
+    }
+}
+module.exports.getCustomerProfile=async (req,res)=>{
+    var customerID=req.query.customerID;
+    var sql=`SELECT * from CustomerDetails WHERE CustomerID='${customerID}'`;
+    await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            
+            res.statusCode=200;
+            res.send(results);
+        }
+    })
+}

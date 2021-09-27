@@ -8,8 +8,6 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 
-//set the view engine to ejs
-app.set('view engine', 'ejs');
 //set the directory of views
 app.set('views', './views');
 //specify the path of static directory
@@ -30,9 +28,10 @@ app.get('/restaurantProfile',restaurantController.restaurantProfile);
 app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile);
 
 app.post('/addDish',restaurantController.addDish);
+app.get('/getOrders',restaurantController.getOrders);
 
-
-
+app.put('/updateOrderStatus',restaurantController.updateOrderStatus);
+app.get('/getCustomerProfile',restaurantController.getCustomerProfile);
 var server = app.listen(3000, function () {
     console.log("Server listening on port 3000");
 });
