@@ -35,10 +35,85 @@ module.exports.customerSignup=async(req,res)=>{
     //console.log(sql);
     await connection.query(sql,async function(error,results){
         if(error){
+            res.statusCode=400;
             res.send(error);
         }else{
+            res.statusCode=200;
             console.log("Success");
             res.send("Insertion Successful");
         }
     })
 }
+ module.exports.updateCustomerProfile=async(req,res)=>{
+    var sql='UPDATE CustomerDetails SET ';
+    for (const [key, value] of Object.entries(req.body)) {
+        if(key=="customerID") continue;
+        sql+=key + "='" + value + "' ,";
+      }
+      sql=sql.slice(0,-1);
+      sql+="WHERE CustomerID='"+req.body.customerID+"'";
+      //console.log(sql);
+      await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send(results);
+        }
+      })
+ }
+
+module.exports.addToFavourites=async(req,res)=>{
+    var details=req.body;
+    var sql=`INSERT INTO FavouriteRestaurants VALUES ('${uuidv4()}','${details.customerID}','${details.restaurantID}')`;
+    await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send("Insertion Successful");
+        }
+    });
+ }
+ module.exports.getFavouriteRestaurants=async(req,res)=>{
+     var sql=`Select * from RestaurantDetails where RestaurantID in (Select RestaurantID from FavouriteRestaurants where CustomerID="${req.query.customerID}");`
+     await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send(results);
+        }
+    });
+ }
+
+ module.exports.addAddress=async(req,res)=>{
+     var details=req.body;
+    var sql=`INSERT INTO Address(AddressID,CustomerID,Address) VALUES('${uuidv4()}','${details.customerID}','${details.address}')`;
+    await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send("Insertion Successful");
+        }
+    });
+ };
+
+ module.exports.getAddress=async(req,res)=>{
+     var customerID=req.query.customerID;
+     var sql=`SELECT Address from Address where CustomerID='${customerID}'`;
+     await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send(results);
+        }
+    });
+ }
