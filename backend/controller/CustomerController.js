@@ -10,9 +10,11 @@ module.exports.customerLogin= async(req,res)=>{
         }else{
             console.log("Success");
             let authFlag=false;
+            let details;
             for(let user of results){
                 if(user.Email==email && user.Password==password){
                     authFlag=true;
+                    details=user;
                     break;
                 }
             }
@@ -20,9 +22,10 @@ module.exports.customerLogin= async(req,res)=>{
                 ErrorMessage:"Invalid Credentails"
             };
             if(!authFlag){
-                res.status(200).json({ errors });
+                res.statusCode=500;
+                res.send(errors);
             }else{
-                res.send("Login Success");
+                res.send(details);
             }
             }
             
@@ -30,14 +33,15 @@ module.exports.customerLogin= async(req,res)=>{
 }
 module.exports.customerSignup=async(req,res)=>{
     //console.log("request body",req.body);
-    const {password,email,name,dateOfBirth}=req.body;
-    let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name,DateOfBirth) VALUES ('"+uuidv4()+"','"+password+"','"+email+"','"+name+"','"+dateOfBirth+"')";
+    const {password,email,name}=req.body;
+    let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name) VALUES ('"+uuidv4()+"','"+password+"','"+email+"','"+name+"')";
     //console.log(sql);
     await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
             res.send(error);
         }else{
+            console.log("Call Here");
             res.statusCode=200;
             console.log("Success");
             res.send("Insertion Successful");

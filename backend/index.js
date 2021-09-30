@@ -7,7 +7,9 @@ var bodyParser = require('body-parser');
 //require express session
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+var cors = require('cors')
 
+app.use(cors())
 //set the directory of views
 app.set('views', './views');
 //specify the path of static directory
@@ -54,6 +56,6 @@ app.get('/getOrderDetails',restaurantSearchController.getOrderDetails);
 
 
 
-var server = app.listen(3000, function () {
-    console.log("Server listening on port 3000");
+var server = app.listen(3001, function () {
+    console.log("Server listening on port 3001");
 });

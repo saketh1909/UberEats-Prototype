@@ -1,5 +1,8 @@
 import React from 'react';
-import UberEatsLogo from '../images/UberEatsLogo.png'
+import UberEatsLogo from '../images/UberEatsLogo.png';
+import { connect } from "react-redux";
+import {restaurantSignup} from '../actions/restaurantLogin.js';
+import {Redirect} from 'react-router-dom';
 class RestaurantSignUp extends React.Component{
 
     constructor(props){
@@ -18,11 +21,22 @@ class RestaurantSignUp extends React.Component{
         this.setState({[event.target.name] : event.target.value});
       }
     
-      handleSubmit(event) {
+      handleSubmit= async(event) => {
         event.preventDefault();
+        let restDetails={
+            name:this.state.restaurantName,
+            password:this.state.password,
+            email:this.state.email,
+            location:this.state.location
+        }
+        await this.props.signup(restDetails);
+        console.log("Check This",this.props);
       }
 
     render(){
+        if(this.props.restaurantSignup!==undefined && this.props.restaurantSignup==="Signup Sucessful"){
+            return <Redirect to='/restaurantLogin'/>
+        }
         return <React.Fragment>
             <div className="container" style={{width:'20%'}}>
                 <div style={{textAlign:'center',marginTop:'25%'}}>
@@ -44,7 +58,7 @@ class RestaurantSignUp extends React.Component{
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="location">Location : </label></div>
-                    <input type="email" name="location" value={this.state.location} onChange={this.handleChange} className="form-control" id="location" placeholder="Enter Location"/>
+                    <input type="text" name="location" value={this.state.location} onChange={this.handleChange} className="form-control" id="location" placeholder="Enter Location"/>
                 </div>
                 <br/>
                 <button type="submit" className="btn btn-primary btn-lg">Sign Up</button>
@@ -55,5 +69,15 @@ class RestaurantSignUp extends React.Component{
         </React.Fragment>;
     }
 }
-
-export default RestaurantSignUp;
+const mapStateToProps = (state) =>{
+    console.log("State",state);
+    return {
+        restaurantSignup:state.restaurantLoginReducer.restaurantSignup
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        signup: data => dispatch(restaurantSignup(data))
+    };
+  }
+export default connect(mapStateToProps,mapDispatchToProps)(RestaurantSignUp);

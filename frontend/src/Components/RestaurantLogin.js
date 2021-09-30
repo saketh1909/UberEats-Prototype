@@ -1,5 +1,8 @@
 import React from 'react';
-import UberEatsLogo from '../images/UberEatsLogo.png'
+import UberEatsLogo from '../images/UberEatsLogo.png';
+import { connect } from "react-redux";
+import { restaurantLogin } from '../actions/restaurantLogin';
+import {Redirect} from 'react-router-dom';
 class RestaurantLogin extends React.Component{
 
     constructor(props){
@@ -17,8 +20,14 @@ class RestaurantLogin extends React.Component{
         this.setState({[event.target.name] : event.target.value});
       }
     
-      handleSubmit(event) {
+      handleSubmit= async(event)=> {
         event.preventDefault();
+        let restDetails={
+            email:this.state.email,
+            password:this.state.password
+        }
+        await this.props.login(restDetails);
+       // console.log("Check this",this.props);
       }
 
     render(){
@@ -41,7 +50,10 @@ class RestaurantLogin extends React.Component{
                     <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password"/>
                 </div>
                 <br/>
-                <button type="submit" className="btn btn-primary btn-lg">Login</button>
+                <button type="submit" className="btn btn-success btn-lg btn-block" style={{width:"350px"}}>Login</button>
+                </div>
+                <div style={{marginTop:"5%"}}>
+                    <span style={{fontSize:"22px"}}>New to Uber?</span>&nbsp;<a href='/restaurantSignup' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
                 </div>
             </form>
             </div>
@@ -49,5 +61,15 @@ class RestaurantLogin extends React.Component{
         </React.Fragment>;
     }
 }
-
-export default RestaurantLogin;
+const mapStateToProps = (state) =>{
+    return {
+        restaurantLogin:state.restaurantLoginReducer.restaurantLogin,
+        restaurantLoginError:state.restaurantLoginReducer.restaurantLoginError
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        login:data=>dispatch(restaurantLogin(data))
+    };
+  }
+export default connect(mapStateToProps,mapDispatchToProps)(RestaurantLogin);

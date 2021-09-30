@@ -1,5 +1,8 @@
 import React from 'react';
-import UberEatsLogo from '../images/UberEatsLogo.png'
+import UberEatsLogo from '../images/UberEatsLogo.png';
+import { connect } from "react-redux";
+import {login} from '../actions/customerLogin.js';
+import {Redirect} from 'react-router-dom';
 class CustomerLogin extends React.Component{
 
     constructor(props){
@@ -17,11 +20,21 @@ class CustomerLogin extends React.Component{
         this.setState({[event.target.name] : event.target.value});
       }
     
-      handleSubmit(event) {
+      handleSubmit=async(event)=> {
         event.preventDefault();
+        var customerData={
+            email:this.state.email,
+            password:this.state.password
+        }
+        await this.props.login(customerData);
+
+        //console.log(this.props);
       }
 
     render(){
+        if(this.props.customerLogin!==undefined){
+            return <Redirect to='/customerDashboard'/>
+        }
         return <React.Fragment>
             <div className="container" style={{width:'25%'}}>
                 <div style={{textAlign:'center',marginTop:'25%'}}>
@@ -34,14 +47,17 @@ class CustomerLogin extends React.Component{
                     </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="email">Email address : </label></div>
-                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email"/>
+                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email" autoFocus required/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="password">Password :</label></div>
-                    <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password"/>
+                    <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password" required/>
                 </div>
                 <br/>
-                <button type="submit" className="btn btn-primary btn-lg">Login</button>
+                <button type="submit" className="btn btn-success btn-lg btn-block" style={{width:"350px"}}>Login</button>
+                </div>
+                <div style={{marginTop:"5%"}}>
+                    <span style={{fontSize:"22px"}}>New to Uber?</span>&nbsp;<a href='/customerSignup' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
                 </div>
             </form>
             </div>
@@ -50,4 +66,16 @@ class CustomerLogin extends React.Component{
     }
 }
 
-export default CustomerLogin;
+const mapStateToProps = (state) =>{
+    //console.log("Check",state);
+    return {
+        customerLogin:state.customerLoginReducer.customerLogin,
+        customerLoginError:state.customerLoginReducer.customerLoginError
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        login: data => dispatch(login(data))
+    };
+  }
+export default connect(mapStateToProps,mapDispatchToProps)(CustomerLogin);

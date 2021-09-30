@@ -1,5 +1,7 @@
 import React from 'react';
-import UberEatsLogo from '../images/UberEatsLogo.png'
+import UberEatsLogo from '../images/UberEatsLogo.png';
+import { connect } from "react-redux";
+import {signup} from '../actions/customerLogin.js';
 class CustomerSignUp extends React.Component{
 
     constructor(props){
@@ -16,8 +18,15 @@ class CustomerSignUp extends React.Component{
         this.setState({[event.target.name] : event.target.value});
       }
     
-      handleSubmit(event) {
+      handleSubmit=async event=> {
         event.preventDefault();
+        var customerData={
+            name:this.state.name,
+            email:this.state.email,
+            password:this.state.password
+        };
+        await this.props.signup(customerData);
+        //console.log(this.props.customerSignUp);
       }
 
     render(){
@@ -30,18 +39,18 @@ class CustomerSignUp extends React.Component{
                 <div >
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="name">Name :</label></div>
-                    <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" id="name" aria-describedby="name" placeholder="Enter Name" autoFocus/>
+                    <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" id="name" aria-describedby="name" placeholder="Enter Name" autoFocus required/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="email">Email address : </label></div>
-                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email"/>
+                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email" required/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="password">Password :</label></div>
-                    <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password"/>
+                    <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password" required/>
                 </div>
                 <br/>
-                <button type="submit" className="btn btn-primary btn-lg">Sign Up</button>
+                <button type="submit" className="btn btn-success btn-lg" style={{width:"350px"}}>Sign Up</button>
                 </div>
             </form>
             </div>
@@ -49,5 +58,12 @@ class CustomerSignUp extends React.Component{
         </React.Fragment>;
     }
 }
-
-export default CustomerSignUp;
+const mapStateToProps = (state) =>{
+    return {customerSignUp:state.customerLoginReducer.customerSignUp}
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        signup: data => dispatch(signup(data))
+    };
+  }
+export default connect(mapStateToProps,mapDispatchToProps)(CustomerSignUp);

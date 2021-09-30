@@ -14,12 +14,11 @@ module.exports.restaurantLogin=async(req,res)=>{
                     break;
                 }
             }
-            let errors={
-                ErrorMessage:"Invalid Credentails"
-            };
             if(!authFlag){
-                res.status(200).json({ errors });
+                res.statusCode=400;
+                res.send("Invalid Credentails");
             }else{
+                res.statusCode=200;
                 res.send("Login Success");
             }
             }
@@ -32,8 +31,10 @@ module.exports.restaurantSignup=async(req,res)=>{
     //console.log(sql);
     await connection.query(sql,async function(error,results){
         if(error){
+            res.statusCode=400;
             res.send(error);
         }else{
+            res.statusCode=200;
             res.send("Insertion Successful");
         }
     })
@@ -43,8 +44,10 @@ module.exports.restaurantProfile=async(req,res)=>{
     var restaurantID=req.query.restaurantID;
     await connection.query("SELECT * from RestaurantDetails WHERE RestaurantID="+restaurantID,async function(error,results){
         if(error){
+            res.statusCode=400;
             res.send(error);
         }else{
+            res.statusCode=200;
             res.send(results);
         }
     })
@@ -61,8 +64,10 @@ module.exports.updateRestaurantProfile=async(req,res)=>{
       //console.log(sql);
       await connection.query(sql,async function(error,results){
         if(error){
+            res.statusCode=400;
             res.send(error);
         }else{
+            res.statusCode=200;
             res.send(results);
         }
       })
