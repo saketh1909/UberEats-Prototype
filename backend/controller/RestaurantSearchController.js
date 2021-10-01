@@ -2,6 +2,7 @@ var connection=require('../connection.js');
 const uuidv4 = require("uuid/v4");
 module.exports.getRestaurantBasedOnLocation=async(req,res)=>{
     var location=req.query.location;
+    console.log(location);
     var sql=`SELECT * from RestaurantDetails where Location='${location}'`;
     var sql1=`SELECT * from RestaurantDetails where Location!='${location}'`;
     await connection.query(sql,async(error,results)=>{

@@ -1,6 +1,5 @@
 import React from 'react'
-import Card from 'react-bootstrap/Card';
-import UberEatsLogo from '../images/UberEatsLogo.png';
+import subway from '../images/subway.jpg'
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn } from 'mdb-react-ui-kit';
 class RestaurantCard extends React.Component{
 
@@ -11,17 +10,19 @@ class RestaurantCard extends React.Component{
         }
     }
     render(){
+        const data=this.props.data;
         return (
             <React.Fragment>
-                <a href='#'><MDBCard style={{ maxWidth: '22rem' }}>
-                    <MDBCardImage src={UberEatsLogo} position='top' alt='...' />
-                    <MDBCardBody>
-                        <MDBCardTitle>Card title</MDBCardTitle>
-                        <MDBCardText>
-                        Some quick example text to build on the card title and make up the bulk of the card's content.
+                {data!==undefined?<a href='#' style={{textDecoration:"none"}}><MDBCard style={{ maxWidth: '22rem' }}>
+                    <MDBCardImage src={subway} position='top' alt='Image' style={{height:"150px"}} />
+                    <MDBCardBody style={{color:"black"}}>
+                        <MDBCardTitle style={{textAlign:"center"}}>{data.Name}</MDBCardTitle>
+                        <MDBCardText style={{fontSize:"15px"}}>
+                            Timings:{data.Timings}&nbsp;
+                            <span >Location:{data.Location}</span>
                         </MDBCardText>
                     </MDBCardBody>
-                    </MDBCard></a>
+                    </MDBCard></a>:null}
             </React.Fragment>
         )
     }

@@ -7,6 +7,8 @@ import { IconContext } from 'react-icons';
 import * as CgIcons from 'react-icons/cg';
 import * as RiIcons from 'react-icons/ri';
 import * as GoIcons from 'react-icons/go';
+import * as MdIcons from 'react-icons/md';
+
 import UberEatsLogo from '../images/UberEatsLogo.png';
 function Navbar() {
   const [sidebar, setSidebar] = useState(false);
@@ -30,7 +32,7 @@ function Navbar() {
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='#'>
+              <Link to='/customerProfile'>
               <CgIcons.CgProfile/>
               <span>Profile</span>
               </Link>
@@ -45,6 +47,12 @@ function Navbar() {
               <Link to='#'>
               <RiIcons.RiOrderPlayLine/>
               <span>Orders</span>
+              </Link>
+            </li>
+            <li className="nav-text">
+              <Link to='#'>
+              <MdIcons.MdFavorite/>
+              <span>Favourites</span>
               </Link>
             </li>
             <li className="nav-text">

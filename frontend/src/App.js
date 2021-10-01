@@ -4,6 +4,7 @@ import RestaurantSignUp from './Components/RestaurantSignUp';
 import CustomerLogin from "./Components/CustomerLogin";
 import RestaurantLogin  from "./Components/RestaurantLogin";
 import CustomerDashboard from "./Components/CustomerDashboard";
+import CustomerProfile from './Components/CustomerProfile';
 import Home from './Components/Home';
 import {BrowserRouter as Router ,Switch ,Route} from 'react-router-dom';
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path='/customerDashboard' component={CustomerDashboard}/>
             <Route path='/restaurantLogin' component={RestaurantLogin}/>
             <Route path='/restaurantSignup' component={RestaurantSignUp} />
+            <Route path='/customerProfile' component={CustomerProfile} />
           </Switch>
         </Router>
       </header>

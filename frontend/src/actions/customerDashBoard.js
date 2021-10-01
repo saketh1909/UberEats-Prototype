@@ -16,3 +16,27 @@ export const getRestaurants= () => async dispatch =>{
         });
     });
 }
+export const searchRestaurants = (location) => async dispatch =>{
+    console.log(location);
+    await Axios.get(`http://localhost:3001/getRestaurantOnSearch?location=${location}`)
+    .then(async (res)=>{
+        console.log("Data from backend",res.data);
+        dispatch({
+            type:"GET_RESTAURANTS_ON_SEARCH",
+            payload:res.data
+        });
+    })
+    .catch(err=>{
+        dispatch({
+            type:"GET_RESTAURANTS_ON_SEARCH",
+            payload:[]
+        });
+    })
+}
+
+export const updateCustomerProfile=(details) => async dispatch =>{
+    dispatch({
+        type:"UPDATE_CUSTOMER_PROFILE",
+        payload:details
+    })
+}
