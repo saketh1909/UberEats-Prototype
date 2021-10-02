@@ -37,7 +37,7 @@ class CustomerLogin extends React.Component{
         }
         return <React.Fragment>
             <div className="container" style={{width:'25%'}}>
-                <div style={{textAlign:'center',marginTop:'25%'}}>
+                <div style={{textAlign:'center',marginTop:'17%'}}>
             
             <form onSubmit={this.handleSubmit}>
                 <div ><img style={{width:'85%'}} src={UberEatsLogo} alt="Uber Eats"/></div>

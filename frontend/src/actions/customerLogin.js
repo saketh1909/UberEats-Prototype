@@ -42,7 +42,7 @@ export const signup = (data) => async dispatch =>{
        // console.log(res);
             dispatch({
                 type:'CUSTOMER_SIGNUP',
-                payload:"Customer Singup Successful"
+                payload:"Customer Signup Successful"
             })
     })
     .catch(err=>{

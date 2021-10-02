@@ -44,7 +44,7 @@ module.exports.customerSignup=async(req,res)=>{
             console.log("Call Here");
             res.statusCode=200;
             console.log("Success");
-            res.send("Insertion Successful");
+            res.send("Customer SignUp Successful");
         }
     })
 }

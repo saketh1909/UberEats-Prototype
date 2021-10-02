@@ -2,6 +2,7 @@ import React from 'react';
 import UberEatsLogo from '../images/UberEatsLogo.png';
 import { connect } from "react-redux";
 import {signup} from '../actions/customerLogin.js';
+import {Redirect} from 'react-router-dom';
 class CustomerSignUp extends React.Component{
 
     constructor(props){
@@ -30,13 +31,20 @@ class CustomerSignUp extends React.Component{
       }
 
     render(){
+        console.log(this.props);
+        if(this.props.customerSignUp!==undefined && this.props.customerSignUp==="Customer Signup Successful"){
+            return <Redirect to='/customerLogin'/>
+        }
         return <React.Fragment>
             <div className="container" style={{width:'25%'}}>
-                <div style={{textAlign:'center',marginTop:'25%'}}>
+                <div style={{textAlign:'center',marginTop:'17%'}}>
             
             <form onSubmit={this.handleSubmit}>
                 <div ><img style={{width:'85%'}} src={UberEatsLogo} alt="Uber Eats"/></div>
                 <div >
+                    <div style={{marginTop:'3%'}}>
+                        <h3>Customer Signup</h3>
+                    </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="name">Name :</label></div>
                     <input type="text" name="name" value={this.state.name} onChange={this.handleChange} className="form-control" id="name" aria-describedby="name" placeholder="Enter Name" autoFocus required/>
@@ -51,6 +59,9 @@ class CustomerSignUp extends React.Component{
                 </div>
                 <br/>
                 <button type="submit" className="btn btn-success btn-lg" style={{width:"350px"}}>Sign Up</button>
+                </div>
+                <div style={{marginTop:"5%"}}>
+                    <span style={{fontSize:"20px"}}>Already using Uber?</span>&nbsp;<a href='/customerLogin' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
                 </div>
             </form>
             </div>

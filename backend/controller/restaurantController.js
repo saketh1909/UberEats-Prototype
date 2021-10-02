@@ -1,16 +1,18 @@
 var connection=require('../connection.js');
 const uuidv4 = require("uuid/v4")
 module.exports.restaurantLogin=async(req,res)=>{
-    const {name,email,password}=req.body;
+    const {email,password}=req.body;
     await connection.query('SELECT * from RestaurantDetails',(error,results)=>{
         if(error){
             console.log("error "+error);
         }else{
             console.log("Success");
             let authFlag=false;
+            let details=null;
             for(let user of results){
                 if(user.Email==email && user.Password==password){
                     authFlag=true;
+                    details=user;
                     break;
                 }
             }
@@ -19,7 +21,7 @@ module.exports.restaurantLogin=async(req,res)=>{
                 res.send("Invalid Credentails");
             }else{
                 res.statusCode=200;
-                res.send("Login Success");
+                res.send(details);
             }
             }
     })
@@ -35,7 +37,7 @@ module.exports.restaurantSignup=async(req,res)=>{
             res.send(error);
         }else{
             res.statusCode=200;
-            res.send("Insertion Successful");
+            res.send("Restaurant Signup Successful");
         }
     })
 }
@@ -56,11 +58,11 @@ module.exports.updateRestaurantProfile=async(req,res)=>{
     var details=req.body;
     var sql='UPDATE RestaurantDetails SET ';
     for (const [key, value] of Object.entries(details)) {
-        if(key=="restaurantID") continue;
+        if(key=="RestaurantID") continue;
         sql+=key + "='" + value + "' ,";
       }
       sql=sql.slice(0,-1);
-      sql+="WHERE RestaurantID="+details.restaurantID;
+      sql+="WHERE RestaurantID="+details.RestaurantID;
       //console.log(sql);
       await connection.query(sql,async function(error,results){
         if(error){

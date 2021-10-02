@@ -12,8 +12,8 @@ class Home extends React.Component{
     }
     render(){
         return (
-            <React.Fragment>
-                <div className="container">
+            <React.Fragment >
+                <div className="container" >
                     <div className="row" style={{margin:"5%"}}>
                         <div className=" col-md-9 offset-md-3 align-self-center">
                         <img src={UberEatsLogo} alt="Uber Eats" width="50%" height="100px"/> 

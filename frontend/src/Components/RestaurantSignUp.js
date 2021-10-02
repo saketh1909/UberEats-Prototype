@@ -34,16 +34,20 @@ class RestaurantSignUp extends React.Component{
       }
 
     render(){
+        console.log(this.props);
         if(this.props.restaurantSignup!==undefined && this.props.restaurantSignup==="Signup Sucessful"){
             return <Redirect to='/restaurantLogin'/>
         }
         return <React.Fragment>
-            <div className="container" style={{width:'20%'}}>
-                <div style={{textAlign:'center',marginTop:'25%'}}>
+            <div className="container" style={{width:'25%'}}>
+                <div style={{textAlign:'center',marginTop:'17%'}}>
             
             <form onSubmit={this.handleSubmit}>
                 <div ><img style={{width:'85%'}} src={UberEatsLogo} alt="Uber Eats"/></div>
                 <div >
+                    <div style={{marginTop:'3%'}}>
+                        <h3>Restaurant Signup</h3>
+                    </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="restaurantName">Name :</label></div>
                     <input type="text" name="restaurantName" value={this.state.restaurantName} onChange={this.handleChange} className="form-control" id="name" aria-describedby="restaurantName" placeholder="Enter Restaurant Name" autoFocus/>
@@ -62,6 +66,9 @@ class RestaurantSignUp extends React.Component{
                 </div>
                 <br/>
                 <button type="submit" className="btn btn-primary btn-lg">Sign Up</button>
+                </div>
+                <div style={{marginTop:"5%"}}>
+                    <span style={{fontSize:"20px"}}>Already using Uber?</span>&nbsp;<a href='/restaurantLogin' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
                 </div>
             </form>
             </div>

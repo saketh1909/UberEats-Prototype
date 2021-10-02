@@ -31,6 +31,7 @@ export const restaurantLogin =  (data) => async dispatch =>{
     })
 }
 export const restaurantLogout = ()=> dispatch =>{
+    console.log("Action Called");
     dispatch({
         type:'RESTAURANT_LOGOUT'
     })

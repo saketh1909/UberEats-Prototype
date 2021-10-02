@@ -4,6 +4,7 @@ import RestaurantCard from './RestaurantCard.js';
 
 import { connect } from "react-redux";
 import {getRestaurants,searchRestaurants} from '../actions/customerDashBoard.js';
+import {Redirect} from 'react-router-dom';
 class CustomerDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -67,7 +68,9 @@ class CustomerDashboard extends React.Component{
     }
     render(){
         
-        
+        if(this.props.customerDetails===undefined){
+            return <Redirect to='/'/>
+        }
         return(
             <React.Fragment >
                 <div  style={{backgroundColor:"papayawhip"}}>
@@ -95,7 +98,8 @@ class CustomerDashboard extends React.Component{
 }
 const mapStateToProps = (state) =>{
     return {
-        restaurantData:state.customerDashBoardReducer.restaurantData
+        restaurantData:state.customerDashBoardReducer.restaurantData,
+        customerDetails:state.customerLoginReducer.customerLogin
     }
 }
 function mapDispatchToProps(dispatch) {

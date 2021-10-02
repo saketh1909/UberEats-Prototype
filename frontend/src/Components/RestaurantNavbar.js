@@ -4,20 +4,24 @@ import * as AiIcons from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 import { IconContext } from 'react-icons';
-import * as CgIcons from 'react-icons/cg';
+import * as BiIcons from 'react-icons/bi';
 import * as RiIcons from 'react-icons/ri';
 import * as GoIcons from 'react-icons/go';
-import * as MdIcons from 'react-icons/md';
+import { restaurantLogout } from '../actions/restaurantLogin';
+import { connect } from "react-redux";
 import { useDispatch } from "react-redux";
-import {logout} from '../actions/customerLogin.js';
-function Navbar() {
-  const dispatch = useDispatch();
+
+function RestaurantNavbar() {
+    const dispatch = useDispatch();
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
-  const logout1 = () =>{
-    dispatch(logout());
-}
+  
+  const logout = () =>{
+      console.log("Logout clicked");
+      console.log(dispatch);
+      dispatch(restaurantLogout());
+  }
   return (
     <>
       <IconContext.Provider value={{ color: '#fff' }}>
@@ -35,15 +39,9 @@ function Navbar() {
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='/customerProfile'>
-              <CgIcons.CgProfile/>
-              <span>Profile</span>
-              </Link>
-            </li>
-            <li className="nav-text">
-              <Link to='#'>
+              <Link to='/restaurantDashboard'>
               <AiIcons.AiOutlineHome/>
-              <span>DashBoard</span>
+              <span>Dashboard</span>
               </Link>
             </li>
             <li className="nav-text">
@@ -54,14 +52,14 @@ function Navbar() {
             </li>
             <li className="nav-text">
               <Link to='#'>
-              <MdIcons.MdFavorite/>
-              <span>Favourites</span>
+              <BiIcons.BiFoodMenu/>
+              <span>Menu</span>
               </Link>
             </li>
             <li className="nav-text">
               <Link to='#'>
                 <FaIcons.FaSignOutAlt/>
-              <span onClick={logout1}>Logout</span>
+              <span onClick={logout}>Logout</span>
               </Link>
             </li>
           </ul>
@@ -70,5 +68,15 @@ function Navbar() {
     </>
   );
 }
-
-export default Navbar;
+const mapStateToProps = (state) =>{
+    //console.log(state);
+    return {
+        restaurantDetails:state.restaurantLoginReducer.restaurantLogin
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        restaurantLogout: () => dispatch(restaurantLogout())
+    };
+  }
+export default connect(mapStateToProps,mapDispatchToProps)(RestaurantNavbar);;

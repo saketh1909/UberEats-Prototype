@@ -31,9 +31,12 @@ class RestaurantLogin extends React.Component{
       }
 
     render(){
+        if(this.props.restaurantLogin!==undefined){
+            return <Redirect to='/restaurantDashboard'/>
+        }
         return <React.Fragment>
             <div className="container" style={{width:'25%'}}>
-                <div style={{textAlign:'center',marginTop:'25%'}}>
+                <div style={{textAlign:'center',marginTop:'17%'}}>
             
             <form onSubmit={this.handleSubmit}>
                 <div ><img style={{width:'85%'}} src={UberEatsLogo} alt="Uber Eats"/></div>
@@ -62,6 +65,7 @@ class RestaurantLogin extends React.Component{
     }
 }
 const mapStateToProps = (state) =>{
+    console.log(state);
     return {
         restaurantLogin:state.restaurantLoginReducer.restaurantLogin,
         restaurantLoginError:state.restaurantLoginReducer.restaurantLoginError
