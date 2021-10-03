@@ -41,19 +41,19 @@ function Navbar() {
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='#'>
+              <Link to='/customerDashboard'>
               <AiIcons.AiOutlineHome/>
               <span>DashBoard</span>
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='#'>
+              <Link to='/customerOrders'>
               <RiIcons.RiOrderPlayLine/>
               <span>Orders</span>
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='#'>
+              <Link to='/favouriteRestaurants'>
               <MdIcons.MdFavorite/>
               <span>Favourites</span>
               </Link>

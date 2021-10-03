@@ -40,3 +40,22 @@ export const updateCustomerProfile=(details) => async dispatch =>{
         payload:details
     })
 }
+export const viewRestaurantPage= (details)=>async dispatch=>{
+    console.log("Action",details);
+    dispatch({
+        type:"VIEW_RESTAURANT_PAGE",
+        payload:details
+    })
+}
+export const updateCartItems=(data)=>async dispatch=>{
+    dispatch({
+        type:"UPDATE_CART_ITEMS",
+        payload:data
+    })
+}
+export const updateFavouriteRestaurants=(data)=>async dispatch=>{
+    dispatch({
+        type:"UPDATE_FAV_RESTAURANTS",
+        payload:data
+    })
+}

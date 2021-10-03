@@ -7,7 +7,7 @@ import ModalHeader from 'react-bootstrap/ModalHeader'
 import noProfileImage from '../images/noProfileImage.png';
 import firebase  from '../firebaseConfig';
 import {Redirect} from 'react-router-dom';
-import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn } from 'mdb-react-ui-kit';
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 const uuidv4 = require("uuid/v4")
 const category=["Pick a Category", "Appetizer","Salads", "Main Course", "Desserts", "Beverages"];
 const type=["Pick a type","Non veg","Veg","Vegan"];
@@ -189,7 +189,7 @@ class RestaurantMenu extends React.Component{
         }
         return (
             <React.Fragment>
-                {data!==undefined?<a href='#' style={{textDecoration:"none"}}><MDBCard style={{ maxWidth: '18rem' }}>
+                {data!==undefined?<MDBCard style={{ maxWidth: '18rem' }}>
                     <MDBCardImage src={data.DishImageURL} position='top' alt='Image' style={{height:"150px"}} />
                     <MDBCardBody style={{color:"black"}}>
                         <MDBCardTitle style={{textAlign:"center"}}>{data.DishName}</MDBCardTitle>
@@ -201,7 +201,7 @@ class RestaurantMenu extends React.Component{
                         </MDBCardText>
                         <button className="btn btn-primary" id={data.DishID} onClick={(e)=>{this.itemClicked(e)}}>Edit</button>
                     </MDBCardBody>
-                    </MDBCard></a>:null}
+                    </MDBCard>:null}
             </React.Fragment>
         )
     }
