@@ -11,7 +11,7 @@ module.exports.customerLogin= async(req,res)=>{
             console.log("Success");
             let authFlag=false;
             let details;
-            console.log(results);
+            //console.log(results);
             for(let user of results){
                 if(user.Email==email && user.Password==password){
                     authFlag=true;
@@ -84,6 +84,7 @@ module.exports.addToFavourites=async(req,res)=>{
  }
  module.exports.getFavouriteRestaurants=async(req,res)=>{
      var sql=`Select * from RestaurantDetails where RestaurantID in (Select RestaurantID from FavouriteRestaurants where CustomerID="${req.query.customerID}");`
+     //console.log(sql);
      await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;

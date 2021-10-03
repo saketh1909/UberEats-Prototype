@@ -64,8 +64,8 @@ module.exports.updateRestaurantProfile=async(req,res)=>{
         sql+=key + "='" + value + "' ,";
       }
       sql=sql.slice(0,-1);
-      sql+="WHERE RestaurantID=`"+details.RestaurantID+"`";
-      //console.log(sql);
+      sql+="WHERE RestaurantID='"+details.RestaurantID+"'";
+     /// console.log(sql);
       await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
