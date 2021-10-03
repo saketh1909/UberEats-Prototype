@@ -7,6 +7,8 @@ import CustomerDashboard from "./Components/CustomerDashboard";
 import CustomerProfile from './Components/CustomerProfile';
 import Home from './Components/Home';
 import RestaurantDashboard from './Components/RestaurantDashboard';
+import RestaurantMenu from './Components/RestaurantMenu';
+import RestaurantOrders from './Components/RestaurantOrders';
 import {BrowserRouter as Router ,Switch ,Route} from 'react-router-dom';
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
             <Route path='/restaurantSignup' component={RestaurantSignUp} />
             <Route path='/customerProfile' component={CustomerProfile} />
             <Route path='/restaurantDashboard' component={RestaurantDashboard}/>
+            <Route path='/restaurantMenu' component={RestaurantMenu}/>
+            <Route path='/restaurantOrders' component={RestaurantOrders}/>
           </Switch>
         </Router>
       </header>

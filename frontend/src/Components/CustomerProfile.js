@@ -82,7 +82,7 @@ class CustomerProfile extends React.Component{
         this.setState({edit:true});
     }
     saveClicked=async()=>{
-        this.setState({edit:false,changedAttributes:{}});
+        
         let details=this.props.customerDetails;
         let data={
             customerID:this.props.customerDetails.CustomerID
@@ -96,6 +96,7 @@ class CustomerProfile extends React.Component{
             .then(async (res)=>{
                 //console.log("Update Successful");
                 this.props.updateCustomerProfile(details);
+                this.setState({edit:false,changedAttributes:{}});
             })
             .catch(err=>{
                 console.log("Error");

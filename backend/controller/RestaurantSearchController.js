@@ -38,17 +38,3 @@ module.exports.getRestaurants=async(req,res)=>{
         }
     })
 }
-
-module.exports.getOrderDetails=async(req,res)=>{
-    var sql=`Select Orders.RestaurantID,Dishes.DishName,Dishes.MainIngredients,Dishes.DishPrice,Dishes.Description,Dishes.DishCategory from OrderContent inner join Dishes on Dishes.DishID=OrderContent.DishID inner join Orders on Orders.OrderID=OrderContent.OrderID
-    where Orders.OrderID='${req.query.orderID}';`;
-    await connection.query(sql,async(error,results)=>{
-        if(error){
-            res.statusCode=404;
-            res.send(error);
-        }else{
-            res.statusCode=200;
-            res.send(results);
-        }
-    });
-}

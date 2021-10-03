@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import firebase  from '../firebaseConfig';
 import { restaurantLogout } from '../actions/restaurantLogin';
 import {Redirect} from 'react-router-dom';
+import Axios from 'axios';
+import { updateRestaurantProfile } from '../actions/restaurantDashBoard';
 class RestaurantDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -39,14 +41,52 @@ class RestaurantDashboard extends React.Component{
     }
     handleFileUpload = async(e) =>{
         const file=e.target.files[0];
-        const imagesRef=firebase.storage().ref("customerImages").child(this.props.customerDetails.CustomerID);
+        const imagesRef=firebase.storage().ref("RestaurantImages").child(this.props.restaurantDetails.RestaurantID);
         await imagesRef.put(file);
+        const details=this.props.restaurantDetails;
+        imagesRef.getDownloadURL()
+        .then(url=>{
+            this.setState({ImageUrl:url});
+            let data={
+               RestaurantID:details.RestaurantID
+            };
+            data["ImageURL"]=url;
+            details["ImageURL"]=url;
+            Axios.post('http://localhost:3001/updateRestaurantProfile',data)
+            .then(async (res)=>{
+                console.log("Update Successful");
+                this.props.updateRestaurantProfile(details);
+            })
+            .catch(err=>{
+                console.log("Error");
+            })
+        });
     }
     handleChange = (e)=>{
-
+        this.setState({[e.target.name]:e.target.value,changedAttributes:{...this.state.changedAttributes,[e.target.name]:true}});
     }
     editClicked = () =>{
-        this.setState({edit:!this.state.edit});
+        this.setState({edit:true});
+    }
+    saveClicked = async() =>{
+        let details=this.props.restaurantDetails;
+        let data={
+            RestaurantID:details.RestaurantID
+        };
+        for(const[key,value] of Object.entries(this.state.changedAttributes)){
+            data[key]=this.state[key];
+            details[key]=this.state[key];
+        }
+        //console.log("Changed",data);
+        await Axios.post('http://localhost:3001/updateRestaurantProfile',data)
+            .then(async (res)=>{
+                //console.log("Update Successful");
+                this.props.updateRestaurantProfile(details);
+                this.setState({edit:false,changedAttributes:{}});
+            })
+            .catch(err=>{
+                console.log("Error");
+            })
     }
 
     render(){
@@ -85,55 +125,49 @@ class RestaurantDashboard extends React.Component{
                                 <tr>
                                     <td>Restaurant Name</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Name}</td>:<td>
-                                    <textarea name="Name" cols={30} rows={2} value={this.state.Name} onChange={this.handleChange}/>
-                                        </td>}
+                                    <textarea name="Name" cols={30} rows={2} disabled={!this.state.edit} value={this.state.Name} onChange={this.handleChange}/>
+                                       
                                 </tr>
                                 <tr>
                                     <td>Restaurant Location</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Location}</td>:<td>
-                                        <input type="text" name="Location" value={this.state.Location} onChange={this.handleChange}/>
-                                        </td>}
+                                        <input type="text" name="Location" disabled={!this.state.edit} value={this.state.Location} onChange={this.handleChange}/>
+                                        
                                 </tr>
                                 <tr>
                                     <td>Restaurant Address</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Address}</td>:<td>
-                                        <textarea name="Address" cols={30} rows={3} value={this.state.Address} onChange={this.handleChange}/>
-                                        </td>}
+                                        <textarea name="Address" disabled={!this.state.edit} cols={30} rows={3} value={this.state.Address} onChange={this.handleChange}/>
+                                        
                                 </tr>
                                 <tr rowspan="3">
                                     <td>Restaurant Description</td>
                                     <td>:</td>
-                                    {this.state.edit?<td>{this.state.Description}</td>:<td>
-                                    <textarea name="Description" disabled cols={75} rows={5} value={this.state.Description} onChange={this.handleChange}/>
-                                        </td>}
+                                    
+                                    <textarea name="Description" disabled={!this.state.edit} cols={75} rows={5} value={this.state.Description} onChange={this.handleChange}/>
+                                        
                                 </tr>
                                 <tr>
                                     <td>Email</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Email}</td>:<td>
-                                        <input type="text" name="Email" value={this.state.Email} onChange={this.handleChange}/>
-                                        </td>}
+                                        <input type="text" disabled={!this.state.edit} name="Email" value={this.state.Email} onChange={this.handleChange}/>
+                                       
                                 </tr>
                                 <tr>
                                     <td>Contact Information</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.ContactInfo}</td>:<td>
-                                        <input type="text" name="ContactInfo" value={this.state.ContactInfo} onChange={this.handleChange}/>
-                                        </td>}
+                                        <input type="text" disabled={!this.state.edit} name="ContactInfo" value={this.state.ContactInfo} onChange={this.handleChange}/>
+                                       
                                 </tr>
                                 <tr>
                                     <td>Timings</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Timings}</td>:<td>
-                                        <input type="text" name="Timings" value={this.state.Timings} onChange={this.handleChange}/>
-                                        </td>}
+                                        <input type="text" disabled={!this.state.edit} name="Timings" value={this.state.Timings} onChange={this.handleChange}/>
+                                  
                                 </tr>
                                 <tr style={{marginTop:"10px"}}>
                                     <td><button type="button" className="btn btn-primary" onClick={this.editClicked}>Edit</button></td>
-                                    <td><button type="button" disabled={!Object.keys(this.state.changedAttributes).length>0} className="btn btn-primary" onClick={this.saveClicked}>Save</button></td>
+                                    <td><button type="button" disabled={!Object.keys(this.state.changedAttributes).length>0} className="btn btn-success" onClick={this.saveClicked}>Save</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -151,7 +185,7 @@ const mapStateToProps = (state) =>{
 }
 function mapDispatchToProps(dispatch) {
     return {
-        
+        updateRestaurantProfile:(data)=>dispatch(updateRestaurantProfile(data))
     };
   }
 export default connect(mapStateToProps,mapDispatchToProps)(RestaurantDashboard);

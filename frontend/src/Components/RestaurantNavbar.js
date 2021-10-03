@@ -45,13 +45,13 @@ function RestaurantNavbar() {
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='#'>
+              <Link to='/restaurantOrders'>
               <RiIcons.RiOrderPlayLine/>
               <span>Orders</span>
               </Link>
             </li>
             <li className="nav-text">
-              <Link to='#'>
+              <Link to='/restaurantMenu'>
               <BiIcons.BiFoodMenu/>
               <span>Menu</span>
               </Link>

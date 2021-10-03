@@ -11,6 +11,7 @@ module.exports.customerLogin= async(req,res)=>{
             console.log("Success");
             let authFlag=false;
             let details;
+            console.log(results);
             for(let user of results){
                 if(user.Email==email && user.Password==password){
                     authFlag=true;

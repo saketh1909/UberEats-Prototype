@@ -30,9 +30,13 @@ app.get('/restaurantProfile',restaurantController.restaurantProfile);
 
 app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile);
 
-app.post('/addDish',restaurantController.addDish);
+app.get('/getRestaurantMenu',restaurantController.getRestaurantMenu);
 
-app.get('/getOrders',restaurantController.getOrders);
+app.post('/addDish',restaurantController.addDish);
+app.put('/updateDish',restaurantController.updateDish);
+
+app.get('/getRestaurantOrders',restaurantController.getRestaurantOrders);
+app.post('/updateDeliveryStatus',restaurantController.updateDeliveryStatus);
 
 app.put('/updateOrderStatus',restaurantController.updateOrderStatus);
 
@@ -52,7 +56,6 @@ app.post('/addAddress',customerController.addAddress);
 
 app.get('/getAddress',customerController.getAddress);
 
-app.get('/getOrderDetails',restaurantSearchController.getOrderDetails);
 
 
 
