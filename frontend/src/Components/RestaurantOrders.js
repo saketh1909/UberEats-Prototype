@@ -4,6 +4,9 @@ import { connect } from "react-redux";
 import {Modal,Button} from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/ModalHeader'
 import RestaurantNavbar from './RestaurantNavbar';
+import noProfileImage from '../images/noProfileImage.png';
+import {Table} from 'react-bootstrap'
+import {Redirect} from 'react-router-dom';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn } from 'mdb-react-ui-kit';
 const pickUpStatus=["Order Received","Preparing","Pickup Ready","Picked up"];
 const deliveryStatus=["Order Received","Preparing","On the way","Delivered"];
@@ -19,7 +22,9 @@ class RestaurantOrders extends React.Component{
             OrderPickUpStatus:null,
             OrderDeliveryStatus:null,
             saveEnable:false,
-            edited:false
+            edited:false,
+            order:null,
+            orderMenu:[]
 
         }
     }
@@ -94,7 +99,7 @@ class RestaurantOrders extends React.Component{
                         <button className="btn btn-primary" id={data.OrderID} disabled={flag} onClick={(e)=>{this.updateStatusClicked(e)}}>Update Status</button>
                         
                         <hr/>
-                        <div><button className="btn btn-info" id={data.CustomerID} onClick={(e)=>{this.profileClicked(e)}}>Customer Profile</button>
+                        <div><button className="btn btn-info" id={data.OrderID} onClick={(e)=>{this.profileClicked(e)}}>Customer Profile</button>
                         </div>
                         <div style={{marginTop:"3px",textAlign:"center"}} className="container">
                         </div>
@@ -105,6 +110,16 @@ class RestaurantOrders extends React.Component{
     }
     menuClicked = (e)=>{
         this.setState({showMenu:true})
+        let orderID=e.target.id;
+        let orderDetails=this.state.orders.filter(order=>order.OrderID===orderID)[0];
+        Axios.get(`http://localhost:3001/getOrderMenu?OrderID=${orderID}`)
+        .then(res=>{
+            console.log(res.data);
+            this.setState({orderMenu:res.data});
+        })
+        .catch(err=>{
+            console.log(err);
+        })
     }
     updateStatusClicked=(e)=>{
         let orderID=e.target.id;
@@ -120,7 +135,12 @@ class RestaurantOrders extends React.Component{
         this.setState({showUpdateStatus:true,OrderID:orderID});
     }
     profileClicked=(e)=>{
-        this.setState({showProfile:true})
+        let orderID=e.target.id;
+        //console.log(orderID);
+        let orderDetails=this.state.orders.filter(order=>order.OrderID===orderID)[0];
+        //console.log(orderDetails);
+        this.setState({showProfile:true,order:orderDetails})
+
     }
     handleClose=()=>{
         this.setState({showProfile:false,showMenu:false,showUpdateStatus:false,OrderID:null,OrderPickUpStatus:null,OrderDeliveryStatus:null,edited:false});
@@ -165,13 +185,109 @@ class RestaurantOrders extends React.Component{
             )
         }
     }
+    buildTableForMenu= (dish,index) =>{
+        let row=[];
+        row.push(<td>{index+1}</td>);
+        row.push(<td>{dish.DishName}</td>);
+        row.push(<td>{dish.MainIngredients}</td>);
+        row.push(<td>{dish.Description}</td>);
+        row.push(<td>{dish.DishCategory}</td>);
+        row.push(<td>{dish.DishType}</td>);
+        row.push(<td>{dish.Qty}</td>);
+        row.push(<td>${dish.DishPrice}</td>);
+        return row;
+    }
     orderDetailsBody=()=>{
 
         return(
             <React.Fragment>
-                
+                <Table>
+                    <thead>
+                        <tr>
+                            <td>SNo</td>
+                            <td>Dish Name</td>
+                            <td>Main Ingredients</td>
+                            <td>Description</td>
+                            <td>Dish Category</td>
+                            <td>Dish Type</td>
+                            <td>Qty</td>
+                            <td>DishPrice </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.orderMenu.map((dish,index)=>{
+                            return(
+                                <tr>
+                                {this.buildTableForMenu(dish,index)}
+                                </tr>
+                            )
+
+                        })}
+                    </tbody>
+                </Table>
             </React.Fragment>
         );
+    }
+    customerProfileBody=()=>{
+       // console.log(this.state.order);
+        const {order}=this.state
+        if(this.state.order!=null){
+            let image=order.ImageURL;
+            if(image==="" || image===null || image===undefined){
+                image=noProfileImage;
+            }
+        return(
+            <React.Fragment>
+                <div className="row">
+                    <div className="col-md-7">
+                        <Table>
+                            <tbody>
+                                <tr>
+                                    <td><b>Customer Name</b></td>
+                                    <td>:</td>
+                                    <td>{order.Name}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Customer Nickname</b></td>
+                                    <td>:</td>
+                                    <td>{order.Nickname}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Customer Contact Number</b></td>
+                                    <td>:</td>
+                                    <td>{order.PhoneNumber}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Customer Email</b></td>
+                                    <td>:</td>
+                                    <td>{order.Email}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Customer City</b></td>
+                                    <td>:</td>
+                                    <td>{order.City}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Customer State</b></td>
+                                    <td>:</td>
+                                    <td>{order.State}</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Customer Country</b></td>
+                                    <td>:</td>
+                                    <td>{order.Country}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </div>
+                    <div className="col-md-3 offset-md-1">
+                    <img style={{width:"190px",height:"150px"}} src={image} alt="Profile"/>
+                    </div>
+                </div>
+            </React.Fragment>
+        );
+        }
+        return null;
     }
     saveUpdateStatus=()=>{
         console.log(this.state.OrderPickUpStatus,this.state.OrderDeliveryStatus,this.state.OrderID);
@@ -206,6 +322,9 @@ class RestaurantOrders extends React.Component{
             })
     }
     render(){
+        if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
+            return <Redirect to='/'/>
+        }
         return(
             <React.Fragment>
                 <RestaurantNavbar/>
@@ -214,7 +333,7 @@ class RestaurantOrders extends React.Component{
                     <Modal.Title>Customer Profile</Modal.Title>
                     </ModalHeader>
                     <Modal.Body>
-                        
+                        {this.customerProfileBody()}
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="danger" onClick={this.handleClose}>
@@ -227,7 +346,7 @@ class RestaurantOrders extends React.Component{
                     <Modal.Title>Order Details</Modal.Title>
                     </ModalHeader>
                     <Modal.Body>
-                        
+                        {this.orderDetailsBody()}
                     </Modal.Body>
                     <Modal.Footer>
                     <Button variant="danger" onClick={this.handleClose}>

@@ -6,6 +6,7 @@ import {Modal,Button} from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/ModalHeader'
 import noProfileImage from '../images/noProfileImage.png';
 import firebase  from '../firebaseConfig';
+import {Redirect} from 'react-router-dom';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn } from 'mdb-react-ui-kit';
 const uuidv4 = require("uuid/v4")
 const category=["Pick a Category", "Appetizer","Salads", "Main Course", "Desserts", "Beverages"];
@@ -290,6 +291,9 @@ class RestaurantMenu extends React.Component{
         })
     }
     render(){
+        if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
+            return <Redirect to='/'/>
+        }
         return (
             <React.Fragment>
                 <RestaurantNavbar/>

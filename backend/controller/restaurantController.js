@@ -76,7 +76,20 @@ module.exports.updateRestaurantProfile=async(req,res)=>{
         }
       })
 }
+module.exports.getOrderMenu=async(req,res)=>{
+    let {OrderID}=req.query;
+    var sql=`select DishName,MainIngredients,Description,DishCategory,DishType,DishPrice,Qty from OrderMenu t1 inner join Dishes t2 on t1.DishID=t2.DishID where OrderID="${OrderID}"`
+    await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=400;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send(results);
+        }
+      })
 
+}
 module.exports.addDish=async(req,res)=>{
     var dishDetails=req.body;
     let sql=`INSERT INTO Dishes (DishID,RestaurantID,DishName,MainIngredients,DishImageURL,DishPrice,Description,DishCategory,DishType) 
@@ -103,7 +116,7 @@ module.exports.updateDish=async(req,res)=>{
       }
       sql=sql.slice(0,-1);
       sql+="WHERE DishID='"+dishDetails.DishID+"'";
-      console.log(sql);
+     // console.log(sql);
       await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;
@@ -119,7 +132,7 @@ module.exports.updateDish=async(req,res)=>{
 module.exports.getRestaurantOrders=async(req,res)=>{
     var restaurantID=req.query.RestaurantID;
     var sql=`select OrderID,RestaurantID,Orders.CustomerID,OrderStatus,OrderDescription,OrderTime,OrderTotal,OrderPickUp,OrderDelivery,OrderPickUpStatus,
-    OrderDeliveryStatus,Address,Name,ImageURL,DateOfBirth,City,PhoneNumber,State,Country,Nickname
+    OrderDeliveryStatus,Address,Name,Email,ImageURL,DateOfBirth,City,PhoneNumber,State,Country,Nickname
      from Orders inner join CustomerDetails on Orders.CustomerID=CustomerDetails.CustomerID 
      where RestaurantID="${restaurantID}";`
      //console.log(sql);
