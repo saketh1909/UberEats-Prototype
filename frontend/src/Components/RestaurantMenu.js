@@ -45,28 +45,28 @@ class RestaurantMenu extends React.Component{
             for(let i=0;i<data.length;i=i+3){
                 if(i+2<data.length){
                     row.push(<div className="row" style={{marginTop:"2%"}}>
-                        <div className="col-sm-3 offset-sm-2">
+                        <div className="col-md-3 offset-md-2">
                             {this.menuCard(data[i])}
                         </div>
-                        <div className="col-sm-3">
+                        <div className="col-md-3">
                         {this.menuCard(data[i+1])}
                         </div>
-                        <div className="col-sm-3">
+                        <div className="col-md-3">
                         {this.menuCard(data[i+2])}
                         </div>
                     </div>)
                 }else if(i+1<data.length){
                     row.push(<div className="row" style={{marginTop:"2%"}}>
-                        <div className="col-sm-3 offset-sm-2">
+                        <div className="col-md-3 offset-md-2">
                         {this.menuCard(data[i])}
                         </div>
-                        <div className="col-sm-3">
+                        <div className="col-md-3">
                         {this.menuCard(data[i+1])}
                         </div>
                     </div>)
                 }else{
                     row.push(<div className="row" style={{marginTop:"2%"}}>
-                        <div className="col-sm-3 offset-sm-2">
+                        <div className="col-md-3 offset-md-2">
                         {this.menuCard(data[i])}
                         </div>
                     </div>)
@@ -189,7 +189,7 @@ class RestaurantMenu extends React.Component{
         }
         return (
             <React.Fragment>
-                {data!==undefined?<MDBCard style={{ maxWidth: '18rem' }}>
+                {data!==undefined?<MDBCard style={{ maxWidth: '30rem' }}>
                     <MDBCardImage src={data.DishImageURL} position='top' alt='Image' style={{height:"150px"}} />
                     <MDBCardBody style={{color:"black"}}>
                         <MDBCardTitle style={{textAlign:"center"}}>{data.DishName}</MDBCardTitle>

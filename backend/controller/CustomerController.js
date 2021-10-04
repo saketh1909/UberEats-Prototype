@@ -113,6 +113,7 @@ module.exports.addToFavourites=async(req,res)=>{
  module.exports.getAddress=async(req,res)=>{
      var customerID=req.query.customerID;
      var sql=`SELECT Address from Address where CustomerID='${customerID}'`;
+     console.log(sql);
      await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;
@@ -122,4 +123,35 @@ module.exports.addToFavourites=async(req,res)=>{
             res.send(results);
         }
     });
+ }
+
+ module.exports.getCustomerOrders=async(req,res)=>{
+     var CustomerID=req.query.CustomerID;
+     let data={};
+     var sql=`select t1.OrderID,CustomerID,t1.RestaurantID,Name,OrderStatus,Location,OrderDescription,NoOfItems,OrderTotal,OrderTime,OrderPickUp,OrderDelivery,OrderPickUpStatus,OrderDeliveryStatus,t1.Address from Orders t1 inner join RestaurantDetails t2 on t1.RestaurantID=t2.RestaurantID where CustomerID='${CustomerID}'`;
+      //console.log(sql);
+     var sql1=`select * from Orders t1 inner join OrderMenu t2 on t1.OrderID=t2.OrderID inner join Dishes t3 on t2.DishID=t3.DishID where CustomerID='${CustomerID}'`;
+     await connection.query(sql,async function(error,results){
+        if(error){
+            res.statusCode=404;
+            res.send("Error in Retrieving Data");
+        }else{
+            data["Orders"]=results;
+            await connection.query(sql1,async function(error,results){
+                if(error){
+                    res.statusCode=404;
+                    res.send(error);
+                }else{
+                    data["OrdersMenu"]=results;
+                    res.statusCode=200;
+                    res.send(data);
+                }
+            });
+        }
+    });
+ }
+
+ module.exports.placeCustomerOrder=async(req,res)=>{
+     let details=req.body;
+
  }

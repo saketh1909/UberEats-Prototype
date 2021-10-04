@@ -33,14 +33,22 @@ app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile
 app.get('/getRestaurantMenu',restaurantController.getRestaurantMenu);
 
 app.post('/addDish',restaurantController.addDish);
+
 app.put('/updateDish',restaurantController.updateDish);
 
 app.get('/getRestaurantOrders',restaurantController.getRestaurantOrders);
+
 app.post('/updateDeliveryStatus',restaurantController.updateDeliveryStatus);
+
 app.get('/getOrderMenu',restaurantController.getOrderMenu);
+
 app.put('/updateOrderStatus',restaurantController.updateOrderStatus);
 
 app.get('/getCustomerProfile',restaurantController.getCustomerProfile);
+
+app.get('/getCustomerOrders',customerController.getCustomerOrders);
+
+app.post('/placeCustomerOrder',customerController.placeCustomerOrder);
 
 app.post('/updateCustomerProfile',customerController.updateCustomerProfile);
 

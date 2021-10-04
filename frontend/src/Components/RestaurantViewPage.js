@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from "react-redux";
 import Navbar from "../Components/Navbar.js";
 import Axios from 'axios';
+import {Redirect} from 'react-router-dom';
 import noProfileImage from '../images/noProfileImage.png';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 import {updateCartItems} from '../actions/customerDashBoard';
@@ -13,7 +14,8 @@ class RestaurantViewPage extends React.Component{
         this.state={
             Menu:[],
             Qty:{},
-            cartCount:0
+            cartCount:0,
+            place:false
         }
     }
     componentDidMount(){
@@ -181,7 +183,16 @@ class RestaurantViewPage extends React.Component{
             </>
         )
     }
+    placeOrder=()=>{
+        this.setState({place:true});
+    }
     render(){
+        if(this.state.place){
+            return <Redirect to='/customerOrderConfirmation'/>
+        }
+        if(this.props.customerLogin!==undefined){
+            return <Redirect to='/'/>
+        }
         return (
             <React.Fragment>
                 <Navbar/>
@@ -196,7 +207,7 @@ class RestaurantViewPage extends React.Component{
                     <Button variant="danger" onClick={this.handleClose}>
                         Close
                     </Button>
-                    <button className="btn btn-dark" style={{width:"200px"}} type="submit" onClick={this.handleClose}>
+                    <button className="btn btn-dark" style={{width:"200px"}} type="submit" onClick={this.placeOrder}>
                         Go To Checkout
                     </button>
                     </Modal.Footer>

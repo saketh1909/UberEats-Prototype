@@ -12,6 +12,7 @@ import RestaurantOrders from './Components/RestaurantOrders';
 import RestaurantViewPage from './Components/RestaurantViewPage';
 import FavouriteRestaurants from './Components/FavouriteRestaurants';
 import CustomerOrders from './Components/CustomerOrders';
+import OrderConfirmation from './Components/OrderConfirmation';
 import {BrowserRouter as Router ,Switch ,Route} from 'react-router-dom';
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path='/restaurantOrders' component={RestaurantOrders}/>
             <Route path='/favouriteRestaurants' component={FavouriteRestaurants}/>
             <Route path='/customerOrders' component={CustomerOrders}/>
+            <Route path='/customerOrderConfirmation'component={OrderConfirmation}/>
           </Switch>
         </Router>
       </header>
