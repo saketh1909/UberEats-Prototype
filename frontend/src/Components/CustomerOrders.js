@@ -24,6 +24,10 @@ class CustomerOrders extends React.Component{
             .then(res=>{
                 //console.log(res.data);
                 const {data}=res;
+                data.Orders.sort(function(a,b){
+                    return new Date(b.OrderTime) - new Date(a.OrderTime);
+                  });
+                  console.log("Sorted",data.Orders);
                 this.setState({orders:data.Orders,ordersMenu:data.OrdersMenu,originalOrders:data.Orders});
             })
             .catch(err=>{
@@ -92,18 +96,20 @@ class CustomerOrders extends React.Component{
     }
     handleChange=(e)=>{
         let filter=e.target.value;
-        if(filter==="Select a Status") return;
-        const {orders}=this.state;
+        if(filter==="Select a Status"){
+            this.setState({orders:this.state.originalOrders});
+            return;
+        } 
+        const {originalOrders}=this.state;
         let filterData=[];
-        let nonFilterData=[];
-        for(let order of orders){
+        for(let order of originalOrders){
             if(order.OrderPickUpStatus===filter|| order.OrderDeliveryStatus===filter){
                 filterData.push(order);
-            }else{
-                nonFilterData.push(order);
             }
         }
-        filterData=[...filterData,...nonFilterData];
+        filterData.sort(function(a,b){
+            return new Date(b.OrderTime) - new Date(a.OrderTime);
+          });
         this.setState({orders:filterData});
        // console.log(filterData);
     }

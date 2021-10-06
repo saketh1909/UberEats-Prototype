@@ -15,7 +15,11 @@ class RestaurantViewPage extends React.Component{
             Menu:[],
             Qty:{},
             cartCount:0,
-            place:false
+            place:false,
+            Rest1name:"",
+            Rest2name:"",
+            selectedDish:null,
+            id:null
         }
     }
     componentDidMount(){
@@ -117,20 +121,41 @@ class RestaurantViewPage extends React.Component{
         )
     }
     addMenuToCart=(e)=>{
-        console.log(e.target.id);
+        //console.log(e.target.id);
         let cart=[];
         let {id}=e.target;
         if(this.props.cartItems!==undefined){
             cart=this.props.cartItems;
-        }
+        }      
         let dish=this.state.menu.filter(item=>item.DishID===id)[0];
+        if(cart.length>0){
+            let restID1=cart[0].RestaurantID;
+            let restID2=dish.RestaurantID;
+            console.log(restID1,restID2);
+            if(restID1!==restID2){
+                this.setState({showError:true,Rest1name:cart[0].Name,Rest2name:this.props.restaurant.Name,selectedDish:dish,selectedID:id});
+                return;
+            }
+        }
         dish["Qty"]=this.state.Qty[id]===undefined?1:this.state.Qty[id];
+        dish["Name"]=this.props.restaurant.Name;
+        console.log("Check dish",dish);
         cart.push(dish);
         this.setState({cartCount:cart.length})
         this.props.updateCartItems(cart);
     }
+    newOrder=()=>{
+        let cart=[];
+        let dish=this.state.selectedDish;
+        const {id}=this.state;
+        dish["Qty"]=this.state.Qty[id]===undefined?1:this.state.Qty[id];
+        dish["Name"]=this.props.restaurant.Name;
+        cart.push(dish);
+        this.setState({showError:false,showCart:false,cartCount:1,selectedDish:null,id:null});
+        this.props.updateCartItems(cart);
+    }
     handleClose=()=>{
-        this.setState({showCart:false});
+        this.setState({showCart:false,showError:false,selectedDish:null,id:null});
     }
     openCart=()=>{
         if(this.props.cartItems===undefined || this.props.cartItems.length==0) return;
@@ -195,6 +220,7 @@ class RestaurantViewPage extends React.Component{
     placeOrder=()=>{
         this.setState({place:true});
     }
+    
     render(){
         console.log("Food type",this.props.foodType);
         if(this.state.place){
@@ -219,6 +245,24 @@ class RestaurantViewPage extends React.Component{
                     </Button>
                     <button className="btn btn-dark" style={{width:"200px"}} type="submit" onClick={this.placeOrder}>
                         Go To Checkout
+                    </button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal size="lg" show={this.state.showError} onHide={this.handleClose}>
+                    <ModalHeader>
+                    <Modal.Title><h1>Create New Order?</h1></Modal.Title>
+                    </ModalHeader>
+                    <Modal.Body>
+                        <h3>
+                            Your cart contains items from {this.state.Rest1name}.Create a new order to add items from {this.state.Rest2name} 
+                        </h3>
+                    </Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleClose}>
+                        Close
+                    </Button>
+                    <button className="btn btn-dark" style={{width:"200px"}} type="submit" onClick={this.newOrder}>
+                        New Order
                     </button>
                     </Modal.Footer>
                 </Modal>

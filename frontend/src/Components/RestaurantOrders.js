@@ -32,8 +32,11 @@ class RestaurantOrders extends React.Component{
         const {RestaurantID}=this.props.restaurantDetails;
         Axios.get(`http://localhost:3001/getRestaurantOrders?RestaurantID=${RestaurantID}`)
         .then(res=>{
-            console.log("data",res.data);
-            this.setState({orders:res.data});
+           // console.log("data",res.data);
+           res.data.sort(function(a,b){
+            return new Date(b.OrderTime) - new Date(a.OrderTime);
+          });
+            this.setState({orders:res.data,originalOrders:res.data});
         })
         .catch(err=>{
             console.log(err);
@@ -319,6 +322,25 @@ class RestaurantOrders extends React.Component{
                 console.log(err);
             })
     }
+    onChangeOfStatus=(e)=>{
+        const {value}=e.target;
+        if(value==="Select a Status"){
+            this.setState({orders:this.state.originalOrders});
+            return;
+        }
+        const {originalOrders}=this.state;
+        if(value==="New Order"){
+           let filterData=originalOrders.filter(order=>order.OrderStatus==="New Order");
+           this.setState({orders:filterData});
+        }else if(value==="Delivered Order"){
+            let filterData=originalOrders.filter(order=>order.OrderStatus==="Delivered");
+            this.setState({orders:filterData});
+        }else{
+            let filterData=originalOrders.filter(order=>order.OrderStatus==="Cancelled");
+           this.setState({orders:filterData});
+        }
+
+    }
     render(){
         if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
             return <Redirect to='/'/>
@@ -370,6 +392,16 @@ class RestaurantOrders extends React.Component{
                 </Modal>
                 <div style={{textAlign:'center'}}>
                 <h1>Restaurant Orders</h1>
+                </div>
+                <div className="row">   
+                    <div className="col-md-2 offset-md-2">
+                    <select onChange={this.onChangeOfStatus}>
+                            <option>Select a Status</option>
+                            <option>New Order</option>
+                            <option>Delivered Order</option>
+                            <option>Cancelled Order</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     {this.buildCarStructure()}
