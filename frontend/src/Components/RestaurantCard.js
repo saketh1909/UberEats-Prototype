@@ -3,7 +3,7 @@ import subway from '../images/subway.jpg'
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 import { connect } from "react-redux";
 import noProfileImage from '../images/noProfileImage.png';
-import { viewRestaurantPage,updateFavouriteRestaurants } from '../actions/customerDashBoard';
+import { viewRestaurantPage,updateFavouriteRestaurants,setFoodType } from '../actions/customerDashBoard';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
 class RestaurantCard extends React.Component{
@@ -18,19 +18,27 @@ class RestaurantCard extends React.Component{
     }
     itemClicked=(e)=>{
         e.stopPropagation();
-        this.setState({clicked:true})
-        this.props.viewRestaurantPage(this.state.restaurantData);
+        
+        //console.log(this.props);
+        if(this.props.foodType===undefined){
+            this.props.viewRestaurantPage(this.state.restaurantData);
+        }else{
+            let data=this.state.restaurantData;
+            data["foodType"]=this.props.foodType;
+            this.props.viewRestaurantPage(data);
+            this.props.setFoodType(undefined);
+        }
+        this.setState({clicked:true});
     }
     add=(e)=>{
        
         //console.log("Clicked");
-        //console.log(this.props);
         let postData={
             customerID:this.props.customerDetails.CustomerID,
             restaurantID:e.target.id
         }
         this.setState({favClicked:true});
-        console.log(postData);
+       // console.log(postData);
         Axios.post('http://localhost:3001/addToFavourites',postData)
         .then(res=>{
             console.log("Insertion Successful");
@@ -43,8 +51,8 @@ class RestaurantCard extends React.Component{
     }
     render(){
         const {favRestaurants}=this.props;
-        console.log("Card",favRestaurants);
-        console.log("Props",this.props);
+       // console.log("Card",favRestaurants);
+       // console.log("Props",this.props);
         if(this.state.clicked){
             return <Redirect to='/restaurantViewPage'/>
         }
@@ -77,13 +85,15 @@ class RestaurantCard extends React.Component{
 }
 const mapStateToProps = (state) =>{
     return {
-        customerDetails:state.customerLoginReducer.customerLogin
+        customerDetails:state.customerLoginReducer.customerLogin,
+        foodType:state.customerDashBoardReducer.foodType
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         viewRestaurantPage:(data)=>dispatch(viewRestaurantPage(data)),
-        updateFavouriteRestaurants:(data)=>dispatch(updateFavouriteRestaurants(data))
+        updateFavouriteRestaurants:(data)=>dispatch(updateFavouriteRestaurants(data)),
+        setFoodType:(type)=>dispatch(setFoodType(type))
     };
   }
 export default connect(mapStateToProps,mapDispatchToProps)(RestaurantCard);

@@ -3,14 +3,15 @@ import Navbar from "../Components/Navbar.js";
 import RestaurantCard from './RestaurantCard.js';
 import noProfileImage from '../images/noProfileImage.png';
 import { connect } from "react-redux";
-import {getRestaurants,searchRestaurants,updateFavouriteRestaurants} from '../actions/customerDashBoard.js';
+import {getRestaurants,searchRestaurants,updateFavouriteRestaurants,setRestaurants,setFoodType} from '../actions/customerDashBoard.js';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
+
 class CustomerDashboard extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            location:"",
+            search:"",
             mode:"",
             restaurantData:[],
             favRestaurants:{}
@@ -20,34 +21,81 @@ class CustomerDashboard extends React.Component{
     }
     componentDidMount=async ()=>{
         await this.props.getRestaurants();
-        console.log(this.props.restaurantData);
+        //console.log(this.props.restaurantData);
         const {customerDetails}=this.props;
         Axios.get(`http://localhost:3001/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
-            console.log(res.data);
+           // console.log(res.data);
             let id={};
             res.data.map((rest)=>{
                 id[rest.RestaurantID]=true;
             })
             this.setState({favRestaurants:id});
-        })
+        });
+        const {restaurantData}=this.props;
+        const {City}=this.props.customerDetails;
+        let restData=restaurantData.filter(data=>data.Location===City);
+        restData=[...restData,...restaurantData.filter(data=>data.Location!==City)];
+        this.props.setRestaurants(restData);
+
     }
    
     handleChange=(e)=>{
-        this.setState({location:e.target.value});
+        if(e.target.value===""){
+            this.props.setRestaurants(this.props.restaurantData);
+        }
+        this.setState({search:e.target.value});
+    }
+    handleChangeDeliveryType=(e)=>{
+        const {value}=e.target;
+        if(value==="Select type of Delivery"){
+            this.props.setRestaurants(this.props.restaurantData);
+            return;
+        }
+        if(value==="Pickup"){
+            this.props.searchRestaurants(0,"Pickup");
+            return;
+        }
+        this.props.searchRestaurants(1,"Delivery");
+    }
+    handleChangeFoodType=async(e)=>{
+        const {value}=e.target;
+        if(value==="Select type of food"){
+            await this.props.setRestaurants(this.props.restaurantData);
+            await this.props.setFoodType(undefined);
+            console.log("Props",this.props.foodType);
+            return;
+        }
+        if(value==="Veg"){
+            await this.props.searchRestaurants(1,"Veg");
+            await this.props.setFoodType("Veg");
+            console.log("Props",this.props.foodType);
+            return;
+        }else if(value==="Non veg"){
+            await  this.props.searchRestaurants(1,"Non veg");
+            await this.props.setFoodType("Non veg");
+            console.log("Props",this.props.foodType);
+            return;
+        }else{
+            await this.props.searchRestaurants(1,"Vegan");
+            await this.props.setFoodType("Vegan");
+            console.log("Props",this.props.foodType);
+            return;
+        }
+
     }
     handleSubmit=async(e)=>{
         e.preventDefault();
-        console.log(this.state.location);
-        await this.props.searchRestaurants(this.state.location);
-        console.log("Rest Data",this.props);
+       // console.log(this.state.location);
+        await this.props.searchRestaurants(this.state.search);
+        //console.log("Rest Data",this.props);
     }
     buildCardsStructure = () =>{
-        console.log("Hereeeeeee",this.state.favRestaurants,this.props.restaurantData);
+       // console.log("Hereeeeeee",this.state.favRestaurants,this.props.restaurantData);
         let row=[];
-        if(this.props.restaurantData!==undefined){
-            const data=this.props.restaurantData;
-            console.log("Inside",data);
+        if(this.props.restaurantDataMod!==undefined && this.props.restaurantDataMod.length>0){
+            const data=this.props.restaurantDataMod;
+            //console.log("Inside Data",data);
             for(let i=0;i<data.length;i=i+3){
                 if(i+2<data.length){
                     row.push(<div className="row" style={{marginTop:"2%"}}>
@@ -85,14 +133,14 @@ class CustomerDashboard extends React.Component{
         let restaurants=this.state.favRestaurants;
         restaurants[this.props.favRestaurants]=true;
         this.props.updateFavouriteRestaurants();
-        console.log("Check this asd",restaurants);
+        //console.log("Check this asd",restaurants);
         this.setState({favRestaurants:restaurants});
         
 
 
     }
     render(){
-        console.log("Updated",this.state.favRestaurants);
+       // console.log("Updated",this.state.favRestaurants);
         if(this.props.customerDetails===undefined){
             return <Redirect to='/'/>
         }
@@ -101,7 +149,7 @@ class CustomerDashboard extends React.Component{
         }
         return(
             <React.Fragment >
-                <div  style={{backgroundColor:"papayawhip"}}>
+                <div  >
                 <Navbar/>
                 <div className="row" >
                     <div className="offset-sm-2">
@@ -110,11 +158,26 @@ class CustomerDashboard extends React.Component{
                 </div>
                 <div className="row">
                     <div className="col-md-3 offset-sm-2">
-                    <input type="text" name="location" value={this.state.location} onChange={this.handleChange} className="form-control" id="location" aria-describedby="location" placeholder="Enter Delivery Location" required/>
+                    <input type="text" name="search" value={this.state.search} onChange={this.handleChange} className="form-control" id="location" aria-describedby="location" placeholder="Enter Delivery Location" required/>
+                    </div>
+                    <div className="col-md-1">
+                    <button type="button" className="btn btn-dark btn-md" onClick={this.handleSubmit}>Find Food</button>
                     </div>
                     <div className="col-md-2">
-                    <button type="button" className="btn btn-dark btn-md" onClick={this.handleSubmit}>Find Food</button>
-                    </div>                
+                        <select onChange={this.handleChangeFoodType}>
+                            <option>Select type of food</option>
+                            <option>Veg</option>
+                            <option>Non veg</option>
+                            <option>Vegan</option>
+                        </select>
+                    </div> 
+                    <div className="col-md-3">
+                        <select onChange={this.handleChangeDeliveryType} >
+                            <option>Select type of Delivery</option>
+                            <option>Pickup</option>
+                            <option>Delivery</option>
+                        </select>
+                    </div>                  
                 </div>
                 <div>
                     {this.buildCardsStructure()}
@@ -125,18 +188,22 @@ class CustomerDashboard extends React.Component{
     }
 }
 const mapStateToProps = (state) =>{
-    console.log("state",state);
+   // console.log("state",state)
     return {
         restaurantData:state.customerDashBoardReducer.restaurantData,
         favRestaurants:state.customerDashBoardReducer.favRestaurants,
-        customerDetails:state.customerLoginReducer.customerLogin
+        customerDetails:state.customerLoginReducer.customerLogin,
+        restaurantDataMod:state.customerDashBoardReducer.restaurantDataMod,
+        foodType:state.customerDashBoardReducer.foodType
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
         getRestaurants: () => dispatch(getRestaurants()),
-        searchRestaurants: (location) => dispatch(searchRestaurants(location)),
-        updateFavouriteRestaurants:(data)=>dispatch(updateFavouriteRestaurants(data))
+        searchRestaurants: (search,type) => dispatch(searchRestaurants(search,type)),
+        updateFavouriteRestaurants:(data)=>dispatch(updateFavouriteRestaurants(data)),
+        setRestaurants:(search)=>dispatch(setRestaurants(search)),
+        setFoodType:(type)=>dispatch(setFoodType(type))
     };
   }
 export default connect(mapStateToProps,mapDispatchToProps)(CustomerDashboard);

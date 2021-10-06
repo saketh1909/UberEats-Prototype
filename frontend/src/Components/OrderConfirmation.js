@@ -14,8 +14,9 @@ class OrderConfirmation extends React.Component{
             Qty:{},
             orderPlaced:false,
             addresses:[],
-            Address:null,
-            Description:null
+            Address:"",
+            Description:null,
+            AddAddress:"",
         }
     }
     componentDidMount(){
@@ -88,9 +89,7 @@ class OrderConfirmation extends React.Component{
 
         return row;
     }
-    placeOrder=()=>{
-
-    }
+    
     handleChanges=(e)=>{
         if(e.target.value==="Pick an Address") return;
         this.setState({[e.target.name]:e.target.value});
@@ -105,10 +104,64 @@ class OrderConfirmation extends React.Component{
        // console.log(data);
        return row;
     }
+    addAddress=()=>{
+        console.log(this.state.AddAddress);
+        if(this.state.AddAddress==="") return;
+        const {addresses,AddAddress}=this.state;
+        addresses.push(AddAddress);
+        const {customerDetails}=this.props;
+        let data={
+            customerID:customerDetails.CustomerID,
+            address:AddAddress
+        }
+        Axios.post('http://localhost:3001/addAddress',data)
+        .then(res=>{
+           // console.log("Insertion Successful");
+           // console.log(AddAddress,addresses);
+            this.setState({Address:AddAddress,addresses:addresses});
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+
+        
+    }
+    placeOrder=()=>{
+        if(this.state.Address==="") return;
+        let items=0;
+        for(let item of this.props.cartItems){
+            items+=parseInt(item.Qty);
+        }
+        let date=new Date().toLocaleString();
+        let orderDetails={
+            CustomerID:this.props.customerDetails.CustomerID,
+            RestaurantID:this.props.cartItems[0].RestaurantID,
+            OrderStatus:"New Order",
+            Description:this.state.Description,
+            NoOfItems:items,
+            OrderTotal:this.state.total,
+            OrderTime:date,
+            OrderPickUp:1,
+            OrderDelivery:0,
+            OrderPickUpStatus:"Order Received",
+            OrderDeliveryStatus:null,
+            Address:this.state.Address,
+            menu:this.props.cartItems
+        }
+        Axios.post('http://localhost:3001/placeCustomerOrder',orderDetails)
+        .then(res=>{
+            console.log("Insertion Successful");
+            this.setState({orderPlaced:true});
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+        console.log(orderDetails);
+    }
     render(){
-        console.log("State Vlaues",this.state);
+        //console.log("State Vlaues",this.state);
         if(this.state.orderPlaced){
-            return <Redirect to='/customercustomerDashboard'/>
+            return <Redirect to='/customerDashboard'/>
         }
         return(
             <React.Fragment>
@@ -125,12 +178,16 @@ class OrderConfirmation extends React.Component{
                                 {this.buildTable()}
                                 </tbody>
                             </Table>
-                            <div className="row">
+                            <div className="row" style={{width:"80%"}}>
                             <textarea name="Description" value={this.state.Description} onChange={this.handleChanges} className="form-control" placeholder="Enter a note for the store"></textarea></div>
-                            <div className="row form-control" style={{width:"390px",marginTop:"10px"}}>
-                                <select name="Address" value={this.state.Address} onChange={this.handleChanges}>
+                            <div className="row form-control" style={{width:"55%",marginTop:"10px"}}>
+                                <select name="Address"  value={this.state.Address} onChange={this.handleChanges}>
                                     {this.buildAddress(this.state.addresses)}
                                 </select>
+                            </div>
+                            <div className="row" style={{marginTop:"10px",marginLeft:"-26px"}}>
+                                <div className="col-md-8"><textarea name="AddAddress" value={this.state.AddAddress} onChange={this.handleChanges} className="form-control" placeholder="Enter an Address"></textarea></div>
+                                <div className="col-md-2"><button type="button" className="btn btn-success" onClick={this.addAddress}>ADD</button></div>
                             </div>
                         </div>
                         <div className="col-md-5" style={{backgroundColor:"#DCDCDC",borderRadius:"10px",fontWeight:"bold"}}>
@@ -154,16 +211,16 @@ class OrderConfirmation extends React.Component{
                                 </div>
                                 <div className="row">
                                         <div className="col-md-10">Delivery Fee:</div>
-                                        <div className="col-md-1">$2</div>
+                                        <div className="col-md-1">$2.00</div>
                                 </div>
                                 <div className="row">
                                         <div className="col-md-10">CA Driver Benefits:</div>
-                                        <div className="col-md-1">$2</div>
+                                        <div className="col-md-1">$2.00</div>
                                 </div>
                                 <hr/>
                                 <div className="row">
                                     <div className="col-md-10">Add a tip</div>
-                                    <div className="col-md-1">${this.state.tip}</div>
+                                    <div className="col-md-1">${this.state.tip}.00</div>
                                 </div>
                                 <div className="row" style={{width:"140px",marginTop:"5px"}}>
                                     <input className="form-control" type="number" onChange={this.handleTip} width="50px" placeholder="Enter amount"/>

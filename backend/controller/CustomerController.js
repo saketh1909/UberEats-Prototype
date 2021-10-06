@@ -12,7 +12,9 @@ module.exports.customerLogin= async(req,res)=>{
             let authFlag=false;
             let details;
             //console.log(results);
+            
             for(let user of results){
+                console.log(email,password,user.Email,user.Password);
                 if(user.Email==email && user.Password==password){
                     authFlag=true;
                     details=user;
@@ -113,7 +115,7 @@ module.exports.addToFavourites=async(req,res)=>{
  module.exports.getAddress=async(req,res)=>{
      var customerID=req.query.customerID;
      var sql=`SELECT Address from Address where CustomerID='${customerID}'`;
-     console.log(sql);
+     //console.log(sql);
      await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;
@@ -152,6 +154,37 @@ module.exports.addToFavourites=async(req,res)=>{
  }
 
  module.exports.placeCustomerOrder=async(req,res)=>{
-     let details=req.body;
+    let details=req.body;
+    let orderID=uuidv4();
+    var sql=`INSERT into Orders (OrderID,RestaurantID,CustomerID,OrderStatus,OrderDescription,NoOfItems,OrderTotal,
+        OrderTime,OrderPickUp,OrderDelivery,OrderPickUpStatus,OrderDeliveryStatus,Address) VALUES('${orderID}','${details.RestaurantID}'
+        ,'${details.CustomerID}','${details.OrderStatus}','${details.Description}','${details.NoOfItems}','${details.OrderTotal}'
+        ,'"${details.OrderTime}"','${details.OrderPickUp}','${details.OrderDelivery}','${details.OrderPickUpStatus}'
+        ,'${details.OrderDeliveryStatus}','${details.Address}')`;
+       // console.log(sql);
+        
+        await connection.query(sql,async function(error,results){
+            if(error){
+                res.statusCode=404;
+                res.send("Error in Insertion");
+            }else{
+                const {menu}=details;
+                for(let item of menu){
+                   
+                    var sql1=`INSERT into OrderMenu (ID,OrderID,DishID,Qty) values('${uuidv4()}','${orderID}','${item.DishID}',${item.Qty})`;
+                    await connection.query(sql1,async function(error,results){
+                        if(error){
+                            res.statusCode=404;
+                            res.send("Error in Insertion");
+                        }                        
+                    })
+                }
+                
+                res.statusCode=200;
+                res.send("Insertion Successful")
+            }
+
+
+        })
 
  }

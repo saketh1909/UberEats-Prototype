@@ -19,19 +19,27 @@ class RestaurantViewPage extends React.Component{
         }
     }
     componentDidMount(){
-        console.log("check",this.props.restaurant);
+        //console.log("check",this.props.restaurant);
         var url=`http://localhost:3001/getRestaurantMenu?RestaurantID=${this.props.restaurant.RestaurantID}`;
+       // console.log(url);
         Axios.get(url)
         .then(res=>{
-            console.log(res.data);
-            this.setState({menu:res.data})
+            //console.log(res.data);
+            //console.log("Food type Prop",this.props);
+            let data=res.data;
+            if(this.props.restaurant.foodType!==undefined){
+                data=data.filter(item=>item.DishType===this.props.restaurant.foodType);
+                console.log("Filtered data",data);
+            }
+            this.setState({menu:data})
         })
         if(this.props.cartItems!==undefined){
             this.setState({cartCount:this.props.cartItems.length});
         }
         
     }
-    buildCarStructure = (data) =>{
+    buildCardStructure = (data) =>{
+        console.log("Check for this data",data);
         let row=[];
         if(data!==undefined && data.length>0){
             for(let i=0;i<data.length;i=i+3){
@@ -130,9 +138,10 @@ class RestaurantViewPage extends React.Component{
     }
     removeClicked=(e)=>{
         let items=this.props.cartItems.filter(item=>item.DishID!==e.target.id);
+
         this.props.updateCartItems(items);
 
-        this.setState({showCart:true});
+        this.setState({showCart:true,cartCount:items.length});
     }
     cartBody=()=>{
         const {cartItems}=this.props;
@@ -187,6 +196,7 @@ class RestaurantViewPage extends React.Component{
         this.setState({place:true});
     }
     render(){
+        console.log("Food type",this.props.foodType);
         if(this.state.place){
             return <Redirect to='/customerOrderConfirmation'/>
         }
@@ -218,7 +228,7 @@ class RestaurantViewPage extends React.Component{
                     </button>
                 </div>
                 <div>   
-                    {this.buildCarStructure(this.state.menu)}
+                    {this.buildCardStructure(this.state.menu)}
 
                 </div>
             </React.Fragment>
@@ -229,7 +239,8 @@ const mapStateToProps = (state) =>{
     console.log(state);
     return {
         restaurant:state.customerDashBoardReducer.restaurantViewData,
-        cartItems:state.customerDashBoardReducer.cartItems
+        cartItems:state.customerDashBoardReducer.cartItems,
+        foodType:state.customerDashBoardReducer.foodType
     }
 }
 function mapDispatchToProps(dispatch) {

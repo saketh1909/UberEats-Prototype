@@ -16,7 +16,7 @@ import OrderConfirmation from './Components/OrderConfirmation';
 import {BrowserRouter as Router ,Switch ,Route} from 'react-router-dom';
 function App() {
   return (
-    <>
+    <div>
       <header>
         <Router>
           <Switch>
@@ -37,7 +37,7 @@ function App() {
           </Switch>
         </Router>
       </header>
-    </>
+    </div>
   );
 }
 

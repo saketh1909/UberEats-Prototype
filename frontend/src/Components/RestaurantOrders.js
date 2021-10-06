@@ -190,7 +190,6 @@ class RestaurantOrders extends React.Component{
         row.push(<td>{index+1}</td>);
         row.push(<td>{dish.DishName}</td>);
         row.push(<td>{dish.MainIngredients}</td>);
-        row.push(<td>{dish.Description}</td>);
         row.push(<td>{dish.DishCategory}</td>);
         row.push(<td>{dish.DishType}</td>);
         row.push(<td>{dish.Qty}</td>);
@@ -207,7 +206,6 @@ class RestaurantOrders extends React.Component{
                             <td>SNo</td>
                             <td>Dish Name</td>
                             <td>Main Ingredients</td>
-                            <td>Description</td>
                             <td>Dish Category</td>
                             <td>Dish Type</td>
                             <td>Qty</td>

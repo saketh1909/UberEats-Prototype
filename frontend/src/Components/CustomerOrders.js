@@ -22,7 +22,7 @@ class CustomerOrders extends React.Component{
         const {CustomerID}=this.props.customerDetails;
         Axios.get(`http://localhost:3001/getCustomerOrders?CustomerID=${CustomerID}`)
             .then(res=>{
-                console.log(res.data);
+                //console.log(res.data);
                 const {data}=res;
                 this.setState({orders:data.Orders,ordersMenu:data.OrdersMenu,originalOrders:data.Orders});
             })
@@ -48,7 +48,7 @@ class CustomerOrders extends React.Component{
                     </div>
                     <div>
                         <p>
-                            {order.NoOfItems} items for ${order.OrderTotal}. {months[date.getMonth()]} {date.getDate()} at {date.getHours()>12?date.getHours()-12:date.getHours()}:{date.getMinutes()} {date.getHours()>12?'PM':'AM'}. <a id={order.OrderID} onClick={(e)=>{this.showReceipt(e)}} href='#'>View receipt</a>
+                            {order.NoOfItems} items for ${order.OrderTotal}. {months[date.getMonth()]} {date.getDate()} at {date.getHours()>12?date.getHours()-12:date.getHours()}:{date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()} {date.getHours()>12?'PM':'AM'}. <a id={order.OrderID} onClick={(e)=>{this.showReceipt(e)}} href='#'>View receipt</a>
                         </p>
                     </div>
                     </td>
@@ -68,6 +68,7 @@ class CustomerOrders extends React.Component{
             const {currentMenu}=this.state;
             let row=[];
             row.push(<tr>
+                <td></td>
                 <td><b>Total</b></td>
                 <td></td>
                 <td></td>
@@ -75,6 +76,7 @@ class CustomerOrders extends React.Component{
             </tr>)
             currentMenu.map(menu=>{
                 row.push(<tr>
+                    <td>{menu.Qty}</td>
                     <td>{menu.DishName}</td>
                     <td></td>
                     <td></td>
@@ -103,7 +105,7 @@ class CustomerOrders extends React.Component{
         }
         filterData=[...filterData,...nonFilterData];
         this.setState({orders:filterData});
-        console.log(filterData);
+       // console.log(filterData);
     }
     render(){
         if(this.props.customerDetails===undefined){
@@ -119,6 +121,15 @@ class CustomerOrders extends React.Component{
                     </ModalHeader>
                     <Modal.Body>
                         <Table>
+                            <thead>
+                                <tr>
+                                    <td>Qty</td>
+                                    <td>Dish Name</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Dish Price</td>
+                                </tr>
+                            </thead>
                             <tbody>
                                 {this.receiptBody()}
                             </tbody>
@@ -164,7 +175,7 @@ class CustomerOrders extends React.Component{
     }
 }
 const mapStateToProps = (state) =>{
-    console.log("state",state);
+    //console.log("state",state);
     return {
         customerDetails:state.customerLoginReducer.customerLogin
     }

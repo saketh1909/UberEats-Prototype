@@ -16,9 +16,9 @@ export const getRestaurants= () => async dispatch =>{
         });
     });
 }
-export const searchRestaurants = (location) => async dispatch =>{
-    console.log(location);
-    await Axios.get(`http://localhost:3001/getRestaurantOnSearch?location=${location}`)
+export const searchRestaurants = (search,type) => async dispatch =>{
+   // console.log("Action",search,type);
+    await Axios.get(`http://localhost:3001/getRestaurantOnSearch?search=${search}&type=${type}`)
     .then(async (res)=>{
         console.log("Data from backend",res.data);
         dispatch({
@@ -33,7 +33,12 @@ export const searchRestaurants = (location) => async dispatch =>{
         });
     })
 }
-
+export const setRestaurants = (data) =>async dispatch =>{
+    dispatch({
+        type:"GET_RESTAURANTS_ON_SEARCH",
+        payload:data
+    })
+}
 export const updateCustomerProfile=(details) => async dispatch =>{
     dispatch({
         type:"UPDATE_CUSTOMER_PROFILE",
@@ -56,6 +61,13 @@ export const updateCartItems=(data)=>async dispatch=>{
 export const updateFavouriteRestaurants=(data)=>async dispatch=>{
     dispatch({
         type:"UPDATE_FAV_RESTAURANTS",
+        payload:data
+    })
+}
+export const setFoodType=(data)=>async dispatch=>{
+    //console.log("Action",data);
+    dispatch({
+        type:"SET_FOOD_TYPE",
         payload:data
     })
 }
