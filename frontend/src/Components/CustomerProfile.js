@@ -25,7 +25,7 @@ class CustomerProfile extends React.Component{
             Nickname:null,
             Email:"",
             PhoneNumber:"",
-            edit:false,
+            edit:true,
             ImageUrl:noProfileImage
             
         }
@@ -79,7 +79,7 @@ class CustomerProfile extends React.Component{
         });
     }
     editClicked=()=>{
-        this.setState({edit:true});
+        this.setState({edit:!this.state.edit});
     }
     saveClicked=async()=>{
         
@@ -108,7 +108,7 @@ class CustomerProfile extends React.Component{
     render(){
        // console.log(this.props.customerDetails);
         return (
-            <React.Fragment>
+            <React.Fragment style={{height:"100%",width:"100%"}}>
                 <Navbar/>
                 <div className="row" style={{textAlign:'center'}}>
                     <h1>Profile Settings</h1>
@@ -130,25 +130,27 @@ class CustomerProfile extends React.Component{
                             <button className="btn btn-primary" onClick={() => this.refs.fileInput.click()}>Upload Image</button>
                         </div>
                     </div>
-                    <div className="col-md-7 offset-md-1">
+                    <div className="col-md-7 offset-md-1" style={{fontWeight:"bold"}}>
                         <table>
                             <tbody>
                                 <tr>
-                                    <td>Basic Information</td>
+                                    <td><h3>Basic Information</h3></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 <tr style={{marginTop:"10%"}}>
                                     <td>Name:</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Name}</td>:<td>
-                                        <input type="text" name="Name" value={this.state.Name} onChange={this.handleChange}/>
-                                        </td>}
+                                    <td>
+                                        <input type="text" name="Name" disabled={this.state.edit} value={this.state.Name} onChange={this.handleChange}/>
+                                        </td>
                                 </tr>
                                 <tr>
                                     <td>Nickname</td>
                                     <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Nickname}</td>:<td>
-                                        <input type="text" name="Nickname" value={this.state.Nickname} onChange={this.handleChange}/>
-                                        </td>}
+                                    <td>
+                                        <input type="text" name="Nickname" disabled={this.state.edit} value={this.state.Nickname} onChange={this.handleChange}/>
+                                        </td>
                                 </tr>
                                 <tr>
                                     <td>Date Of Birth</td>
@@ -159,10 +161,9 @@ class CustomerProfile extends React.Component{
                                 </tr>
                                 <tr>
                                     <td>City</td>
-                                    <td>:</td>
-                                    {!this.state.edit?<td>{this.state.City}</td>:<td>
-                                        <input type="text" name="City" value={this.state.City} onChange={this.handleChange}/>
-                                        </td>}
+                                    <td>:</td><td>
+                                        <input type="text" name="City" disabled={this.state.edit} value={this.state.City} onChange={this.handleChange}/>
+                                      </td>
                                 </tr>
                                 <tr>
                                     <td>State</td>
@@ -191,17 +192,15 @@ class CustomerProfile extends React.Component{
                                 </tr>
                                 <tr>
                                     <td>Email ID</td>
-                                    <td>:</td>
-                                    {!this.state.edit?<td>{this.state.Email}</td>:<td>
-                                        <input type="email" name="Email" value={this.state.Email} onChange={this.handleChange}/>
-                                        </td>}
+                                    <td>:</td><td>
+                                        <input type="email" name="Email" disabled={this.state.edit} value={this.state.Email} onChange={this.handleChange}/>
+                                        </td>
                                 </tr>
                                 <tr>
                                     <td>Contact Number</td>
-                                    <td>:</td>
-                                    {!this.state.edit?<td>{this.state.PhoneNumber}</td>:<td>
-                                        <input type="text" pattern="\d*" maxlength="10" name="PhoneNumber" value={this.state.PhoneNumber} onChange={this.handleChange}/>
-                                        </td>}
+                                    <td>:</td><td>
+                                        <input type="text" pattern="\d*" disabled={this.state.edit}  maxlength="10" name="PhoneNumber" value={this.state.PhoneNumber} onChange={this.handleChange}/>
+                                        </td>
                                 </tr>
                                 <tr style={{marginTop:"10px"}}>
                                     <td><button type="button" className="btn btn-primary" onClick={this.editClicked}>Edit</button></td>

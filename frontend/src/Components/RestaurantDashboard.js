@@ -7,6 +7,7 @@ import { restaurantLogout } from '../actions/restaurantLogin';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import { updateRestaurantProfile } from '../actions/restaurantDashBoard';
+import {Checkbox} from 'react-bootstrap';
 class RestaurantDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -20,7 +21,12 @@ class RestaurantDashboard extends React.Component{
             Email:"",
             Address:"",
             edit:false,
-            changedAttributes:{}
+            changedAttributes:{
+            },
+            ModeOfDelivery:0,
+            veg:false,
+            noveg:false,
+            vegan:false
         }
     }
     componentDidMount(){
@@ -33,7 +39,11 @@ class RestaurantDashboard extends React.Component{
             Description:details.Description,
             ContactInfo:details.ContactInfo,
             Timings:details.Timings,
-            Address:details.Address
+            Address:details.Address,
+            ModeOfDelivery:details.ModeOfDelivery!==undefined?details.ModeOfDelivery:0,
+            veg:details.Veg===1?true:false,
+            nonveg:details.Nonveg===1?true:false,
+            vegan:details.Vegan===1?true:false
         });
         if(details.ImageURL!=="" && details.ImageURL!==undefined && details.ImageURL!=null){
             this.setState({ImageUrl:details.ImageURL});
@@ -65,6 +75,14 @@ class RestaurantDashboard extends React.Component{
     handleChange = (e)=>{
         this.setState({[e.target.name]:e.target.value,changedAttributes:{...this.state.changedAttributes,[e.target.name]:true}});
     }
+    handleSelectChange=(e)=>{
+        const {value}=e.target;
+        if(value==="Pickup"){
+            this.setState({changedAttributes:{...this.state.changedAttributes,ModeOfDelivery:0},ModeOfDelivery:0});
+        }else{
+            this.setState({changedAttributes:{...this.state.changedAttributes,ModeOfDelivery:1},ModeOfDelivery:1});
+        }
+    }
     editClicked = () =>{
         this.setState({edit:true});
     }
@@ -74,8 +92,17 @@ class RestaurantDashboard extends React.Component{
             RestaurantID:details.RestaurantID
         };
         for(const[key,value] of Object.entries(this.state.changedAttributes)){
-            data[key]=this.state[key];
-            details[key]=this.state[key];
+            if(key==="Veg"){
+                data[key]=this.state["veg"]==true?1:0;
+            }else if(key==="Nonveg"){
+                data[key]=this.state["nonveg"]?1:0;
+            }else if(key==="Vegan"){
+                data[key]=this.state["vegan"]?1:0;
+            }else{
+                data[key]=this.state[key];
+                details[key]=this.state[key];
+            }
+            
         }
         //console.log("Changed",data);
         await Axios.post('http://localhost:3001/updateRestaurantProfile',data)
@@ -88,7 +115,18 @@ class RestaurantDashboard extends React.Component{
                 console.log("Error");
             })
     }
-
+    handleCheckboxes=(e)=>{
+        const {name}=e.target;
+        if(name==="Veg"){
+            this.setState({veg:!this.state.veg,changedAttributes:{...this.state.changedAttributes,Veg:!this.state.veg}})
+        }
+        else if(name==="Nonveg"){
+            this.setState({nonveg:!this.state.veg,changedAttributes:{...this.state.changedAttributes,Nonveg:!this.state.veg}});
+        }
+        else{
+            this.setState({vegan:!this.state.vegan,changedAttributes:{...this.state.changedAttributes,Vegan:!this.state.veg}})
+        }
+    }
     render(){
         if(this.props.restaurantDetails===undefined){
             return <Redirect to='/'/>
@@ -164,6 +202,36 @@ class RestaurantDashboard extends React.Component{
                                     <td>:</td>
                                         <input type="text" disabled={!this.state.edit} name="Timings" value={this.state.Timings} onChange={this.handleChange}/>
                                   
+                                </tr>
+                                <tr>
+                                    <td>Select Mode of Delivery</td>
+                                    <td>:</td>
+                                    <td>
+                                        <select value={this.state.ModeOfDelivery===0?"Pickup":"Delivery"}onChange={this.handleSelectChange}>
+                                            <option>Pickup</option>
+                                            <option>Delivery</option>
+                                        </select>
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td>Select food Type</td>
+                                    <td>:</td>
+                                    <td>
+                                        <label>
+                                        <input type="checkbox" checked={this.state.veg} name="Veg" onChange={this.handleCheckboxes}/>
+                                        <span>Veg</span>
+                                        </label>
+                                        <label style={{marginLeft:"15px"}}>
+                                        <input type="checkbox" name="Nonveg" checked={this.state.nonveg} onChange={this.handleCheckboxes}/>
+                                        <span>Non Veg</span>
+                                        </label>
+                                        <label style={{marginLeft:"15px"}}>
+                                        <input type="checkbox" name="Vegan" checked={this.state.vegan} onChange={this.handleCheckboxes}/>
+                                        <span>Vegan</span>
+                                        </label>
+                                    </td>
+                                    
                                 </tr>
                                 <tr style={{marginTop:"10px"}}>
                                     <td><button type="button" className="btn btn-primary" onClick={this.editClicked}>Edit</button></td>

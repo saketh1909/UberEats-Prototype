@@ -1,6 +1,8 @@
 
 var connection=require('../connection.js');
-const uuidv4 = require("uuid/v4")
+const uuidv4 = require("uuid/v4");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 module.exports.customerLogin= async(req,res)=>{
     const {email,password}=req.body;
     await connection.query(`SELECT * from CustomerDetails`, async function(error,results){
@@ -11,45 +13,51 @@ module.exports.customerLogin= async(req,res)=>{
             console.log("Success");
             let authFlag=false;
             let details;
-            //console.log(results);
             
             for(let user of results){
-                console.log(email,password,user.Email,user.Password);
-                if(user.Email==email && user.Password==password){
-                    authFlag=true;
-                    details=user;
-                    break;
-                }
+               let match= await bcrypt.compare(password, user.Password);
+                // console.log(user.Email,email,password,user.Password,match);
+                    if(match && user.Email==email){
+                        authFlag=true;
+                        details=user;
+                        break;
+                    }
             }
-            let errors={
-                ErrorMessage:"Invalid Credentails"
-            };
             if(!authFlag){
-                res.statusCode=500;
-                res.send(errors);
+                res.statusCode=404;
+                res.send("Invalid Credentials");
             }else{
+                res.statusCode=200;
                 res.send(details);
             }
-            }
             
+        }
     })
 }
 module.exports.customerSignup=async(req,res)=>{
     //console.log("request body",req.body);
     const {password,email,name}=req.body;
-    let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name) VALUES ('"+uuidv4()+"','"+password+"','"+email+"','"+name+"')";
-    //console.log(sql);
-    await connection.query(sql,async function(error,results){
-        if(error){
-            res.statusCode=400;
-            res.send(error);
-        }else{
-            console.log("Call Here");
-            res.statusCode=200;
-            console.log("Success");
-            res.send("Customer SignUp Successful");
-        }
-    })
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+        let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name) VALUES ('"+uuidv4()+"','"+hash+"','"+email+"','"+name+"')";
+       // console.log(sql);
+        connection.query(sql,async function(error,results){
+            if(error){
+                res.statusCode=400;
+                res.send(error);
+            }else{
+                console.log("Call Here");
+                res.statusCode=200;
+                console.log("Success");
+                res.send("Customer SignUp Successful");
+            }
+        })
+    });
+    // console.log(genpassword);
+    // bcrypt.compare(password, genpassword, function(err, result) {
+    //     // result == true
+    //     console.log("Compare",result);
+    // });
+   
 }
  module.exports.updateCustomerProfile=async(req,res)=>{
     var sql='UPDATE CustomerDetails SET ';

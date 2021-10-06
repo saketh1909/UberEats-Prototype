@@ -1,8 +1,10 @@
 var connection=require('../connection.js');
-const uuidv4 = require("uuid/v4")
+const uuidv4 = require("uuid/v4");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 module.exports.restaurantLogin=async(req,res)=>{
     const {email,password}=req.body;
-    await connection.query('SELECT * from RestaurantDetails',(error,results)=>{
+    await connection.query('SELECT * from RestaurantDetails',async (error,results)=>{
         if(error){
             console.log("error "+error);
         }else{
@@ -10,12 +12,13 @@ module.exports.restaurantLogin=async(req,res)=>{
             let authFlag=false;
             let details=null;
             
-            for(let user of results){
-                if(user.Email==email && user.Password==password){
-                    authFlag=true;
-                    details=user;
-                    break;
-                }
+             for(let user of results){
+                    let match= await bcrypt.compare(password, user.Password);
+                    if(match && user.Email==email){
+                        authFlag=true;
+                        details=user;
+                        break;
+                    }
             }
             if(!authFlag){
                 res.statusCode=400;
@@ -30,9 +33,11 @@ module.exports.restaurantLogin=async(req,res)=>{
 }
 module.exports.restaurantSignup=async(req,res)=>{
     const {password,email,name,location}=req.body;
-    let sql="INSERT INTO `RestaurantDetails` (RestaurantID,Password,Email,Name,Location) VALUES ('"+uuidv4()+"','"+password+"','"+email+"','"+name+"','"+location+"')";
+    
     //console.log(sql);
-    await connection.query(sql,async function(error,results){
+    bcrypt.hash(password, saltRounds, function(err, hash) {
+        let sql="INSERT INTO `RestaurantDetails` (RestaurantID,Password,Email,Name,Location) VALUES ('"+uuidv4()+"','"+hash+"','"+email+"','"+name+"','"+location+"')";
+         connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
             res.send(error);
@@ -41,6 +46,7 @@ module.exports.restaurantSignup=async(req,res)=>{
             res.send("Restaurant Signup Successful");
         }
     })
+});
 }
 
 module.exports.restaurantProfile=async(req,res)=>{
@@ -65,7 +71,7 @@ module.exports.updateRestaurantProfile=async(req,res)=>{
       }
       sql=sql.slice(0,-1);
       sql+="WHERE RestaurantID='"+details.RestaurantID+"'";
-     /// console.log(sql);
+     // console.log(sql);
       await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
