@@ -2,7 +2,7 @@ var connection=require('../connection.js');
 const uuidv4 = require("uuid/v4");
 module.exports.getRestaurantBasedOnLocation=async(req,res)=>{
     var {search,type}=req.query;
-    console.log(search,type);
+   // console.log(search,type);
     var sql;
     if(type==="Veg"){
         sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where Veg=1`; 
@@ -20,17 +20,17 @@ module.exports.getRestaurantBasedOnLocation=async(req,res)=>{
     }else{
         sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where Location='${search}'`;
     }
-    console.log(sql);
+   // console.log(sql);
     
     var sql1=`Select t1.RestaurantID,Name,Location,t1.Description,ContactInfo,Timings,Address,t1.ImageURL,ModeOfDelivery from RestaurantDetails t1 inner join Dishes t2 on t1.RestaurantID=t2.RestaurantID where DishName='${search}';`;
-    console.log(sql1);
+   // console.log(sql1);
     await connection.query(sql,async function(error,results){
         if(error){
-            console.log("Here");
+          //  console.log("Here");
             res.statusCode=404;
             res.send(error);
         }else{
-            console.log(results);
+           // console.log(results);
             if(results.length>0){
                 res.statusCode=200;
                 res.send(results);

@@ -8,7 +8,7 @@ module.exports.restaurantLogin=async(req,res)=>{
         if(error){
             console.log("error "+error);
         }else{
-            console.log("Success");
+           // console.log("Success");
             let authFlag=false;
             let details=null;
             

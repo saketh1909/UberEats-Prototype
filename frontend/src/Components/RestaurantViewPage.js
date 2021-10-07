@@ -222,7 +222,7 @@ class RestaurantViewPage extends React.Component{
     }
     
     render(){
-        console.log("Food type",this.props.foodType);
+        console.log("Food type",this.props.restaurant);
         if(this.state.place){
             return <Redirect to='/customerOrderConfirmation'/>
         }
@@ -270,6 +270,12 @@ class RestaurantViewPage extends React.Component{
                 <button type="button" class="btn btn-dark" onClick={this.openCart}>
                     Cart <span class="badge badge-light">{this.state.cartCount}</span>
                     </button>
+                </div>
+                <div className="container" style={{marginTop:"2%"}}>
+                    <img src={this.props.restaurant.ImageURL}  height="300px" width="100%" alt="Restaurant Image"/>
+                </div>
+                <div className="container">
+                    <b>{this.props.restaurant.Description}</b>
                 </div>
                 <div>   
                     {this.buildCardStructure(this.state.menu)}

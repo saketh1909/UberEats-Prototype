@@ -10,7 +10,7 @@ module.exports.customerLogin= async(req,res)=>{
         if(error){
             console.log("error "+error);
         }else{
-            console.log("Success");
+           // console.log("Success");
             let authFlag=false;
             let details;
             
@@ -45,9 +45,9 @@ module.exports.customerSignup=async(req,res)=>{
                 res.statusCode=400;
                 res.send(error);
             }else{
-                console.log("Call Here");
+               // console.log("Call Here");
                 res.statusCode=200;
-                console.log("Success");
+               // console.log("Success");
                 res.send("Customer SignUp Successful");
             }
         })
