@@ -3,11 +3,9 @@ import RestaurantNavbar from './RestaurantNavbar';
 import noProfileImage from '../images/noProfileImage.png';
 import { connect } from "react-redux";
 import firebase  from '../firebaseConfig';
-import { restaurantLogout } from '../actions/restaurantLogin';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import { updateRestaurantProfile } from '../actions/restaurantDashBoard';
-import {Checkbox} from 'react-bootstrap';
 class RestaurantDashboard extends React.Component{
     constructor(props){
         super(props);

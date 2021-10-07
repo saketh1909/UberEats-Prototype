@@ -25,9 +25,12 @@ function RestaurantNavbar() {
   return (
     <>
       <IconContext.Provider value={{ color: '#fff' }}>
-        <div className='navbar'>
+        <div className='navbar' style={{height:"5%"}}>
           <Link to='#' className='menu-bars'>
             <GoIcons.GoThreeBars onClick={showSidebar} />
+          </Link>
+          <Link to="/restaurantDashboard" className='menu-bars' style={{color:"white",textDecoration:"none"}}>
+            UberEats
           </Link>
           {/* <img style={{width:'2%'}} src={UberEatsLogo} alt="Uber Eats"/> */}
         </div>
