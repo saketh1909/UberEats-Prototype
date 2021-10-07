@@ -3,6 +3,7 @@ import UberEatsLogo from '../images/UberEatsLogo.png';
 import { connect } from "react-redux";
 import {restaurantSignup} from '../actions/restaurantLogin.js';
 import {Redirect} from 'react-router-dom';
+import HomeNavbar from './HomeNavbar';
 class RestaurantSignUp extends React.Component{
 
     constructor(props){
@@ -39,6 +40,7 @@ class RestaurantSignUp extends React.Component{
             return <Redirect to='/restaurantLogin'/>
         }
         return <React.Fragment>
+            <HomeNavbar/>
             <div className="container" style={{width:'25%'}}>
                 <div style={{textAlign:'center',marginTop:'17%'}}>
             
@@ -77,7 +79,7 @@ class RestaurantSignUp extends React.Component{
     }
 }
 const mapStateToProps = (state) =>{
-    console.log("State",state);
+    //console.log("State",state);
     return {
         restaurantSignup:state.restaurantLoginReducer.restaurantSignup
     }

@@ -6,7 +6,7 @@ import Axios from 'axios';
 import firebase  from '../firebaseConfig';
 import { updateCustomerProfile } from '../actions/customerDashBoard.js';
 
-
+import {Redirect} from 'react-router-dom';
 
 
 var states=['AL', 'AK', 'AS', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FM', 'FL', 'GA', 'GU', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MH', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'MP', 'OH', 'OK', 'OR', 'PW', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VI', 'VA', 'WA', 'WV', 'WI', 'WY'];
@@ -107,6 +107,9 @@ class CustomerProfile extends React.Component{
     }
     render(){
        // console.log(this.props.customerDetails);
+       if(this.props.customerDetails===undefined){
+        return <Redirect to='/'/>
+    }
         return (
             <React.Fragment style={{height:"100%",width:"100%"}}>
                 <Navbar/>

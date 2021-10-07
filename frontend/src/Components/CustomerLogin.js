@@ -3,6 +3,7 @@ import UberEatsLogo from '../images/UberEatsLogo.png';
 import { connect } from "react-redux";
 import {login} from '../actions/customerLogin.js';
 import {Redirect} from 'react-router-dom';
+import HomeNavbar from './HomeNavbar';
 class CustomerLogin extends React.Component{
 
     constructor(props){
@@ -36,6 +37,7 @@ class CustomerLogin extends React.Component{
             return <Redirect to='/customerDashboard'/>
         }
         return <React.Fragment>
+            <HomeNavbar/>
             <div className="container" style={{width:'25%'}}>
                 <div style={{textAlign:'center',marginTop:'17%'}}>
             

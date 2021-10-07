@@ -226,7 +226,7 @@ class RestaurantViewPage extends React.Component{
         if(this.state.place){
             return <Redirect to='/customerOrderConfirmation'/>
         }
-        if(this.props.customerLogin!==undefined){
+        if(this.props.customerDetails===undefined){
             return <Redirect to='/'/>
         }
         return (
@@ -284,7 +284,8 @@ const mapStateToProps = (state) =>{
     return {
         restaurant:state.customerDashBoardReducer.restaurantViewData,
         cartItems:state.customerDashBoardReducer.cartItems,
-        foodType:state.customerDashBoardReducer.foodType
+        foodType:state.customerDashBoardReducer.foodType,
+        customerDetails:state.customerLoginReducer.customerLogin
     }
 }
 function mapDispatchToProps(dispatch) {

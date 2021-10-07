@@ -4,6 +4,7 @@ import Navbar from "../Components/Navbar.js";
 import Axios from 'axios';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 import noProfileImage from '../images/noProfileImage.png';
+import {Redirect} from 'react-router-dom';
 class FavouriteRestaurants extends React.Component{
     constructor(props){
         super(props);
@@ -12,12 +13,12 @@ class FavouriteRestaurants extends React.Component{
         }
     }
     componentDidMount(){
-        console.log("Here");
+        //console.log("Here");
         const {customerDetails}=this.props;
-        console.log(customerDetails);
+       // console.log(customerDetails);
         Axios.get(`http://localhost:3001/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
-            console.log(res.data);
+            //console.log(res.data);
             this.setState({favRestaurants:res.data});
         })
     }
@@ -75,6 +76,9 @@ class FavouriteRestaurants extends React.Component{
                     </MDBCard>)
     }
     render(){
+        if(this.props.customerDetails===undefined){
+            return <Redirect to='/'/>
+        }
         return (<React.Fragment>
                 <Navbar/>
                 <div className="container" style={{textAlign:"center"}}>
