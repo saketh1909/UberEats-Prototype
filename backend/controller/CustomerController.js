@@ -1,6 +1,6 @@
 
 var connection=require('../connection.js');
-const uuidv4 = require("uuid/v4");
+const {uuid} = require("uuidv4");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 module.exports.customerLogin= async(req,res)=>{
@@ -40,7 +40,7 @@ module.exports.customerSignup=async(req,res)=>{
     //console.log("request body",req.body);
     const {password,email,name}=req.body;
     bcrypt.hash(password, saltRounds, function(err, hash) {
-        let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name) VALUES ('"+uuidv4()+"','"+hash+"','"+email+"','"+name+"')";
+        let sql="INSERT INTO `CustomerDetails` (CustomerID,Password,Email,Name) VALUES ('"+uuid()+"','"+hash+"','"+email+"','"+name+"')";
        // console.log(sql);
         connection.query(sql,async function(error,results){
             if(error){
@@ -83,7 +83,7 @@ module.exports.customerSignup=async(req,res)=>{
 
 module.exports.addToFavourites=async(req,res)=>{
     var details=req.body;
-    var sql=`INSERT INTO FavouriteRestaurants VALUES ('${uuidv4()}','${details.customerID}','${details.restaurantID}')`;
+    var sql=`INSERT INTO FavouriteRestaurants VALUES ('${uuid()}','${details.customerID}','${details.restaurantID}')`;
     await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;
@@ -110,7 +110,7 @@ module.exports.addToFavourites=async(req,res)=>{
 
  module.exports.addAddress=async(req,res)=>{
      var details=req.body;
-    var sql=`INSERT INTO Address(AddressID,CustomerID,Address) VALUES('${uuidv4()}','${details.customerID}','${details.address}')`;
+    var sql=`INSERT INTO Address(AddressID,CustomerID,Address) VALUES('${uuid()}','${details.customerID}','${details.address}')`;
     await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;
@@ -165,7 +165,7 @@ module.exports.addToFavourites=async(req,res)=>{
 
  module.exports.placeCustomerOrder=async(req,res)=>{
     let details=req.body;
-    let orderID=uuidv4();
+    let orderID=uuid();
     var sql=`INSERT into Orders (OrderID,RestaurantID,CustomerID,OrderStatus,OrderDescription,NoOfItems,OrderTotal,
         OrderTime,OrderPickUp,OrderDelivery,OrderPickUpStatus,OrderDeliveryStatus,Address) VALUES('${orderID}','${details.RestaurantID}'
         ,'${details.CustomerID}','${details.OrderStatus}','${details.Description}','${details.NoOfItems}','${details.OrderTotal}'
@@ -181,7 +181,7 @@ module.exports.addToFavourites=async(req,res)=>{
                 const {menu}=details;
                 for(let item of menu){
                    
-                    var sql1=`INSERT into OrderMenu (ID,OrderID,DishID,Qty,OrderDishPrice) values('${uuidv4()}','${orderID}','${item.DishID}',${item.Qty},${item.DishPrice})`;
+                    var sql1=`INSERT into OrderMenu (ID,OrderID,DishID,Qty,OrderDishPrice) values('${uuid()}','${orderID}','${item.DishID}',${item.Qty},${item.DishPrice})`;
                    console.log(sql1);
                     await connection.query(sql1,async function(error,results){
                         if(error){

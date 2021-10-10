@@ -1,5 +1,5 @@
 var connection=require('../connection.js');
-const uuidv4 = require("uuid/v4");
+const {uuid} = require("uuidv4");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 module.exports.restaurantLogin=async(req,res)=>{
@@ -36,7 +36,7 @@ module.exports.restaurantSignup=async(req,res)=>{
     
     //console.log(sql);
     bcrypt.hash(password, saltRounds, function(err, hash) {
-        let sql="INSERT INTO `RestaurantDetails` (RestaurantID,Password,Email,Name,Location,ModeOfDelivery) VALUES ('"+uuidv4()+"','"+hash+"','"+email+"','"+name+"','"+location+"',2)";
+        let sql="INSERT INTO `RestaurantDetails` (RestaurantID,Password,Email,Name,Location,ModeOfDelivery) VALUES ('"+uuid()+"','"+hash+"','"+email+"','"+name+"','"+location+"',2)";
          connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
@@ -99,7 +99,7 @@ module.exports.getOrderMenu=async(req,res)=>{
 module.exports.addDish=async(req,res)=>{
     var dishDetails=req.body;
     let sql=`INSERT INTO Dishes (DishID,RestaurantID,DishName,MainIngredients,DishImageURL,DishPrice,Description,DishCategory,DishType) 
-        VALUES ('${uuidv4()}','${dishDetails.restaurantID}','${dishDetails.DishName}','${dishDetails.MainIngredients}','${dishDetails.DishImageURL}',
+        VALUES ('${uuid()}','${dishDetails.restaurantID}','${dishDetails.DishName}','${dishDetails.MainIngredients}','${dishDetails.DishImageURL}',
         ${dishDetails.DishPrice},'${dishDetails.Description}','${dishDetails.DishCategory}','${dishDetails.DishType}')`;
         //console.log(sql);
     await connection.query(sql,async function(error,results){

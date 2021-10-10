@@ -1,5 +1,5 @@
 var connection=require('../connection.js');
-const uuidv4 = require("uuid/v4");
+const {uuid} = require("uuidv4");
 module.exports.getRestaurantBasedOnLocation=async(req,res)=>{
     var {search,type}=req.query;
    // console.log(search,type);
