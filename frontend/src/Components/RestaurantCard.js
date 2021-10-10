@@ -24,7 +24,7 @@ class RestaurantCard extends React.Component{
         if(this.props.foodType===undefined){
             this.props.viewRestaurantPage(this.props.data);
         }else{
-            let data=this.state.restaurantData;
+            let data=this.props.data;
             data["foodType"]=this.props.foodType;
             this.props.viewRestaurantPage(data);
             this.props.setFoodType(undefined);
