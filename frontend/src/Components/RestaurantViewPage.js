@@ -309,6 +309,7 @@ class RestaurantViewPage extends React.Component{
                     <img src={this.props.restaurant.ImageURL}  height="300px" width="100%" alt="Restaurant Img"/>
                 </div>
                 <div className="container">
+                    <h2>{this.props.restaurant.Name}</h2>
                     <b>{this.props.restaurant.Description}</b>
                 </div>
                 <div>   
