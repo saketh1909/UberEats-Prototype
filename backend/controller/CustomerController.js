@@ -24,9 +24,11 @@ module.exports.customerLogin= async(req,res)=>{
                     }
             }
             if(!authFlag){
+                console.log("Error");
                 res.statusCode=404;
                 res.send("Invalid Credentials");
             }else{
+                console.log("Here");
                 res.statusCode=200;
                 res.send(details);
             }
@@ -179,17 +181,19 @@ module.exports.addToFavourites=async(req,res)=>{
                 const {menu}=details;
                 for(let item of menu){
                    
-                    var sql1=`INSERT into OrderMenu (ID,OrderID,DishID,Qty) values('${uuidv4()}','${orderID}','${item.DishID}',${item.Qty})`;
+                    var sql1=`INSERT into OrderMenu (ID,OrderID,DishID,Qty,OrderDishPrice) values('${uuidv4()}','${orderID}','${item.DishID}',${item.Qty},${item.DishPrice})`;
+                   console.log(sql1);
                     await connection.query(sql1,async function(error,results){
                         if(error){
                             res.statusCode=404;
                             res.send("Error in Insertion");
                         }                        
                     })
+                    
                 }
-                
                 res.statusCode=200;
-                res.send("Insertion Successful")
+                res.send("Order Placed");
+                
             }
 
 

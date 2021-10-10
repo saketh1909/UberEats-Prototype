@@ -54,6 +54,9 @@ class RestaurantLogin extends React.Component{
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="password">Password :</label></div>
                     <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password"/>
                 </div>
+                <div className="text-danger">
+                    {this.props.restaurantLoginError!==undefined?<h5>{this.props.restaurantLoginError}.Please try again!</h5>:null}
+                </div>
                 <br/>
                 <button type="submit" className="btn btn-success btn-lg btn-block" style={{width:"350px"}}>Login</button>
                 </div>

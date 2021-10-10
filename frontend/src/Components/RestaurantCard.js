@@ -21,7 +21,7 @@ class RestaurantCard extends React.Component{
         
         //console.log(this.props);
         if(this.props.foodType===undefined){
-            this.props.viewRestaurantPage(this.state.restaurantData);
+            this.props.viewRestaurantPage(this.props.data);
         }else{
             let data=this.state.restaurantData;
             data["foodType"]=this.props.foodType;
@@ -56,7 +56,7 @@ class RestaurantCard extends React.Component{
         if(this.state.clicked){
             return <Redirect to='/restaurantViewPage'/>
         }
-        const data=this.props.data;
+        const {data}=this.props;
         if(data!==undefined && Object.keys(this.state.restaurantData).length===0){
             this.setState({restaurantData:data});
         }
@@ -66,13 +66,13 @@ class RestaurantCard extends React.Component{
         }
         return (
             <React.Fragment>
-                {data!==undefined?<div ><MDBCard style={{ maxWidth: '22rem' }}>
+                {data!==undefined?<div ><MDBCard style={{ maxWidth: '22rem',borderColor:"black",borderWidth:"3px",borderRadius:"8px" }}>
                     <MDBCardImage id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}} src={data.ImageURL} position='top' alt='Image' style={{height:"150px"}} />
                     <MDBCardBody id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}} style={{color:"black"}}>
                         <MDBCardTitle  id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}} style={{textAlign:"center"}}>{data.Name}</MDBCardTitle>
-                        <MDBCardText id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}}  style={{fontSize:"15px"}}>
-                            Timings:{data.Timings}
-                            <span id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}}>Location:{data.Location}</span>
+                        <MDBCardText id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}}  style={{fontSize:"14px",borderTop:"3px solid black"}}>
+                            <b>Timings:{data.Timings}
+                            <span id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}}>Location:{data.Location}</span></b>
                             <div>
                                 <button type="button" className="btn btn-primary" id={data.RestaurantID} onClick={(e)=>{this.add(e)}}  disabled={favRestaurants[data.RestaurantID]!==undefined || this.state.favClicked}>Add To Favourites</button>
                             </div>

@@ -63,7 +63,7 @@ class CustomerSignUp extends React.Component{
                 <button type="submit" className="btn btn-success btn-lg" style={{width:"350px"}}>Sign Up</button>
                 </div>
                 <div style={{marginTop:"5%"}}>
-                    <span style={{fontSize:"20px"}}>Already using Uber?</span>&nbsp;<a href='/customerLogin' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
+                    <span style={{fontSize:"20px"}}>Already using Uber?</span>&nbsp;<a href='/customerLogin' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Log into account</a>
                 </div>
             </form>
             </div>

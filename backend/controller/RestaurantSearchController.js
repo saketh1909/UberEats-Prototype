@@ -14,13 +14,13 @@ module.exports.getRestaurantBasedOnLocation=async(req,res)=>{
         sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where Vegan=1`; 
     }
     else if(type=="Pickup"){
-       sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where ModeOfDelivery=${search}`; 
+       sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where ModeOfDelivery=${search} OR ModeOfDelivery=2`; 
     }else if(type=="Delivery"){
-        sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where ModeOfDelivery=${search}`;
+        sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where ModeOfDelivery=${search} OR ModeOfDelivery=2`;
     }else{
         sql=`SELECT RestaurantID,Name,Location,Description,ContactInfo,Timings,Address,ImageURL,ModeOfDelivery from RestaurantDetails where Location='${search}'`;
     }
-   // console.log(sql);
+   console.log(sql);
     
     var sql1=`Select t1.RestaurantID,Name,Location,t1.Description,ContactInfo,Timings,Address,t1.ImageURL,ModeOfDelivery from RestaurantDetails t1 inner join Dishes t2 on t1.RestaurantID=t2.RestaurantID where DishName='${search}';`;
    // console.log(sql1);

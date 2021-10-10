@@ -10,7 +10,8 @@ class CustomerLogin extends React.Component{
         super(props);
         this.state = {
                     email:"",
-                password:""
+                password:"",
+                loginError:""
             };
 
     this.handleChange = this.handleChange.bind(this);
@@ -22,13 +23,16 @@ class CustomerLogin extends React.Component{
       }
     
       handleSubmit=async(event)=> {
+            
         event.preventDefault();
+        
         var customerData={
             email:this.state.email,
             password:this.state.password
         }
         await this.props.login(customerData);
-
+        if(this.props.customerLoginError!==undefined)
+            this.setState({loginError:this.props.customerLoginError})
         //console.log(this.props);
       }
 
@@ -49,11 +53,14 @@ class CustomerLogin extends React.Component{
                     </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="email">Email address : </label></div>
-                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email" autoFocus required/>
+                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter Email" autoFocus required={true}/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="password">Password :</label></div>
                     <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password" required/>
+                </div>
+                <div className="text-danger">
+                   {this.state.loginError!==""?<h5>{this.state.loginError}.Please Try again!</h5>:null}
                 </div>
                 <br/>
                 <button type="submit" className="btn btn-success btn-lg btn-block" style={{width:"350px"}}>Login</button>
@@ -61,6 +68,7 @@ class CustomerLogin extends React.Component{
                 <div style={{marginTop:"5%"}}>
                     <span style={{fontSize:"22px"}}>New to Uber?</span>&nbsp;<a href='/customerSignup' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
                 </div>
+                
             </form>
             </div>
             </div>

@@ -77,8 +77,10 @@ class RestaurantDashboard extends React.Component{
         const {value}=e.target;
         if(value==="Pickup"){
             this.setState({changedAttributes:{...this.state.changedAttributes,ModeOfDelivery:0},ModeOfDelivery:0});
-        }else{
+        }else if(value==="Delivery"){
             this.setState({changedAttributes:{...this.state.changedAttributes,ModeOfDelivery:1},ModeOfDelivery:1});
+        }else{
+            this.setState({changedAttributes:{...this.state.changedAttributes,ModeOfDelivery:2},ModeOfDelivery:2});
         }
     }
     editClicked = () =>{
@@ -115,17 +117,19 @@ class RestaurantDashboard extends React.Component{
     }
     handleCheckboxes=(e)=>{
         const {name}=e.target;
+        console.log(name);
         if(name==="Veg"){
             this.setState({veg:!this.state.veg,changedAttributes:{...this.state.changedAttributes,Veg:!this.state.veg}})
         }
         else if(name==="Nonveg"){
-            this.setState({nonveg:!this.state.veg,changedAttributes:{...this.state.changedAttributes,Nonveg:!this.state.veg}});
+            this.setState({nonveg:!this.state.nonveg,changedAttributes:{...this.state.changedAttributes,Nonveg:!this.state.nonveg}});
         }
         else{
-            this.setState({vegan:!this.state.vegan,changedAttributes:{...this.state.changedAttributes,Vegan:!this.state.veg}})
+            this.setState({vegan:!this.state.vegan,changedAttributes:{...this.state.changedAttributes,Vegan:!this.state.vegan}})
         }
     }
     render(){
+        console.log("Check the state",this.state.changedAttributes);
         if(this.props.restaurantDetails===undefined){
             return <Redirect to='/'/>
         }
@@ -205,7 +209,8 @@ class RestaurantDashboard extends React.Component{
                                     <td>Select Mode of Delivery</td>
                                     <td>:</td>
                                     <td>
-                                        <select value={this.state.ModeOfDelivery===0?"Pickup":"Delivery"}onChange={this.handleSelectChange}>
+                                        <select class="form-select form-select-sm md-3" style={{width:"100px"}} value={this.state.ModeOfDelivery===0?"Pickup":this.state.ModeOfDelivery===1?"Delivery":"Both"}onChange={this.handleSelectChange}>
+                                            <option>Both</option>
                                             <option>Pickup</option>
                                             <option>Delivery</option>
                                         </select>

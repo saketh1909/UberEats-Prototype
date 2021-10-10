@@ -161,9 +161,9 @@ class RestaurantOrders extends React.Component{
                     break;
                 }
             }
-            console.log("PickUP",this.state.OrderPickUpStatus);
-            console.log("Delivery",this.state.OrderDeliveryStatus);
-            console.log(orderDetails);
+            //console.log("PickUP",this.state.OrderPickUpStatus);
+            //console.log("Delivery",this.state.OrderDeliveryStatus);
+           // console.log(orderDetails);
             return(
                 <React.Fragment>
                     <div className="container">
@@ -172,11 +172,11 @@ class RestaurantOrders extends React.Component{
                             <b>Select the Status:</b>
                         </div>
                         <div className="col-sm-4">
-                        {orderDetails.OrderPickUp===1?<select  name="OrderPickUpStatus" style={{width:"150px"}} value={this.state.OrderPickUpStatus} onChange={this.handleChange}>
+                        {orderDetails.OrderPickUp===1?<select class="form-select form-select-lg mb-3"  name="OrderPickUpStatus" style={{width:"200px"}} value={this.state.OrderPickUpStatus} onChange={this.handleChange}>
                             {pickUpStatus.map((state,index)=>{
                                 return <option  key={index}>{state}</option>
                             })}
-                         </select>:<select  name="OrderDeliveryStatus" style={{width:"150px"}} value={this.state.OrderDeliveryStatus} onChange={this.handleChange}>
+                         </select>:<select class="form-select form-select-lg mb-3" name="OrderDeliveryStatus" style={{width:"200px"}} value={this.state.OrderDeliveryStatus} onChange={this.handleChange}>
                             {deliveryStatus.map((state,index)=>{
                                 return <option  key={index}>{state}</option>
                             })}
@@ -291,15 +291,21 @@ class RestaurantOrders extends React.Component{
         return null;
     }
     saveUpdateStatus=()=>{
-        console.log(this.state.OrderPickUpStatus,this.state.OrderDeliveryStatus,this.state.OrderID);
+       // console.log(this.state.OrderPickUpStatus,this.state.OrderDeliveryStatus,this.state.OrderID);
 
         let details={
             OrderID:this.state.OrderID
         }
         if(this.state.OrderPickUpStatus!==null){
             details["OrderPickUpStatus"]=this.state.OrderPickUpStatus;
+            if(details["OrderPickUpStatus"]==="Pick up"){
+                details["OrderStatus"]="Delivered"
+            }
         }else{
             details["OrderDeliveryStatus"]=this.state.OrderDeliveryStatus;
+            if(details["OrderDeliveryStatus"]==="Delivered"){
+                details["OrderStatus"]="Delivered"
+            }
         }
         Axios.post('http://localhost:3001/updateDeliveryStatus',details)
             .then(res=>{
@@ -309,8 +315,10 @@ class RestaurantOrders extends React.Component{
                     if(order.OrderID===this.state.OrderID){
                         if(details['OrderPickUpStatus']!==undefined){
                             order['OrderPickUpStatus']=details['OrderPickUpStatus'];
+                            order['OrderStatus']=details["OrderStatus"]
                         }else{
                             order['OrderDeliveryStatus']=details['OrderDeliveryStatus'];
+                            order['OrderStatus']=details["OrderStatus"]
                         }
                         break;
                     }
@@ -348,7 +356,7 @@ class RestaurantOrders extends React.Component{
         return(
             <React.Fragment>
                 <RestaurantNavbar/>
-                <Modal size="lg" show={this.state.showProfile} onHide={this.handleClose}>
+                <Modal size="lg" show={this.state.showProfile} onHide={this.handleClose} onCloseModal={this.handleClose}>
                     <ModalHeader>
                     <Modal.Title>Customer Profile</Modal.Title>
                     </ModalHeader>
@@ -361,7 +369,7 @@ class RestaurantOrders extends React.Component{
                     </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal size="lg" show={this.state.showMenu} onHide={this.handleClose}>
+                <Modal size="lg" show={this.state.showMenu} onHide={this.handleClose} onCloseModal={this.handleClose}>
                     <ModalHeader>
                     <Modal.Title>Order Details</Modal.Title>
                     </ModalHeader>
@@ -374,7 +382,7 @@ class RestaurantOrders extends React.Component{
                     </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal size="lg" show={this.state.showUpdateStatus} onHide={this.handleClose}>
+                <Modal size="lg" show={this.state.showUpdateStatus} onHide={this.handleClose} onCloseModal={this.handleClose}>
                     <ModalHeader>
                     <Modal.Title>Update Delivery Status</Modal.Title>
                     </ModalHeader>
@@ -395,7 +403,7 @@ class RestaurantOrders extends React.Component{
                 </div>
                 <div className="row">   
                     <div className="col-md-2 offset-md-2">
-                    <select onChange={this.onChangeOfStatus}>
+                    <select class="form-select form-select-lg mb-3" onChange={this.onChangeOfStatus}>
                             <option>Select a Status</option>
                             <option>New Order</option>
                             <option>Delivered Order</option>

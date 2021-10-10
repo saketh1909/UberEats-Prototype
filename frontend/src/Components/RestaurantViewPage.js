@@ -19,7 +19,8 @@ class RestaurantViewPage extends React.Component{
             Rest1name:"",
             Rest2name:"",
             selectedDish:null,
-            id:null
+            id:null,
+            favClicked:false
         }
     }
     componentDidMount(){
@@ -40,6 +41,20 @@ class RestaurantViewPage extends React.Component{
         if(this.props.cartItems!==undefined){
             this.setState({cartCount:this.props.cartItems.length});
         }
+        const {customerDetails}=this.props;
+        Axios.get(`http://localhost:3001/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
+        .then(res=>{
+            const {data}=res;
+            const {RestaurantID} = this.props.restaurant;
+            data.map(rest=>{
+                if(rest.RestaurantID===RestaurantID){
+                    this.setState({favClicked:true});
+                }
+            })
+        })
+        .catch(err=>{
+            console.log(err);
+        })
         
     }
     buildCardStructure = (data) =>{
@@ -88,7 +103,7 @@ class RestaurantViewPage extends React.Component{
         }
         return (
             <React.Fragment>
-                {data!==undefined?<MDBCard style={{ maxWidth: '24rem' }}>
+                {data!==undefined?<MDBCard style={{ maxWidth: '24rem',borderColor:"coral",borderWidth:"3px",borderRadius:"8px"}}>
                     <MDBCardImage src={data.DishImageURL} position='top' alt='Image' style={{height:"150px"}} />
                     <MDBCardBody style={{color:"black"}}>
                         <MDBCardTitle style={{textAlign:"center"}}>{data.DishName}</MDBCardTitle>
@@ -220,7 +235,22 @@ class RestaurantViewPage extends React.Component{
     placeOrder=()=>{
         this.setState({place:true});
     }
-    
+    clickedFavouritesButton=()=>{
+        let postData={
+            customerID:this.props.customerDetails.CustomerID,
+            restaurantID:this.props.restaurant.RestaurantID
+        }
+        this.setState({favClicked:true});
+        console.log(postData);
+        Axios.post('http://localhost:3001/addToFavourites',postData)
+        .then(res=>{
+            console.log("Insertion Successful");
+            this.props.updateFavouriteRestaurants(postData.restaurantID);
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
     render(){
         console.log("Food type",this.props.restaurant);
         if(this.state.place){
@@ -234,7 +264,7 @@ class RestaurantViewPage extends React.Component{
                 <Navbar/>
                 <Modal size="lg" show={this.state.showCart} onHide={this.handleClose}>
                     <ModalHeader>
-                    <Modal.Title><h2>Restaurant Name: {this.props.restaurant.Name}</h2></Modal.Title>
+                    <Modal.Title><h2>Restaurant Name: {this.props.cartItems!==undefined && this.props.cartItems.length>0?this.props.cartItems[0].Name:this.props.restaurant.Name}</h2></Modal.Title>
                     </ModalHeader>
                     <Modal.Body>
                         {this.cartBody()}
@@ -267,12 +297,15 @@ class RestaurantViewPage extends React.Component{
                     </Modal.Footer>
                 </Modal>
                 <div className="container" style={{textAlign:'right',marginTop:"3px"}}>
+                <button type="button" disabled={this.state.favClicked} onClick={this.clickedFavouritesButton} className="btn btn-primary">
+                    Add to Favourites
+                </button>
                 <button type="button" class="btn btn-dark" onClick={this.openCart}>
                     Cart <span class="badge badge-light">{this.state.cartCount}</span>
                     </button>
                 </div>
                 <div className="container" style={{marginTop:"2%"}}>
-                    <img src={this.props.restaurant.ImageURL}  height="300px" width="100%" alt="Restaurant Image"/>
+                    <img src={this.props.restaurant.ImageURL}  height="300px" width="100%" alt="Restaurant Img"/>
                 </div>
                 <div className="container">
                     <b>{this.props.restaurant.Description}</b>

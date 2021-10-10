@@ -52,6 +52,15 @@ class CustomerDashboard extends React.Component{
             this.props.setRestaurants(this.props.restaurantData);
             return;
         }
+        if(this.state.search!==""){
+            const {restaurantDataMod} = this.props;
+            this.setState({search:this.state.search});
+            let restData=restaurantDataMod.filter(data=>data.ModeOfDelivery===(value==="Pickup"?0:1));
+           // this.props.setDeliveryMode(value);
+            restData=[...restData,...restaurantDataMod.filter(data=>data.ModeOfDelivery===2)]
+            this.props.setRestaurants(restData);
+            return;
+        }
         if(value==="Pickup"){
             this.props.searchRestaurants(0,"Pickup");
             return;
@@ -161,10 +170,10 @@ class CustomerDashboard extends React.Component{
                     <input type="text" name="search" value={this.state.search} onChange={this.handleChange} className="form-control" id="location" aria-describedby="location" placeholder="Enter Delivery Location" required/>
                     </div>
                     <div className="col-md-1">
-                    <button type="button" className="btn btn-dark btn-md" onClick={this.handleSubmit}>Find Food</button>
+                    <button type="button" className="btn btn-dark btn-md" disabled={this.state.search===""} onClick={this.handleSubmit}>Find Food</button>
                     </div>
                     <div className="col-md-2">
-                        <select onChange={this.handleChangeFoodType}>
+                        <select className="form-select form-select-lg mb-3" onChange={this.handleChangeFoodType}>
                             <option>Select type of food</option>
                             <option>Veg</option>
                             <option>Non veg</option>
@@ -172,7 +181,7 @@ class CustomerDashboard extends React.Component{
                         </select>
                     </div> 
                     <div className="col-md-3">
-                        <select onChange={this.handleChangeDeliveryType} >
+                        <select className="form-select form-select-lg mb-3" onChange={this.handleChangeDeliveryType} >
                             <option>Select type of Delivery</option>
                             <option>Pickup</option>
                             <option>Delivery</option>

@@ -52,25 +52,25 @@ class RestaurantSignUp extends React.Component{
                     </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="restaurantName">Name :</label></div>
-                    <input type="text" name="restaurantName" value={this.state.restaurantName} onChange={this.handleChange} className="form-control" id="name" aria-describedby="restaurantName" placeholder="Enter Restaurant Name" autoFocus/>
+                    <input type="text" name="restaurantName" value={this.state.restaurantName} onChange={this.handleChange} className="form-control" id="name" aria-describedby="restaurantName" placeholder="Enter Restaurant Name" autoFocus required/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="email">Email address : </label></div>
-                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Email"/>
+                    <input type="email" name="email" value={this.state.email} onChange={this.handleChange} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Email" required/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="password">Password :</label></div>
-                    <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password"/>
+                    <input type="password" name="password" value={this.state.password} onChange={this.handleChange} className="form-control" id="password" placeholder="Enter Password" required/>
                 </div>
                 <div className="form-group" style={{marginTop:'5%'}}>
                     <div style={{textAlign:'left',fontWeight:'bolder',padding:'5px'}}><label htmlFor="location">Location : </label></div>
-                    <input type="text" name="location" value={this.state.location} onChange={this.handleChange} className="form-control" id="location" placeholder="Enter Location"/>
+                    <input type="text" name="location" value={this.state.location} onChange={this.handleChange} className="form-control" id="location" placeholder="Enter Location" required/>
                 </div>
                 <br/>
                 <button type="submit" className="btn btn-primary btn-lg">Sign Up</button>
                 </div>
                 <div style={{marginTop:"5%"}}>
-                    <span style={{fontSize:"20px"}}>Already using Uber?</span>&nbsp;<a href='/restaurantLogin' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Create an account</a>
+                    <span style={{fontSize:"20px"}}>Already using Uber?</span>&nbsp;<a href='/restaurantLogin' style={{textDecoration:"none",color:"green",fontSize:"20px"}}>Log into account</a>
                 </div>
             </form>
             </div>

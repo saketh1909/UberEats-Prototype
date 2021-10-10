@@ -118,10 +118,10 @@ class CustomerProfile extends React.Component{
                 </div>
                 <div className="row">
                     <div className="col-md-2 offset-md-1">
-                        <div className="row" style={{width:"230px",height:"170px"}}>
+                        <div className="row" style={{width:"290px",height:"110px"}}>
                             <img src={this.state.ImageUrl} alt="Profile"/>
                         </div>
-                        <div className="row" style={{width:"80%",alignItems:"center",marginTop:"50px",marginLeft:"2.5%"}}>
+                        <div className="row" style={{width:"80%",alignItems:"center",marginTop:"190px",marginLeft:"11.5%"}}>
                             <input
                             ref="fileInput"
                             onChange={this.handleFileUpload}
@@ -159,7 +159,7 @@ class CustomerProfile extends React.Component{
                                     <td>Date Of Birth</td>
                                     <td>:</td>
                                     <td>
-                                        <input type="date" value={this.state.DateOfBirth} onChange={this.dateChange}/>
+                                        <input type="date" disabled={this.state.edit} value={this.state.DateOfBirth} onChange={this.dateChange}/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -172,7 +172,7 @@ class CustomerProfile extends React.Component{
                                     <td>State</td>
                                     <td>:</td>
                                     <td>
-                                        <select name="State" style={{width:"100px"}} value={this.state.State} onChange={this.handleChange}>
+                                        <select class="form-select form-select-sm mb-3" name="State" style={{width:"100px"}} value={this.state.State} onChange={this.handleChange}>
                                             {states.map((state,index)=>{
                                                 return <option  key={index}>{state}</option>
                                             })}
@@ -183,7 +183,7 @@ class CustomerProfile extends React.Component{
                                     <td>Country</td>
                                     <td>:</td>
                                     <td>
-                                    <select name="Country" style={{width:"250px"}} value={this.state.Country} onChange={this.handleChange}>
+                                    <select name="Country" class="form-select form-select-sm mb-3" style={{width:"250px"}} value={this.state.Country} onChange={this.handleChange}>
                                             {country_list.map((country,index)=>{
                                                 return <option  key={index}>{country}</option>
                                             })}
@@ -191,7 +191,7 @@ class CustomerProfile extends React.Component{
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Contact Information</td>
+                                    <td><h3>Contact Information</h3></td>
                                 </tr>
                                 <tr>
                                     <td>Email ID</td>

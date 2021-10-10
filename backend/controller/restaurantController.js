@@ -36,7 +36,7 @@ module.exports.restaurantSignup=async(req,res)=>{
     
     //console.log(sql);
     bcrypt.hash(password, saltRounds, function(err, hash) {
-        let sql="INSERT INTO `RestaurantDetails` (RestaurantID,Password,Email,Name,Location) VALUES ('"+uuidv4()+"','"+hash+"','"+email+"','"+name+"','"+location+"')";
+        let sql="INSERT INTO `RestaurantDetails` (RestaurantID,Password,Email,Name,Location,ModeOfDelivery) VALUES ('"+uuidv4()+"','"+hash+"','"+email+"','"+name+"','"+location+"',2)";
          connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
@@ -71,7 +71,7 @@ module.exports.updateRestaurantProfile=async(req,res)=>{
       }
       sql=sql.slice(0,-1);
       sql+="WHERE RestaurantID='"+details.RestaurantID+"'";
-     // console.log(sql);
+      //console.log(sql);
       await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=400;
@@ -157,11 +157,20 @@ module.exports.updateDeliveryStatus=async(req,res)=>{
     var details=req.body;
     var sql;
     if(details.OrderPickUpStatus!==undefined){
-         sql=`UPDATE Orders set OrderPickUpStatus='${details.OrderPickUpStatus}' where OrderID='${details.OrderID}'`;
+         sql=`UPDATE Orders set OrderPickUpStatus='${details.OrderPickUpStatus}'`;
+         if(details.OrderPickUpStatus=="Picked up"){
+             sql+=`,OrderStatus='Delivered'`;
+         }
+         sql+=`where OrderID='${details.OrderID}'`;
     }else{
-         sql=`UPDATE Orders set OrderDeliveryStatus='${details.OrderDeliveryStatus}' where OrderID='${details.OrderID}'`;
+         sql=`UPDATE Orders set OrderDeliveryStatus='${details.OrderDeliveryStatus}'`;
+         if(details.OrderDeliveryStatus==="Delivered"){
+            sql+=`,OrderStatus='Delivered'`;
+         }
+         
+         sql+=`where OrderID='${details.OrderID}'`;
     }
-   
+   console.log(sql);
     await connection.query(sql,async function(error,results){
         if(error){
             res.statusCode=404;

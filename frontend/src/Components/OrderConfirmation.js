@@ -4,6 +4,7 @@ import Navbar from "../Components/Navbar.js";
 import { connect } from "react-redux";
 import {Table} from 'react-bootstrap';
 import Axios from 'axios';
+import {updateCartItems} from '../actions/customerDashBoard';
 class OrderConfirmation extends React.Component{
     constructor(props){
         super(props);
@@ -17,6 +18,7 @@ class OrderConfirmation extends React.Component{
             Address:"",
             Description:null,
             AddAddress:"",
+            orderError:null
         }
     }
     componentDidMount(){
@@ -66,7 +68,7 @@ class OrderConfirmation extends React.Component{
             row.push(
                 <tr>
                     <td>
-                        <select onChange={this.handleChange} id={item.DishID} value={this.state.Qty[item.DishID]}>
+                        <select class="form-select form-select-sm mb-3" onChange={this.handleChange} id={item.DishID} value={this.state.Qty[item.DishID]}>
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -127,12 +129,17 @@ class OrderConfirmation extends React.Component{
         
     }
     placeOrder=()=>{
-        if(this.state.Address==="") return;
+        if(this.state.Address===""){
+            let error="";
+            this.setState({orderError:"Please select an address or add an address inorder to place the order"});
+            return;
+        } 
         let items=0;
         for(let item of this.props.cartItems){
             items+=parseInt(item.Qty);
         }
         let date=new Date().toLocaleString();
+        const {deliveryMode} = this.props;
         let orderDetails={
             CustomerID:this.props.customerDetails.CustomerID,
             RestaurantID:this.props.cartItems[0].RestaurantID,
@@ -141,17 +148,20 @@ class OrderConfirmation extends React.Component{
             NoOfItems:items,
             OrderTotal:this.state.total,
             OrderTime:date,
-            OrderPickUp:1,
-            OrderDelivery:0,
-            OrderPickUpStatus:"Order Received",
-            OrderDeliveryStatus:null,
+            OrderPickUp:deliveryMode==="Pickup" ?1:0,
+            OrderDelivery:deliveryMode==="Delivery"|| deliveryMode===undefined?1:0,
+            OrderPickUpStatus:deliveryMode==="Pickup" ?"Order Received":null,
+            OrderDeliveryStatus:deliveryMode==="Delivery"|| deliveryMode===undefined?"Order Received":null,
             Address:this.state.Address,
             menu:this.props.cartItems
         }
+        //console.log(orderDetails);
         Axios.post('http://localhost:3001/placeCustomerOrder',orderDetails)
         .then(res=>{
             console.log("Insertion Successful");
             this.setState({orderPlaced:true});
+            this.props.updateCartItems([]);
+
         })
         .catch(err=>{
             console.log(err);
@@ -183,8 +193,8 @@ class OrderConfirmation extends React.Component{
                             </Table>
                             <div className="row" style={{width:"80%"}}>
                             <textarea name="Description" value={this.state.Description} onChange={this.handleChanges} className="form-control" placeholder="Enter a note for the store"></textarea></div>
-                            <div className="row form-control" style={{width:"55%",marginTop:"10px"}}>
-                                <select name="Address"  value={this.state.Address} onChange={this.handleChanges}>
+                            <div className="row" style={{width:"55%",marginTop:"10px"}}>
+                                <select class="form-select form-select-md mb-3" name="Address"  value={this.state.Address} onChange={this.handleChanges}>
                                     {this.buildAddress(this.state.addresses)}
                                 </select>
                             </div>
@@ -195,6 +205,9 @@ class OrderConfirmation extends React.Component{
                         </div>
                         <div className="col-md-5" style={{backgroundColor:"#DCDCDC",borderRadius:"10px",fontWeight:"bold"}}>
                             <div className="container">
+                                <div className="text-danger">
+                                    <h5>{this.state.orderError}</h5>
+                                </div>
                                 <div className="row" style={{ marginTop:"10px"}}>
                                     <button type="button" className="btn btn-success" onClick={this.placeOrder}>Place order</button>
                                 </div>
@@ -206,7 +219,7 @@ class OrderConfirmation extends React.Component{
                                 
                                 <div className="row">
                                         <div className="col-md-10">SubTotal:</div>
-                                        <div className="col-md-1">${this.state.subTotal}</div>
+                                        <div className="col-md-1">${this.state.subTotal.toFixed(2)}</div>
                                 </div>
                                 <div className="row">
                                         <div className="col-md-10">Taxes & Fees:</div>
@@ -246,11 +259,13 @@ const mapStateToProps = (state) =>{
     console.log("state",state);
     return {
         customerDetails:state.customerLoginReducer.customerLogin,
-        cartItems:state.customerDashBoardReducer.cartItems
+        cartItems:state.customerDashBoardReducer.cartItems,
+        deliveryMode:state.customerDashBoardReducer.deliveryMode,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
+        updateCartItems:(data)=>dispatch(updateCartItems(data))
     };
   }
 export default connect(mapStateToProps,mapDispatchToProps)(OrderConfirmation);

@@ -90,6 +90,16 @@ class RestaurantMenu extends React.Component{
     }
     adddish= () =>{
         this.setState({show:true});
+        this.setState({
+            DishName:"",
+            MainIngredients:"",
+            DishImageURL:noProfileImage,
+            DishPrice:"",
+            Description:"",
+            DishCategory:"",
+            DishType:"",
+            changedAttributes:{}
+        })
     }
     handleChange= (e) =>{
         this.setState({[e.target.name]:e.target.value,changedAttributes:{...this.state.changedAttributes,[e.target.name]:true}});
@@ -126,7 +136,7 @@ class RestaurantMenu extends React.Component{
                     <td>Dish Category</td>
                     <td>:</td>
                     <td>
-                        <select  name="DishCategory" style={{width:"150px"}} value={this.state.DishCategory} onChange={this.handleChange}>
+                        <select  class="form-select form-select-lg mb-3" name="DishCategory" style={{width:"210px"}} value={this.state.DishCategory} onChange={this.handleChange}>
                             {category.map((state,index)=>{
                                 return <option  key={index}>{state}</option>
                             })}
@@ -137,7 +147,7 @@ class RestaurantMenu extends React.Component{
                     <td>Dish Type</td>
                     <td>:</td>
                     <td>
-                        <select  name="DishType" style={{width:"150px"}} value={this.state.DishType} onChange={this.handleChange}>
+                        <select class="form-select form-select-lg mb-3" name="DishType" style={{width:"150px"}} value={this.state.DishType} onChange={this.handleChange}>
                             {type.map((state,index)=>{
                                 return <option  key={index}>{state}</option>
                             })}
@@ -189,7 +199,7 @@ class RestaurantMenu extends React.Component{
         }
         return (
             <React.Fragment>
-                {data!==undefined?<MDBCard style={{ maxWidth: '30rem' }}>
+                {data!==undefined?<MDBCard style={{ maxWidth: '30rem',borderColor:"coral",borderWidth:"3px",borderRadius:"8px" }}>
                     <MDBCardImage src={data.DishImageURL} position='top' alt='Image' style={{height:"150px"}} />
                     <MDBCardBody style={{color:"black"}}>
                         <MDBCardTitle style={{textAlign:"center"}}>{data.DishName}</MDBCardTitle>
@@ -297,7 +307,7 @@ class RestaurantMenu extends React.Component{
         return (
             <React.Fragment>
                 <RestaurantNavbar/>
-                <Modal size="lg" show={this.state.showEdit} onHide={this.handleClose}>
+                <Modal size="lg" show={this.state.showEdit} onHide={this.handleClose} onCloseModal={this.handleClose}>
                     <ModalHeader>
                     <Modal.Title>Edit Dish Details</Modal.Title>
                     </ModalHeader>
@@ -313,7 +323,7 @@ class RestaurantMenu extends React.Component{
                     </button>
                     </Modal.Footer>
                 </Modal>
-                <Modal size="lg" show={this.state.show} onHide={this.handleClose}>
+                <Modal size="lg" show={this.state.show} onHide={this.handleClose} onCloseModal={this.handleClose}>
                     <ModalHeader>
                     <Modal.Title>Add Dish Details</Modal.Title>
                     </ModalHeader>

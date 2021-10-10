@@ -84,7 +84,7 @@ class CustomerOrders extends React.Component{
                     <td>{menu.DishName}</td>
                     <td></td>
                     <td></td>
-                    <td>${menu.DishPrice}</td>
+                    <td>${menu.OrderDishPrice}</td>
                 </tr>)
             })  
             
@@ -120,12 +120,17 @@ class CustomerOrders extends React.Component{
         return(
             <React.Fragment>
                 <Navbar/>
-
                 <Modal size="md" show={this.state.show} onHide={this.handleClose}>
                     <ModalHeader>
                     <Modal.Title>Receipt</Modal.Title>
                     </ModalHeader>
                     <Modal.Body>
+                        <div>
+                           <b> Delivery Address:</b>{this.state.currentMenu.length>0?this.state.currentMenu[0].Address:null}
+                        </div>
+                        <div>
+                            <b>Order Status:</b>{this.state.currentMenu.length>0?this.state.currentMenu[0].OrderStatus:null}
+                        </div>
                         <Table>
                             <thead>
                                 <tr>
@@ -157,7 +162,7 @@ class CustomerOrders extends React.Component{
                         <h4>Filter the orders:</h4>
                     </div>
                     <div className="col-md-3">
-                        <select onChange={this.handleChange}>
+                        <select class="form-select form-select-lg mb-3" onChange={this.handleChange}>
                             <option>Select a Status</option>
                             <option>Order Received</option>
                             <option>Preparing</option>
@@ -169,7 +174,7 @@ class CustomerOrders extends React.Component{
                     </div>
                 </div>
                 <div>
-                    <Table>
+                    <Table className="table-hover">
                         <tbody>
                             {this.buildOrdersBody()}
                         </tbody>
