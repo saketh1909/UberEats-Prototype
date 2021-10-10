@@ -316,10 +316,13 @@ class RestaurantOrders extends React.Component{
                     if(order.OrderID===this.state.OrderID){
                         if(details['OrderPickUpStatus']!==undefined){
                             order['OrderPickUpStatus']=details['OrderPickUpStatus'];
-                            order['OrderStatus']=details["OrderStatus"]
+                            
+                            
                         }else{
                             order['OrderDeliveryStatus']=details['OrderDeliveryStatus'];
-                            order['OrderStatus']=details["OrderStatus"]
+                            if(details["OrderStatus"]==="Delivered"){
+                                order['OrderStatus']=details["OrderStatus"]
+                            }
                         }
                         break;
                     }
