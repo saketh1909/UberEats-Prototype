@@ -5,7 +5,7 @@ import noProfileImage from '../images/noProfileImage.png';
 import Axios from 'axios'; 
 import firebase  from '../firebaseConfig';
 import { updateCustomerProfile } from '../actions/customerDashBoard.js';
-
+import config from '../urlConfig';
 import {Redirect} from 'react-router-dom';
 
 
@@ -68,7 +68,7 @@ class CustomerProfile extends React.Component{
             };
             data["ImageURL"]=url;
             details["ImageURL"]=url;
-            Axios.post('http://localhost:3001/updateCustomerProfile',data)
+            Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
             .then(async (res)=>{
                 //console.log("Update Successful");
                 this.props.updateCustomerProfile(details);
@@ -92,7 +92,7 @@ class CustomerProfile extends React.Component{
             details[key]=this.state[key];
         }
         //console.log("Changed",data);
-        await Axios.post('http://localhost:3001/updateCustomerProfile',data)
+        await Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
             .then(async (res)=>{
                 //console.log("Update Successful");
                 this.props.updateCustomerProfile(details);

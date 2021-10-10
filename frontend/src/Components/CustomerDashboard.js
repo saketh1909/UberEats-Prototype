@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import {getRestaurants,searchRestaurants,updateFavouriteRestaurants,setRestaurants,setFoodType} from '../actions/customerDashBoard.js';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
-
+import config from '../urlConfig';
 class CustomerDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -23,7 +23,7 @@ class CustomerDashboard extends React.Component{
         await this.props.getRestaurants();
         //console.log(this.props.restaurantData);
         const {customerDetails}=this.props;
-        Axios.get(`http://localhost:3001/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
+        Axios.get(`${config.BackendURL}/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
            // console.log(res.data);
             let id={};

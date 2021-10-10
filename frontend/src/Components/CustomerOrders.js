@@ -5,7 +5,8 @@ import Axios from 'axios';
 import {Redirect} from 'react-router-dom';
 import {Table} from 'react-bootstrap';
 import {Modal,Button} from 'react-bootstrap'
-import ModalHeader from 'react-bootstrap/ModalHeader'
+import ModalHeader from 'react-bootstrap/ModalHeader';
+import config from '../urlConfig';
 const months=["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
 class CustomerOrders extends React.Component{
     constructor(props){
@@ -20,7 +21,7 @@ class CustomerOrders extends React.Component{
     }
     componentDidMount(){
         const {CustomerID}=this.props.customerDetails;
-        Axios.get(`http://localhost:3001/getCustomerOrders?CustomerID=${CustomerID}`)
+        Axios.get(`${config.BackendURL}/getCustomerOrders?CustomerID=${CustomerID}`)
             .then(res=>{
                 //console.log(res.data);
                 const {data}=res;

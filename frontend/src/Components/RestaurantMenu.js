@@ -7,6 +7,7 @@ import ModalHeader from 'react-bootstrap/ModalHeader'
 import noProfileImage from '../images/noProfileImage.png';
 import firebase  from '../firebaseConfig';
 import {Redirect} from 'react-router-dom';
+import config from '../urlConfig';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 const uuidv4 = require("uuid/v4")
 const category=["Pick a Category", "Appetizer","Salads", "Main Course", "Desserts", "Beverages"];
@@ -31,7 +32,7 @@ class RestaurantMenu extends React.Component{
         }
     }
     componentDidMount(){
-        var url=`http://localhost:3001/getRestaurantMenu?RestaurantID=${this.props.restaurantDetails.RestaurantID}`;
+        var url=`${config.BackendURL}/getRestaurantMenu?RestaurantID=${this.props.restaurantDetails.RestaurantID}`;
         Axios.get(url)
         .then(res=>{
             //console.log(res.data);
@@ -229,7 +230,7 @@ class RestaurantMenu extends React.Component{
         const dish=this.state.dishes;
         dish.push(dishDetails);
         console.log(dishDetails);
-        Axios.post('http://localhost:3001/addDish',dishDetails)
+        Axios.post(`${config.BackendURL}/addDish`,dishDetails)
         .then(res=>{
             console.log("Dish Added Successfully");
             this.setState({show:false,dishes:dish,changedAttributes:{}});
@@ -265,7 +266,7 @@ class RestaurantMenu extends React.Component{
             updateDetails[key]=this.state[key];
           }
         console.log(updateDetails);
-          Axios.put('http://localhost:3001/updateDish',updateDetails)
+          Axios.put(`${config.BackendURL}/updateDish`,updateDetails)
           .then(res=>{
             console.log("Update Successful");
             let dishDetails={

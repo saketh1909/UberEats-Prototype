@@ -6,6 +6,7 @@ import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'md
 import noProfileImage from '../images/noProfileImage.png';
 import {Redirect} from 'react-router-dom';
 import {viewRestaurantPage} from '../actions/customerDashBoard.js';
+import config from '../urlConfig';
 class FavouriteRestaurants extends React.Component{
     constructor(props){
         super(props);
@@ -18,7 +19,7 @@ class FavouriteRestaurants extends React.Component{
         //console.log("Here");
         const {customerDetails}=this.props;
        // console.log(customerDetails);
-        Axios.get(`http://localhost:3001/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
+        Axios.get(`${config.BackendURL}/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
             //console.log(res.data);
             this.setState({favRestaurants:res.data});

@@ -7,6 +7,7 @@ import RestaurantNavbar from './RestaurantNavbar';
 import noProfileImage from '../images/noProfileImage.png';
 import {Table} from 'react-bootstrap'
 import {Redirect} from 'react-router-dom';
+import config from '../urlConfig';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn } from 'mdb-react-ui-kit';
 const pickUpStatus=["Order Received","Preparing","Pickup Ready","Picked up"];
 const deliveryStatus=["Order Received","Preparing","On the way","Delivered"];
@@ -30,7 +31,7 @@ class RestaurantOrders extends React.Component{
     }
     componentDidMount(){
         const {RestaurantID}=this.props.restaurantDetails;
-        Axios.get(`http://localhost:3001/getRestaurantOrders?RestaurantID=${RestaurantID}`)
+        Axios.get(`${config.BackendURL}/getRestaurantOrders?RestaurantID=${RestaurantID}`)
         .then(res=>{
            // console.log("data",res.data);
            res.data.sort(function(a,b){
@@ -115,7 +116,7 @@ class RestaurantOrders extends React.Component{
         this.setState({showMenu:true})
         let orderID=e.target.id;
         let orderDetails=this.state.orders.filter(order=>order.OrderID===orderID)[0];
-        Axios.get(`http://localhost:3001/getOrderMenu?OrderID=${orderID}`)
+        Axios.get(`${config.BackendURL}/getOrderMenu?OrderID=${orderID}`)
         .then(res=>{
             console.log(res.data);
             this.setState({orderMenu:res.data});
@@ -307,7 +308,7 @@ class RestaurantOrders extends React.Component{
                 details["OrderStatus"]="Delivered"
             }
         }
-        Axios.post('http://localhost:3001/updateDeliveryStatus',details)
+        Axios.post(`${config.BackendURL}/updateDeliveryStatus`,details)
             .then(res=>{
                 console.log(res.data);
                 let orders=this.state.orders;

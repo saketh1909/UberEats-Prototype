@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import {Table} from 'react-bootstrap';
 import Axios from 'axios';
 import {updateCartItems} from '../actions/customerDashBoard';
+import config from '../urlConfig';
 class OrderConfirmation extends React.Component{
     constructor(props){
         super(props);
@@ -32,7 +33,7 @@ class OrderConfirmation extends React.Component{
         let tot=subTot+subTot*(0.2)+6;
         tot=Math.round(tot*100)/100;
         this.setState({Qty:qty,subTotal:subTot,total:tot});
-        Axios.get(`http://localhost:3001/getAddress?customerID=${this.props.customerDetails.CustomerID}`)
+        Axios.get(`${config.BackendURL}/getAddress?customerID=${this.props.customerDetails.CustomerID}`)
         .then(res=>{
             console.log(res.data);
             this.setState({addresses:res.data})
@@ -116,7 +117,7 @@ class OrderConfirmation extends React.Component{
             customerID:customerDetails.CustomerID,
             address:AddAddress
         }
-        Axios.post('http://localhost:3001/addAddress',data)
+        Axios.post(`${config.BackendURL}/addAddress`,data)
         .then(res=>{
            // console.log("Insertion Successful");
            // console.log(AddAddress,addresses);
@@ -156,7 +157,7 @@ class OrderConfirmation extends React.Component{
             menu:this.props.cartItems
         }
         //console.log(orderDetails);
-        Axios.post('http://localhost:3001/placeCustomerOrder',orderDetails)
+        Axios.post(`${config.BackendURL}/placeCustomerOrder`,orderDetails)
         .then(res=>{
             console.log("Insertion Successful");
             this.setState({orderPlaced:true});

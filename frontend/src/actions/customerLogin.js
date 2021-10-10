@@ -1,6 +1,7 @@
 import Axios from 'axios';
+import config from '../urlConfig';
 export const login = (data) => async dispatch =>{
-    await Axios.post('http://localhost:3001/customerLogin',data,{
+    await Axios.post(`${config.BackendURL}/customerLogin`,data,{
         headers:{
             'Accept':'application/json',
             'Content-type':'application/json'
@@ -32,7 +33,7 @@ export const login = (data) => async dispatch =>{
 }
 export const signup = (data) => async dispatch =>{
     //console.log("Action");
-    await Axios.post('http://localhost:3001/customerSignup',data,{
+    await Axios.post(`${config.BackendURL}/customerSignup`,data,{
         headers:{
             'Accept':'application/json',
             'Content-type':'application/json'

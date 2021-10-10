@@ -6,6 +6,7 @@ import noProfileImage from '../images/noProfileImage.png';
 import { viewRestaurantPage,updateFavouriteRestaurants,setFoodType } from '../actions/customerDashBoard';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
+import config from '../urlConfig';
 class RestaurantCard extends React.Component{
 
     constructor(props){
@@ -39,7 +40,7 @@ class RestaurantCard extends React.Component{
         }
         this.setState({favClicked:true});
        // console.log(postData);
-        Axios.post('http://localhost:3001/addToFavourites',postData)
+        Axios.post(`${config.BackendURL}/addToFavourites`,postData)
         .then(res=>{
             console.log("Insertion Successful");
             this.props.updateFavouriteRestaurants(e.target.id);

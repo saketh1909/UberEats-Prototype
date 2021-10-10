@@ -1,6 +1,7 @@
 import Axios from 'axios';
+import config from '../urlConfig.js';
 export const getRestaurants= () => async dispatch =>{
-    await Axios.get('http://localhost:3001/getRestaurants')
+    await Axios.get(`${config.BackendURL}/getRestaurants`)
     .then(async (res)=>{
         console.log("Action",res);
         dispatch({
@@ -18,7 +19,7 @@ export const getRestaurants= () => async dispatch =>{
 }
 export const searchRestaurants = (search,type) => async dispatch =>{
    // console.log("Action",search,type);
-    await Axios.get(`http://localhost:3001/getRestaurantOnSearch?search=${search}&type=${type}`)
+    await Axios.get(`${config.BackendURL}/getRestaurantOnSearch?search=${search}&type=${type}`)
     .then(async (res)=>{
         console.log("Data from backend",res.data);
         dispatch({

@@ -6,6 +6,7 @@ import {Redirect} from 'react-router-dom';
 import noProfileImage from '../images/noProfileImage.png';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 import {updateCartItems} from '../actions/customerDashBoard';
+import config from '../urlConfig';
 import {Modal,Button, Table} from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/ModalHeader'
 class RestaurantViewPage extends React.Component{
@@ -25,7 +26,7 @@ class RestaurantViewPage extends React.Component{
     }
     componentDidMount(){
         //console.log("check",this.props.restaurant);
-        var url=`http://localhost:3001/getRestaurantMenu?RestaurantID=${this.props.restaurant.RestaurantID}`;
+        var url=`${config.BackendURL}/getRestaurantMenu?RestaurantID=${this.props.restaurant.RestaurantID}`;
        // console.log(url);
         Axios.get(url)
         .then(res=>{
@@ -42,7 +43,7 @@ class RestaurantViewPage extends React.Component{
             this.setState({cartCount:this.props.cartItems.length});
         }
         const {customerDetails}=this.props;
-        Axios.get(`http://localhost:3001/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
+        Axios.get(`${config.BackendURL}/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
             const {data}=res;
             const {RestaurantID} = this.props.restaurant;
@@ -242,7 +243,7 @@ class RestaurantViewPage extends React.Component{
         }
         this.setState({favClicked:true});
         console.log(postData);
-        Axios.post('http://localhost:3001/addToFavourites',postData)
+        Axios.post(`${config.BackendURL}/addToFavourites`,postData)
         .then(res=>{
             console.log("Insertion Successful");
             this.props.updateFavouriteRestaurants(postData.restaurantID);

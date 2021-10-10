@@ -1,6 +1,7 @@
 import Axios from 'axios';
+import config from '../urlConfig';
 export const restaurantLogin =  (data) => async dispatch =>{
-    await Axios.post('http://localhost:3001/restaurantLogin',data,{
+    await Axios.post(`${config.BackendURL}/restaurantLogin`,data,{
         headers:{
             'Accept':'application/json',
             'Content-type':'application/json'
@@ -38,7 +39,7 @@ export const restaurantLogout = ()=> dispatch =>{
 }
 export const restaurantSignup = (data) => async dispatch =>{
     //console.log("Action");
-    await Axios.post('http://localhost:3001/restaurantSignup',data,{
+    await Axios.post(`${config.BackendURL}/restaurantSignup`,data,{
         headers:{
             'Accept':'application/json',
             'Content-type':'application/json'

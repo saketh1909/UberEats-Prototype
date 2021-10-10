@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import firebase  from '../firebaseConfig';
 import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
+import config from '../urlConfig';
 import { updateRestaurantProfile } from '../actions/restaurantDashBoard';
 class RestaurantDashboard extends React.Component{
     constructor(props){
@@ -60,7 +61,7 @@ class RestaurantDashboard extends React.Component{
             };
             data["ImageURL"]=url;
             details["ImageURL"]=url;
-            Axios.post('http://localhost:3001/updateRestaurantProfile',data)
+            Axios.post(`${config.BackendURL}/updateRestaurantProfile`,data)
             .then(async (res)=>{
                 console.log("Update Successful");
                 this.props.updateRestaurantProfile(details);
@@ -105,7 +106,7 @@ class RestaurantDashboard extends React.Component{
             
         }
         //console.log("Changed",data);
-        await Axios.post('http://localhost:3001/updateRestaurantProfile',data)
+        await Axios.post(`${config.BackendURL}/updateRestaurantProfile`,data)
             .then(async (res)=>{
                 //console.log("Update Successful");
                 this.props.updateRestaurantProfile(details);
