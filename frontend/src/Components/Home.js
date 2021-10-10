@@ -12,16 +12,16 @@ class Home extends React.Component{
     }
     render(){
         return (
-            <React.Fragment >
-                <div className="container" >
-                    <div className="row" style={{margin:"5%"}}>
+            <div style={{height:"720px",backgroundColor:"papayawhip"}}>
+                <div className="container-fluid" >
+                    <div className="row" style={{paddingTop:"100px"}}>
                         <div className=" col-md-9 offset-md-3 align-self-center">
                         <img src={UberEatsLogo} alt="Uber Eats" width="50%" height="100px"/> 
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="row" style={{paddingTop:"100px"}}>
                         <div className="col-md-4 offset-md-2">
-                            <a href='/customerLogin'><Card style={{ width: '18rem' }}>
+                            <a href='/customerLogin'><Card style={{ width: '18rem',borderColor:"black",borderWidth:"2px"}}>
                             <Card.Img variant="top" src={CustomerImage} />
                             <Card.Body>
                                 <Card.Title style={{textAlign:"center"}}>Customer Login</Card.Title>
@@ -29,7 +29,7 @@ class Home extends React.Component{
                             </Card></a>
                         </div>
                         <div className="col-md-4 ">
-                        <a href='/restaurantLogin'><Card style={{ width: '18rem' }}>
+                        <a href='/restaurantLogin'><Card style={{ width: '18rem',borderColor:"black",borderWidth:"2px" }}>
                             <Card.Img variant="top" src={RestaurantImage} />
                             <Card.Body>
                                 <Card.Title style={{textAlign:"center"}}>Restaurant Login</Card.Title>
@@ -38,7 +38,7 @@ class Home extends React.Component{
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
+            </div>
         )
     }
 }

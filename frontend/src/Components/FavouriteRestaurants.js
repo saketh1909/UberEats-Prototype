@@ -5,11 +5,13 @@ import Axios from 'axios';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 import noProfileImage from '../images/noProfileImage.png';
 import {Redirect} from 'react-router-dom';
+import {viewRestaurantPage} from '../actions/customerDashBoard.js';
 class FavouriteRestaurants extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            favRestaurants:[]
+            favRestaurants:[],
+            clicked:false
         }
     }
     componentDidMount(){
@@ -60,22 +62,38 @@ class FavouriteRestaurants extends React.Component{
         console.log("row",row);
         return row;
     }
+    itemClicked=(e)=>{
+        e.stopPropagation();
+        let restID=e.target.id;
+        let data=this.props.restaurantData;
+        let restData={};
+        data.map(rest=>{
+            if(rest.RestaurantID===restID){
+                restData=rest;
+            }
+        })
+        this.props.viewRestaurantPage(restData);
+        this.setState({clicked:true});
+    }
     restCard=(data)=>{
         if(data.ImageURl==="" || data.ImageURL===null || data.ImageURL===undefined){
             data.ImageURL=noProfileImage;
         }
-        return (<MDBCard style={{ maxWidth: '48rem' }}>
-                    <MDBCardImage id={data.RestaurantID}  src={data.ImageURL} position='top' alt='Image' style={{height:"150px"}} />
-                    <MDBCardBody id={data.RestaurantID}  style={{color:"black"}}>
-                        <MDBCardTitle  id={data.RestaurantID} style={{textAlign:"center"}}>{data.Name}</MDBCardTitle>
-                        <MDBCardText id={data.RestaurantID}  style={{fontSize:"15px"}}>
-                            Timings:{data.Timings}
-                            <span id={data.RestaurantID}>Location:{data.Location}</span>
-                        </MDBCardText>
-                    </MDBCardBody>
-                    </MDBCard>)
+        return (<MDBCard style={{ maxWidth: '22rem',borderColor:"black",borderWidth:"3px",borderRadius:"8px" }}>
+        <MDBCardImage id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}} src={data.ImageURL} position='top' alt='Image' style={{height:"150px"}} />
+        <MDBCardBody id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}} style={{color:"black"}}>
+            <MDBCardTitle  id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}} style={{textAlign:"center"}}>{data.Name}</MDBCardTitle>
+            <MDBCardText id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}}  style={{fontSize:"14px",borderTop:"3px solid black"}}>
+                <b>Timings:{data.Timings}
+                <span id={data.RestaurantID} onClick={(e)=>{this.itemClicked(e)}}>Location:{data.Location}</span></b>
+            </MDBCardText>
+        </MDBCardBody>
+        </MDBCard>)
     }
     render(){
+        if(this.state.clicked){
+            return <Redirect to='/restaurantViewPage'/>
+        }
         if(this.props.customerDetails===undefined){
             return <Redirect to='/'/>
         }
@@ -84,7 +102,7 @@ class FavouriteRestaurants extends React.Component{
                 <div className="container" style={{textAlign:"center"}}>
                 <h1>Favourite Restaurants</h1>
                 </div>
-                <div className="container">
+                <div>
                     {this.buildCardStructure(this.state.favRestaurants)}
                 </div>
                 </React.Fragment>
@@ -92,12 +110,15 @@ class FavouriteRestaurants extends React.Component{
     }
 }
 const mapStateToProps = (state) =>{
+    console.log(state);
     return {
-        customerDetails:state.customerLoginReducer.customerLogin
+        customerDetails:state.customerLoginReducer.customerLogin,
+        restaurantData:state.customerDashBoardReducer.restaurantData,
     }
 }
 function mapDispatchToProps(dispatch) {
     return {
+        viewRestaurantPage:(data)=>dispatch(viewRestaurantPage(data)),
     };
   }
 export default connect(mapStateToProps,mapDispatchToProps)(FavouriteRestaurants);
