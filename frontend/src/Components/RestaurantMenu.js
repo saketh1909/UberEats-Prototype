@@ -9,7 +9,7 @@ import firebase  from '../firebaseConfig';
 import {Redirect} from 'react-router-dom';
 import config from '../urlConfig';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
-const uuidv4 = require("uuid/v4")
+const {uuid} = require("uuidv4");
 const category=["Pick a Category", "Appetizer","Salads", "Main Course", "Desserts", "Beverages"];
 const type=["Pick a type","Non veg","Veg","Vegan"];
 
@@ -250,7 +250,7 @@ class RestaurantMenu extends React.Component{
                 console.log("Picture Deleted");
             })
         }
-        const imagesRef=firebase.storage().ref("DishesImages").child(uuidv4());
+        const imagesRef=firebase.storage().ref("DishesImages").child(uuid());
         await imagesRef.put(file);
         imagesRef.getDownloadURL()
         .then(url=>{
