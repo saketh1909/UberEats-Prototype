@@ -12,4 +12,8 @@ connection.getConnection((err)=>{
         throw 'Error occured ' +err;
     }
 });
+// connection.connect(function(err) {  
+//     if (err) throw err;  
+//     console.log("Connected!");  
+//   });  
 module.exports=connection;

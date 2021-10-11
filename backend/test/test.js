@@ -40,7 +40,7 @@ describe("Post-- Restaurant Login",()=>{
     it("/restaurantLogin",(done)=>{
         chai.request.agent(app)
         .post("/restaurantLogin")
-        .send({email:"paradise@gmail.com",password:"paradise@123"})
+        .send({email:"greatindian@gmail.com",password:"great123"})
         .then(function(res){
             console.log(res.status);
             expect(res).to.have.status(200);
