@@ -4,6 +4,7 @@ const saltRounds = 10;
 const Restaurant = require('../models/restaurantDetailsSchema');
 const Customer = require('../models/customerDetailsSchema');
 const Dish = require('../models/dishesSchema');
+const Order=require('../models/ordersSchema');
 module.exports.restaurantSignup=async(req,res)=>{
     const {password,email,name,location}=req.body;
     bcrypt.hash(password, saltRounds, function(err, hash) {
@@ -134,14 +135,79 @@ module.exports.updateDish=async(req,res)=>{
     })
 }
 module.exports.getOrderMenu=async(req,res)=>{
-
+    let {OrderID}=req.query;
+    Order.findOne({OrderID:OrderID},{_id:false,Menu:true},(error,results)=>{
+        if(error){
+            res.statusCode=500;
+            res.send(error);
+        }else{
+            res.statusCode=200;
+            res.send(results.Menu);
+        }
+    })
 }
 module.exports.getRestaurantOrders=async(req,res)=>{
+    var restaurantID=req.query.RestaurantID;
+    Order.find({RestaurantID:restaurantID},async (error,results)=>{
+        if(error){
+            res.statusCode=500;
+            res.send(error);
+        }else{
+            let data=[];
+            for(let order of results){
+                let obj={};
+                await Customer.findOne({CustomerID:order.CustomerID},(error,results)=>{
+                    if(error){
+                        res.statusCode=500;
+                        res.send(error);
+                    }else{
+                        results.Password=undefined;
+                        obj={
+                            ...order._doc,
+                            ...results._doc
+                        }
+                        //console.log("Check this",obj);
+                        data.push(obj);
+                    }
+                });
+            }
+            res.send(data);
+        }
+    });
 }
 module.exports.updateDeliveryStatus=async(req,res)=>{
+    let update= {};
+    var details=req.body;
+    if(details.OrderPickUpStatus!==undefined){
+        update["OrderPickUpStatus"]=details.OrderPickUpStatus;
+        if(details.OrderPickUpStatus=="Picked up"){
+            update["OrderStatus"]='Delivered';
+        }else{
+            update["OrderStatus"]='New Order';
+        }
+    }else{
+        update['OrderDeliveryStatus']=details.OrderDeliveryStatus;
+        if(details.OrderDeliveryStatus==="Delivered"){
+            update["OrderStatus"]='Delivered';
+        }else{
+            update["OrderStatus"]='New Order';
+        }
+    }
+    Order.findOneAndUpdate({OrderID:details.OrderID},update,(error,results)=>{
+        if(error){
+            res.statusCode=404;
+            res.send(error);
+        }else{
+            
+            res.statusCode=200;
+            res.send("Update Successful");
+        }
+    });
 }
-module.exports.updateOrderStatus=async(req,res)=>{
-}
+// module.exports.updateOrderStatus=async(req,res)=>{
+
+
+// }
 module.exports.getRestaurantMenu =async(req,res)=>{
     var restaurantID=req.query.RestaurantID;
     Dish.find({RestaurantID:restaurantID},(error,results)=>{
