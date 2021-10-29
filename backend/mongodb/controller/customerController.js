@@ -3,132 +3,132 @@ const favRestaurants=require('../models/favouriteRestaurantsSchema');
 const Restaurant = require('../models/restaurantDetailsSchema');
 const Address=require('../models/addressSchema');
 const Order=require('../models/ordersSchema');
+var kafka = require('../../kafka/client.js');
 const {uuid} = require("uuidv4");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 module.exports.customerSignup=async(req,res)=>{
-    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
-        let newCustomer=new Customer({
-            CustomerID:uuid(),
-            Email:req.body.email,
-            Password:hash,
-            Name:req.body.name
-        });
-        newCustomer.save((err,results)=>{
-            if(err){
-                res.send(err);
-            }else{
-                res.send("Insert Succesfull");
+    req.body.path="customerSignup";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
+        }else{
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
             }
-        })
+        
     });
 }
 module.exports.customerLogin=async(req,res)=>{
-    const {email,password}=req.body;
-    Customer.findOne({Email:email},async (error,results)=>{
-        if (error) {
-            res.writeHead(500, {
-                'Content-Type': 'text/plain'
-            })
-            res.end("Error Occured");
-        }
-        if(results==null){
-            res.statusCode=200;
-           res.send("Invalid Credentials");
-           return;
-        }
-       let match= await bcrypt.compare(password, results.Password);
-       if(!match){
-        res.statusCode=400;
-        res.send("Invalid Credentials");
-       }else{
-        res.statusCode=200;
-           res.send(results);
-       }
-    })
-}
-module.exports.updateCustomerProfile=async(req,res)=>{
-    var filter={CustomerID:req.body.customerID};
-    var update={};
-    for (const [key, value] of Object.entries(req.body)) {
-        if(key=="customerID") continue;
-        update[key]=value;
-    }
-    console.log(filter,update);
-    Customer.findOneAndUpdate(filter,update,async(error,results)=>{
-        if(error){
+    req.body.path="customerLogin";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
             res.statusCode=500;
-            res.send("Update Unsuccessful");
+            res.send(err);
         }else{
-            res.statusCode=200;
-            res.send("Update Successful");
-        }
+            console.log("Inside else");
+            res.statusCode=results.status;
+            if(res.statusCode===200)
+                results.data.Password=undefined;
+            res.send(results.data);
 
-    })
+            }
+        
+    });
+    }
+module.exports.updateCustomerProfile=async(req,res)=>{
+    req.body.path="updateCustomerProfile";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        console.log('in result');
+        console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
+        }else{
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
+            }
+        
+    });
 }
 module.exports.addToFavourites=async(req,res)=>{
-    var details=req.body;
-    let favRestaurant=new favRestaurants({
-        ID:uuid(),
-        CustomerID:details.customerID,
-        RestaurantID:details.restaurantID
-    });
-    favRestaurant.save((error,results)=>{
-        if(error){
-            res.send(error);
+    req.body.path="addToFavourites";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        //console.log('in result');
+       // console.log(results);
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
         }else{
-            res.send("Insert Succesfull");
-        }
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
+            }
+        
     });
 }
 module.exports.getFavouriteRestaurants=async(req,res)=>{
-    let filter={
-        CustomerID:req.query.customerID
-    }
-    favRestaurants.find(filter,{RestaurantID:true,_id:false},async (error,results)=>{
-        if(error){
-            res.statusCode=400;
-            res.send(error);
+    request={};
+    request.path="getFavouriteRestaurants";
+    request.customerID=req.query.customerID;
+    kafka.make_request('customer_login',request, function(err,results){
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
         }else{
-            let Restaurants=[];
-            for(let obj of results){
-               await Restaurant.findOne({RestaurantID:obj.RestaurantID},{Password:false,_id:false},async(error,results)=>{
-                    if(error){
-                        res.statusCode=400;
-                        res.send("Fetch Error");
-                    }else{
-                        Restaurants.push(results);
-                    }
-                })
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
             }
-            res.statusCode=200;
-            res.send(Restaurants);
-        }
+        
     });
 }
 module.exports.addAddress=async(req,res)=>{
-    const {address,customerID} = req.body;
-    let newAddress=new Address({
-        AddressID:uuid(),
-        CustomerID:customerID,
-        Address:address
-    })
-    newAddress.save((error,results)=>{
-        if(error){
-            res.send(error);
+    req.body.path="addAddress";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
         }else{
-            res.send("Insertion Succesfull");
-        }
-    })
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+            }
+        
+    });
+    
 }
 module.exports.getAddress=async(req,res)=>{
-    var customerID=req.query.customerID;
-    Address.find({CustomerID:customerID},{_id:false},async(error,results)=>{
-        if(error){
-            res.send(error);
+    req.query.path="getAddress";
+    kafka.make_request('customer_login',req.query, function(err,results){
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
         }else{
-            res.send(results);
-        }
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
+            }
+        
     });
 }
 module.exports.getCustomerOrders=async(req,res)=>{
