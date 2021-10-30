@@ -34,10 +34,12 @@ class CustomerProfile extends React.Component{
     componentDidMount(){
         const details=this.props.customerDetails;
         //console.log("Check this",details);
-
-        let date=new Date(details.DateOfBirth);
-        let d=date.toISOString();
-        d=d.split("T")[0];
+        let d=details.DateOfBirth;
+        if(details.DateOfBirth !== ""){
+            let date=new Date(details.DateOfBirth);
+            d=date.toISOString();
+            d=d.split("T")[0];
+        }
         this.setState({DateOfBirth:d,
             City:details.City,
             State:details.State,

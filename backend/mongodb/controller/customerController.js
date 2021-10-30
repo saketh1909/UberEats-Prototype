@@ -132,74 +132,33 @@ module.exports.getAddress=async(req,res)=>{
     });
 }
 module.exports.getCustomerOrders=async(req,res)=>{
-    var CustomerID=req.query.CustomerID;
-    let data={};
-    Order.find({CustomerID:CustomerID},async (error,results)=>{
-        if(error){
-            res.send(error);
+    req.query.path="getCustomerOrders";
+    kafka.make_request('customer_login',req.query, function(err,results){
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
         }else{
-            let orders=[];
-            for(let order of results){
-                await Restaurant.findOne({RestaurantID:order.RestaurantID},(error,results)=>{
-                    if(error || results==null){
-                        res.statusCode=500;
-                        res.send(error);
-                    }else{
-                        let obj={};
-                        obj["Name"]=results.Name;
-                        obj["Location"]=results.Location;
-                        let check={
-                            ...order._doc,
-                            ...obj
-                        }
-                        orders.push(check);
-                    }
-                });
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
             }
-            //console.log(orders);
-            data["Orders"]=orders;
-            let ordersMenu=[];
-            for(let order of orders){
-                ordersMenu=[...ordersMenu,...order.Menu];
-            }
-            data["OrdersMenu"]=ordersMenu;
-            res.statusCode=200;
-            res.send(data);
-        }
-    })
+        
+    });
 }
 module.exports.placeCustomerOrder=async(req,res)=>{
-    let details=req.body;
-    let orderID=uuid();
-    for(let item of details.menu){
-        item["OrderID"]=orderID;
-        item["OrderTotal"]=details.OrderTotal;
-        item["OrderDishPrice"]=item.DishPrice;
-        item["Address"]=details.Address;
-        item["OrderDescription"]=details.Description;
-        item["OrderStatus"]=details.OrderStatus;
-    }
-    let order=new Order({
-        OrderID:orderID,
-        RestaurantID:details.RestaurantID,
-        CustomerID:details.CustomerID,
-        OrderStatus:details.OrderStatus,
-        OrderDescription:details.Description,
-        NoOfItems:details.NoOfItems,
-        OrderTotal:details.OrderTotal,
-        OrderTime:details.OrderTime,
-        OrderPickUp:details.OrderPickUp,
-        OrderDelivery:details.OrderDelivery,
-        OrderPickUpStatus:details.OrderPickUpStatus,
-        OrderDeliveryStatus:details.OrderDeliveryStatus,
-        Address:details.Address,
-        Menu:details.menu
-    });
-    order.save((error,results)=>{
-        if(error){
-            res.send(error);
+    req.body.path="placeCustomerOrder";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
         }else{
-            res.send("Order Created");
-        }
-    })
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
+            }
+    });
 }
