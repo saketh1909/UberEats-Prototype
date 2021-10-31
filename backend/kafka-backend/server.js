@@ -3,7 +3,10 @@ var connection =  new require('./kafka/Connection');
 //var signin = require('./services/signin.js');
 require('./db/mongo');
 var Books = require('./services/books.js');
-var CustomerLogin = require('./services/CustomerLogin.js');
+var CustomerLogin = require('./services/Customer.js');
+var Restaurant = require('./services/Restaurant.js');
+var Restaurantdishes=require('./services/RestaurantDishes.js'); 
+var RestaurantOrders=require('./services/RestaurantOrders.js');
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
     var consumer = connection.getConsumer(topic_name);
@@ -38,3 +41,6 @@ function handleTopicRequest(topic_name,fname){
 //second argument is a function that will handle this topic request
 //handleTopicRequest("post_book",Books)
 handleTopicRequest("customer_login",CustomerLogin);
+handleTopicRequest("restaurant",Restaurant);
+handleTopicRequest("restaurant_dishes",Restaurantdishes);
+handleTopicRequest("restaurant_orders",RestaurantOrders);
