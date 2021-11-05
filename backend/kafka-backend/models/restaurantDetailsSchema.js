@@ -14,7 +14,8 @@ var restaurantSchema= new Schema({
     ModeOfDelivery:{type:Number,default:2},
     Veg:{type:Number,default:0},
     Nonveg:{type:Number,default:0},
-    Vegan:{type:Number,default:0}
+    Vegan:{type:Number,default:0},
+    Timings:{type:String,default:""}
 },
 {
     versionKey: false

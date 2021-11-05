@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import config from '../urlConfig';
+const jwt_decode = require('jwt-decode');
 export const restaurantLogin =  (data) => async dispatch =>{
     await Axios.post(`${config.BackendURL}/restaurantLogin`,data,{
         headers:{
@@ -9,6 +10,16 @@ export const restaurantLogin =  (data) => async dispatch =>{
     })
     .then(async res=>{
         //console.log(res);
+        if (res.data.resttoken.length > 0) {
+            localStorage.setItem("resttoken", res.data.resttoken);
+
+            var decoded = jwt_decode(res.data.resttoken.split(' ')[1]);
+            localStorage.setItem("restaurant_id", decoded._id);
+            localStorage.setItem("restaurantname", decoded.username);
+            localStorage.setItem("type2",decoded.type);
+            res.data.resttoken=undefined;
+        }
+        
             dispatch({
                 type:'RESTAURANT_LOGIN',
                 payload:res.data

@@ -7,6 +7,8 @@ var cors = require('cors');
 const customerController=require('./mongodb/controller/customerController');
 const restaurantController=require('./mongodb/controller/restaurantController');
 const restaurantSearchController = require('./mongodb/controller/restaurantSearchController');
+const { checkAuth } = require("./Utils/passport");
+const { auth } = require("./Utils/passport");
 //use cors to allow cross origin resource sharing
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
@@ -46,6 +48,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
         console.log(err);
         console.log(`MongoDB Connection Failed`);
     } else {
+        auth();
         console.log(`MongoDB Connected`);
     }
 });
@@ -54,27 +57,30 @@ mongoose.connect(mongoDB, options, (err, res) => {
 //Customer Apis
 app.post('/customerLogin',customerController.customerLogin);
 app.post('/customerSignup',customerController.customerSignup);
-app.post('/updateCustomerProfile',customerController.updateCustomerProfile);
-app.post('/addToFavourites',customerController.addToFavourites);
-app.get('/getFavouriteRestaurants',customerController.getFavouriteRestaurants);
-app.post('/addAddress',customerController.addAddress);
-app.get('/getAddress',customerController.getAddress);
-app.post('/placeCustomerOrder',customerController.placeCustomerOrder);
-app.get('/getCustomerOrders',customerController.getCustomerOrders);
+app.post('/updateCustomerProfile',checkAuth,customerController.updateCustomerProfile);
+app.post('/addToFavourites',checkAuth,customerController.addToFavourites);
+app.get('/getFavouriteRestaurants',checkAuth,customerController.getFavouriteRestaurants);
+app.post('/addAddress',checkAuth,customerController.addAddress);
+app.get('/getAddress',checkAuth,customerController.getAddress);
+app.post('/placeCustomerOrder',checkAuth,customerController.placeCustomerOrder);
+app.get('/getCustomerOrders',checkAuth,customerController.getCustomerOrders);
 
 
 //Restaurant Search Apis
-app.get('/getRestaurants',restaurantSearchController.getRestaurants);
-
+app.get('/getRestaurants',checkAuth,restaurantSearchController.getRestaurants);
+app.get('/getRestaurantOnSearch',checkAuth,restaurantSearchController.getRestaurantBasedOnSearch);
 //Restaurant Apis
 app.post('/restaurantSignup',restaurantController.restaurantSignup);
 app.post('/restaurantLogin',restaurantController.restaurantLogin);
-app.get('/restaurantProfile',restaurantController.restaurantProfile);
-app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile);
-app.get('/getCustomerProfile',restaurantController.getCustomerProfile);
-app.post('/addDish',restaurantController.addDish);
-app.put('/updateDish',restaurantController.updateDish);
-app.get('/getRestaurantMenu',restaurantController.getRestaurantMenu);
+app.get('/restaurantProfile',checkAuth,restaurantController.restaurantProfile);
+app.post('/updateRestaurantProfile',checkAuth,restaurantController.updateRestaurantProfile);
+app.get('/getCustomerProfile',checkAuth,restaurantController.getCustomerProfile);
+app.post('/addDish',checkAuth,restaurantController.addDish);
+app.put('/updateDish',checkAuth,restaurantController.updateDish);
+app.get('/getRestaurantMenu',checkAuth,restaurantController.getRestaurantMenu);
+app.get('/getOrderMenu',checkAuth,restaurantController.getOrderMenu);
+app.get('/getRestaurantOrders',checkAuth,restaurantController.getRestaurantOrders);
+app.post('/updateDeliveryStatus',checkAuth,restaurantController.updateDeliveryStatus);
 //start your server on port 3001
 app.listen(3001, () => console.log("Server Listening on port 3001"));
 module.exports=app;
