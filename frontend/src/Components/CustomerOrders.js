@@ -7,35 +7,74 @@ import {Table} from 'react-bootstrap';
 import {Modal,Button} from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import config from '../urlConfig';
+import ReactPaginate from 'react-paginate';
+import '../App.css';
 const months=["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
 class CustomerOrders extends React.Component{
     constructor(props){
         super(props);
         this.state={
             orders:[],
+            modOrders:[],
             originalOrders:[],
             ordersMenu:[],
             show:false,
-            currentMenu:[]
+            currentMenu:[],
+            offset: 0,
+            perPage: 5,
+            currentPage: 0,
+            pageCount:0
         }
     }
     componentDidMount(){
         const {CustomerID}=this.props.customerDetails;
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.get(`${config.BackendURL}/getCustomerOrders?CustomerID=${CustomerID}`)
             .then(res=>{
                 //console.log(res.data);
+                if(res.data.Orders.length==0) return;
                 const {data}=res;
                 data.Orders.sort(function(a,b){
                     return new Date(b.OrderTime) - new Date(a.OrderTime);
                   });
-                  console.log("Sorted",data.Orders);
-                this.setState({orders:data.Orders,ordersMenu:data.OrdersMenu,originalOrders:data.Orders});
+                  //console.log("Sorted",data.Orders);
+                const slice = data.Orders.slice(this.state.offset, this.state.offset + this.state.perPage)
+                this.setState({orders:slice,modOrders:data.Orders,ordersMenu:data.OrdersMenu,originalOrders:data.Orders,pageCount: Math.ceil(data.Orders.length / this.state.perPage)});
             })
             .catch(err=>{
                 console.log(err);
             })
     }
   
+    cancelOrder= (event) => {
+        console.log("Cancel Clicked",event.target.id);
+        let order=this.state.originalOrders.filter(o=>o.OrderID==event.target.id)[0];
+        if(order==null) return;
+        let body = {
+            OrderID:event.target.id,
+            OrderPickUp:order.OrderPickUp,
+            OrderDelivery:order.OrderDelivery
+        };
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+        Axios.put(`${config.BackendURL}/cancelCustomerOrder`,body)
+        .then(res=>{
+            let orders1 = this.state.orders;
+            orders1.map(o=>{
+                if(o.OrderID==event.target.id){
+                    order.OrderStatus="Cancelled";
+                    if(order.OrderPickUp===1){
+                        order.OrderPickUpStatus="Cancelled";
+                    }else{
+                        order.OrderDeliveryStatus="Cancelled";
+                    }
+                }
+            }) 
+            this.setState({orders:orders1});
+        })
+        .catch(err=>{
+            console.log(err);
+        })
+    }
     buildOrdersBody=()=>{
         if(this.state.orders.length===0) return;
         const {orders}= this.state;
@@ -54,6 +93,7 @@ class CustomerOrders extends React.Component{
                     <div>
                         <p>
                             {order.NoOfItems} items for ${order.OrderTotal}. {months[date.getMonth()]} {date.getDate()} at {date.getHours()>12?date.getHours()-12:date.getHours()}:{date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()} {date.getHours()>12?'PM':'AM'}. <a id={order.OrderID} onClick={(e)=>{this.showReceipt(e)}} href='#'>View receipt</a>
+                            &nbsp; &nbsp; &nbsp;{(order.OrderPickUpStatus=="Order Received" || order.OrderDeliveryStatus=="Order Received")?<a id={order.OrderID} onClick={(e)=>{this.cancelOrder(e)}} href='#' style={{color:"red"}}>Cancel Order</a>:null}
                         </p>
                     </div>
                     </td>
@@ -98,7 +138,8 @@ class CustomerOrders extends React.Component{
     handleChange=(e)=>{
         let filter=e.target.value;
         if(filter==="Select a Status"){
-            this.setState({orders:this.state.originalOrders});
+            let slice = this.state.originalOrders.slice(0,this.state.perPage);
+            this.setState({orders:slice,modOrders:this.state.originalOrders,currentPage:0,offset:0,pageCount:Math.ceil(this.state.originalOrders.length / this.state.perPage)});
             return;
         } 
         const {originalOrders}=this.state;
@@ -111,11 +152,35 @@ class CustomerOrders extends React.Component{
         filterData.sort(function(a,b){
             return new Date(b.OrderTime) - new Date(a.OrderTime);
           });
-        this.setState({orders:filterData});
+          const slice = filterData.slice(0,this.state.perPage);
+        this.setState({modOrders:filterData,orders:slice,currentPage:0,offset:0,pageCount:Math.ceil(filterData.length / this.state.perPage)});
        // console.log(filterData);
     }
+    handlePageClick = (e) => {
+        const selectedPage = e.selected;
+        const offset = selectedPage * this.state.perPage;
+        const slice = this.state.modOrders.slice(offset,offset + this.state.perPage);
+        this.setState({
+            currentPage: selectedPage,
+            offset: offset,
+            orders:slice
+        });
+
+    };
+    handlePageCount = (e) =>{
+        let count=parseInt(e.target.value);
+        const offset=0;
+        const slice = this.state.modOrders.slice(offset,offset + count);
+        this.setState({
+            currentPage: 0,
+            offset: 0,
+            orders:slice,
+            perPage:count,
+            pageCount:Math.ceil(this.state.modOrders.length / count)
+        });
+    }
     render(){
-        if(this.props.customerDetails===undefined){
+        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
             return <Redirect to='/'/>
         }
         return(
@@ -171,8 +236,10 @@ class CustomerOrders extends React.Component{
                             <option>Delivered</option>
                             <option>Pick up Ready</option>
                             <option>Picked up</option>
+                            <option>Cancelled</option>
                         </select>
                     </div>
+                    
                 </div>
                 <div>
                     <Table className="table-hover">
@@ -181,7 +248,29 @@ class CustomerOrders extends React.Component{
                         </tbody>
                     </Table>
                 </div>
+                <div className="row">
+                <div className="col-md-1 offset-md-3" style={{marginTop:"8px"  }}>
+                        <select className="form-select" style={{width:"68px"}} onChange={this.handlePageCount}>
+                        <option>2</option>
+                        <option selected>5</option>
+                        <option>10</option>
+                        </select>
                 </div>
+                <div className="col-md-4">
+                        <ReactPaginate
+                        previousLabel={"prev"}
+                        nextLabel={"next"}
+                        breakLabel={"..."}
+                        breakClassName={"break-me"}
+                        pageCount={this.state.pageCount}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={this.handlePageClick}
+                        containerClassName={"pagination"}
+                        subContainerClassName={"pages pagination"}
+                        activeClassName={"active"}/>
+                    </div>
+                </div></div>
             </React.Fragment>
         )
     }

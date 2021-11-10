@@ -19,6 +19,7 @@ class FavouriteRestaurants extends React.Component{
         //console.log("Here");
         const {customerDetails}=this.props;
        // console.log(customerDetails);
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.get(`${config.BackendURL}/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
             //console.log(res.data);
@@ -77,7 +78,7 @@ class FavouriteRestaurants extends React.Component{
         this.setState({clicked:true});
     }
     restCard=(data)=>{
-        if(data.ImageURl==="" || data.ImageURL===null || data.ImageURL===undefined){
+        if(data.ImageURL==="" || data.ImageURL===null || data.ImageURL===undefined){
             data.ImageURL=noProfileImage;
         }
         return (<MDBCard style={{ maxWidth: '22rem',borderColor:"black",borderWidth:"3px",borderRadius:"8px" }}>
@@ -95,7 +96,7 @@ class FavouriteRestaurants extends React.Component{
         if(this.state.clicked){
             return <Redirect to='/restaurantViewPage'/>
         }
-        if(this.props.customerDetails===undefined){
+        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null ){
             return <Redirect to='/'/>
         }
         return (<React.Fragment>

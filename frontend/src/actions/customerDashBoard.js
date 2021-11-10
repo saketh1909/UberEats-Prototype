@@ -1,6 +1,7 @@
 import Axios from 'axios';
 import config from '../urlConfig.js';
 export const getRestaurants= () => async dispatch =>{
+    Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     await Axios.get(`${config.BackendURL}/getRestaurants`)
     .then(async (res)=>{
         console.log("Action",res);
@@ -19,6 +20,7 @@ export const getRestaurants= () => async dispatch =>{
 }
 export const searchRestaurants = (search,type) => async dispatch =>{
    // console.log("Action",search,type);
+   Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     await Axios.get(`${config.BackendURL}/getRestaurantOnSearch?search=${search}&type=${type}`)
     .then(async (res)=>{
         console.log("Data from backend",res.data);

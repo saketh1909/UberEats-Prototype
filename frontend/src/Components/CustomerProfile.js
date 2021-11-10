@@ -70,6 +70,7 @@ class CustomerProfile extends React.Component{
             };
             data["ImageURL"]=url;
             details["ImageURL"]=url;
+            Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
             Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
             .then(async (res)=>{
                 //console.log("Update Successful");
@@ -94,6 +95,7 @@ class CustomerProfile extends React.Component{
             details[key]=this.state[key];
         }
         //console.log("Changed",data);
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         await Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
             .then(async (res)=>{
                 //console.log("Update Successful");
@@ -109,7 +111,7 @@ class CustomerProfile extends React.Component{
     }
     render(){
        // console.log(this.props.customerDetails);
-       if(this.props.customerDetails===undefined){
+       if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
         return <Redirect to='/'/>
     }
         return (

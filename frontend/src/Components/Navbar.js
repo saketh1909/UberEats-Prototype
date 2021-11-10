@@ -16,6 +16,10 @@ function Navbar() {
 
   const showSidebar = () => setSidebar(!sidebar);
   const logout1 = () =>{
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("username");
+    localStorage.removeItem("type1");
     dispatch(logout());
 }
   return (

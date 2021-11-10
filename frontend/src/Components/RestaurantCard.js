@@ -40,6 +40,7 @@ class RestaurantCard extends React.Component{
         }
         this.setState({favClicked:true});
        // console.log(postData);
+       Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.post(`${config.BackendURL}/addToFavourites`,postData)
         .then(res=>{
             console.log("Insertion Successful");
@@ -62,7 +63,7 @@ class RestaurantCard extends React.Component{
             this.setState({restaurantData:data});
         }
         //console.log(data.ImageURL);
-        if(data.ImageURl==="" || data.ImageURL===null || data.ImageURL===undefined){
+        if(data.ImageURL==="" || data.ImageURL===null || data.ImageURL===undefined){
             data.ImageURL=noProfileImage;
         }
         return (

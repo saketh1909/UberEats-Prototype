@@ -33,6 +33,7 @@ class OrderConfirmation extends React.Component{
         let tot=subTot+subTot*(0.2)+6;
         tot=Math.round(tot*100)/100;
         this.setState({Qty:qty,subTotal:subTot,total:tot});
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.get(`${config.BackendURL}/getAddress?customerID=${this.props.customerDetails.CustomerID}`)
         .then(res=>{
             console.log(res.data);
@@ -117,6 +118,7 @@ class OrderConfirmation extends React.Component{
             customerID:customerDetails.CustomerID,
             address:AddAddress
         }
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.post(`${config.BackendURL}/addAddress`,data)
         .then(res=>{
            // console.log("Insertion Successful");
@@ -157,6 +159,7 @@ class OrderConfirmation extends React.Component{
             menu:this.props.cartItems
         }
         //console.log(orderDetails);
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.post(`${config.BackendURL}/placeCustomerOrder`,orderDetails)
         .then(res=>{
             console.log("Insertion Successful");
@@ -171,7 +174,7 @@ class OrderConfirmation extends React.Component{
     }
     render(){
         //console.log("State Vlaues",this.state);
-        if(this.props.customerDetails===undefined){
+        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
             return <Redirect to='/'/>
         }
         if(this.state.orderPlaced){

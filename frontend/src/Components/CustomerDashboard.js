@@ -23,11 +23,14 @@ class CustomerDashboard extends React.Component{
         await this.props.getRestaurants();
         //console.log(this.props.restaurantData);
         const {customerDetails}=this.props;
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.get(`${config.BackendURL}/getFavouriteRestaurants?customerID=${customerDetails.CustomerID}`)
         .then(res=>{
            // console.log(res.data);
             let id={};
+            console.log("Fav Data Check",res.data);
             res.data.map((rest)=>{
+                if(rest===null) return;
                 id[rest.RestaurantID]=true;
             })
             this.setState({favRestaurants:id});
@@ -150,7 +153,7 @@ class CustomerDashboard extends React.Component{
     }
     render(){
        // console.log("Updated",this.state.favRestaurants);
-        if(this.props.customerDetails===undefined){
+        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
             return <Redirect to='/'/>
         }
         if(this.props.favRestaurants!==undefined){
