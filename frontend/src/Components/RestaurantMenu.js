@@ -32,6 +32,7 @@ class RestaurantMenu extends React.Component{
         }
     }
     componentDidMount(){
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
         var url=`${config.BackendURL}/getRestaurantMenu?RestaurantID=${this.props.restaurantDetails.RestaurantID}`;
         Axios.get(url)
         .then(res=>{
@@ -230,6 +231,7 @@ class RestaurantMenu extends React.Component{
         const dish=this.state.dishes;
         dish.push(dishDetails);
         console.log(dishDetails);
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
         Axios.post(`${config.BackendURL}/addDish`,dishDetails)
         .then(res=>{
             console.log("Dish Added Successfully");
@@ -265,7 +267,7 @@ class RestaurantMenu extends React.Component{
         for (const [key, value] of Object.entries(this.state.changedAttributes)) {
             updateDetails[key]=this.state[key];
           }
-        console.log(updateDetails);
+          Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
           Axios.put(`${config.BackendURL}/updateDish`,updateDetails)
           .then(res=>{
             console.log("Update Successful");

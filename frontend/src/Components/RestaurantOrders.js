@@ -31,12 +31,14 @@ class RestaurantOrders extends React.Component{
     }
     componentDidMount(){
         const {RestaurantID}=this.props.restaurantDetails;
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
         Axios.get(`${config.BackendURL}/getRestaurantOrders?RestaurantID=${RestaurantID}`)
         .then(res=>{
            // console.log("data",res.data);
            res.data.sort(function(a,b){
             return new Date(b.OrderTime) - new Date(a.OrderTime);
           });
+          console.log("data",res.data);
             this.setState({orders:res.data,originalOrders:res.data});
         })
         .catch(err=>{
@@ -97,6 +99,7 @@ class RestaurantOrders extends React.Component{
                             <div><b>Order Delivery Status:</b>{data.OrderPickUp===1?data.OrderPickUpStatus:data.OrderDeliveryStatus} </div>
                             <div><b>Order Date:</b>{data.OrderTime}</div>
                             <div><b>Total Payment:</b>${data.OrderTotal}</div>
+                            <div><b>Special Instructions:</b>{data.OrderDescription!=null && data.OrderDescription.length>0?data.OrderDescription:"Nothing"}</div>
                         </MDBCardText>
                         <button className="btn btn-primary" id={data.OrderID} onClick={(e)=>{this.menuClicked(e)}}>Order Details</button>
                         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -116,14 +119,8 @@ class RestaurantOrders extends React.Component{
         this.setState({showMenu:true})
         let orderID=e.target.id;
         let orderDetails=this.state.orders.filter(order=>order.OrderID===orderID)[0];
-        Axios.get(`${config.BackendURL}/getOrderMenu?OrderID=${orderID}`)
-        .then(res=>{
-            console.log(res.data);
-            this.setState({orderMenu:res.data});
-        })
-        .catch(err=>{
-            console.log(err);
-        })
+        this.setState({orderMenu:orderDetails.Menu});
+        
     }
     updateStatusClicked=(e)=>{
         let orderID=e.target.id;
@@ -177,10 +174,14 @@ class RestaurantOrders extends React.Component{
                             {pickUpStatus.map((state,index)=>{
                                 return <option  key={index}>{state}</option>
                             })}
+                            {(orderDetails.OrderPickUpStatus==="Order Received" || orderDetails.OrderPickUpStatus==="Preparing")
+                            ?<option>Cancel</option>:null}
                          </select>:<select class="form-select form-select-lg mb-3" name="OrderDeliveryStatus" style={{width:"200px"}} value={this.state.OrderDeliveryStatus} onChange={this.handleChange}>
                             {deliveryStatus.map((state,index)=>{
                                 return <option  key={index}>{state}</option>
                             })}
+                            {(orderDetails.OrderDeliveryStatus==="Order Received" || orderDetails.OrderDeliveryStatus==="Preparing")
+                            ?<option>Cancel</option>:null}
                          </select>}
                         </div>
                         </div>
@@ -201,9 +202,15 @@ class RestaurantOrders extends React.Component{
         return row;
     }
     orderDetailsBody=()=>{
-
+        if(this.state.orderMenu.length==0 || this.state.orderMenu==null || this.state.orderMenu==""){
+            return;
+        }
+        console.log(this.state.orderMenu);
         return(
             <React.Fragment>
+                <div>
+                    Order Description : {this.state.orderMenu[0].OrderDescription}
+                </div>
                 <Table>
                     <thead>
                         <tr>
@@ -302,12 +309,23 @@ class RestaurantOrders extends React.Component{
             if(details["OrderPickUpStatus"]==="Pick up"){
                 details["OrderStatus"]="Delivered"
             }
+            if(details["OrderPickUpStatus"]==="Cancel"){
+                details["OrderStatus"]="Cancelled";
+                details["OrderPickUpStatus"]="Cancelled"
+                
+            }
         }else{
             details["OrderDeliveryStatus"]=this.state.OrderDeliveryStatus;
             if(details["OrderDeliveryStatus"]==="Delivered"){
                 details["OrderStatus"]="Delivered"
             }
+            if(details["OrderDeliveryStatus"]==="Cancel"){
+                details["OrderStatus"]="Cancelled";
+                details["OrderDeliveryStatus"]="Cancelled"
+                
+            }
         }
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
         Axios.post(`${config.BackendURL}/updateDeliveryStatus`,details)
             .then(res=>{
                 console.log(res.data);
@@ -316,11 +334,13 @@ class RestaurantOrders extends React.Component{
                     if(order.OrderID===this.state.OrderID){
                         if(details['OrderPickUpStatus']!==undefined){
                             order['OrderPickUpStatus']=details['OrderPickUpStatus'];
-                            
+                            if(details["OrderStatus"]==="Delivered" || details["OrderStatus"]==="Cancelled"){
+                                order['OrderStatus']=details["OrderStatus"]
+                            }
                             
                         }else{
                             order['OrderDeliveryStatus']=details['OrderDeliveryStatus'];
-                            if(details["OrderStatus"]==="Delivered"){
+                            if(details["OrderStatus"]==="Delivered" || details["OrderStatus"]==="Cancelled"){
                                 order['OrderStatus']=details["OrderStatus"]
                             }
                         }

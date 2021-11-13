@@ -49,7 +49,7 @@ app.post('/updateDeliveryStatus',restaurantController.updateDeliveryStatus);
 
 app.get('/getOrderMenu',restaurantController.getOrderMenu);
 
-app.put('/updateOrderStatus',restaurantController.updateOrderStatus);
+//app.put('/updateOrderStatus',restaurantController.updateOrderStatus);
 
 app.get('/getCustomerProfile',restaurantController.getCustomerProfile);
 

@@ -100,7 +100,7 @@ class CustomerProfile extends React.Component{
             .then(async (res)=>{
                 //console.log("Update Successful");
                 this.props.updateCustomerProfile(details);
-                this.setState({edit:false,changedAttributes:{}});
+                this.setState({edit:true,changedAttributes:{}});
             })
             .catch(err=>{
                 console.log("Error");

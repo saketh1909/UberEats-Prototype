@@ -23,7 +23,8 @@ class CustomerOrders extends React.Component{
             offset: 0,
             perPage: 5,
             currentPage: 0,
-            pageCount:0
+            pageCount:0,
+            selectedOrder:{}
         }
     }
     componentDidMount(){
@@ -37,7 +38,7 @@ class CustomerOrders extends React.Component{
                 data.Orders.sort(function(a,b){
                     return new Date(b.OrderTime) - new Date(a.OrderTime);
                   });
-                  //console.log("Sorted",data.Orders);
+                //console.log("Sorted",data.Orders);
                 const slice = data.Orders.slice(this.state.offset, this.state.offset + this.state.perPage)
                 this.setState({orders:slice,modOrders:data.Orders,ordersMenu:data.OrdersMenu,originalOrders:data.Orders,pageCount: Math.ceil(data.Orders.length / this.state.perPage)});
             })
@@ -106,7 +107,9 @@ class CustomerOrders extends React.Component{
     showReceipt=(e)=>{
         this.setState({show:true});
         let menu=this.state.ordersMenu.filter(menu=>menu.OrderID===e.target.id);
-        this.setState({currentMenu:menu});
+        let order=this.state.orders.filter(order=>order.OrderID==e.target.id)[0];
+        //console.log("Order",order);
+        this.setState({currentMenu:menu,selectedOrder:order});
     }
     receiptBody=()=>{
         if(this.state.currentMenu.length>0){
@@ -196,6 +199,9 @@ class CustomerOrders extends React.Component{
                         </div>
                         <div>
                             <b>Order Status:</b>{this.state.currentMenu.length>0?this.state.currentMenu[0].OrderStatus:null}
+                        </div>
+                        <div>
+                            <b>Special Instructions:</b>{this.state.selectedOrder.OrderDescription!=null?this.state.selectedOrder.OrderDescription:<b>-------</b>}
                         </div>
                         <Table>
                             <thead>

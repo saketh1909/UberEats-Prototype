@@ -1,8 +1,8 @@
 # UberEats
 
 To run Frontend Application:
-1)Go to the frontend folder
-2)Run "npm install" command
+1)Go to the frontend folder \n
+2)Run "npm install" command \n
 3)Run "npm start" to start the server at port 3000..
 
 To run the Backend Application:

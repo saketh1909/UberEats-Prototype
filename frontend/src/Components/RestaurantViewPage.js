@@ -28,6 +28,7 @@ class RestaurantViewPage extends React.Component{
         //console.log("check",this.props.restaurant);
         var url=`${config.BackendURL}/getRestaurantMenu?RestaurantID=${this.props.restaurant.RestaurantID}`;
        // console.log(url);
+       Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.get(url)
         .then(res=>{
             //console.log(res.data);
@@ -124,6 +125,11 @@ class RestaurantViewPage extends React.Component{
                                         <option value={3}>3</option>
                                         <option value={4}>4</option>
                                         <option value={5}>5</option>
+                                        <option value={6}>6</option>
+                                        <option value={7}>7</option>
+                                        <option value={8}>8</option>
+                                        <option value={9}>9</option>
+                                        <option value={10}>10</option>
                                     </select></td>
                                     <td>
                                         <button className="btn btn-primary" id={data.DishID} onClick={(e)=>{this.addMenuToCart(e)}}>Add to cart</button>
@@ -184,6 +190,19 @@ class RestaurantViewPage extends React.Component{
 
         this.setState({showCart:true,cartCount:items.length});
     }
+    qtyChanged = (e) => {
+        const {id,value} = e.target;
+        let qty=parseInt(value);
+        let totalItems=this.props.cartItems.slice(0);
+        totalItems.map(item => {
+            if(item.DishID===id){
+                item.Qty=qty;
+            }
+        });
+        this.props.updateCartItems(totalItems);
+
+        this.setState({showCart:true,cartCount:totalItems.length});
+    }
     cartBody=()=>{
         const {cartItems}=this.props;
         if(cartItems===undefined) return;
@@ -211,7 +230,20 @@ class RestaurantViewPage extends React.Component{
                                     <td>{index+1}</td>
                                     <td>{item.DishName}</td>
                                     <td>${item.DishPrice}</td>
-                                    <td>{item.Qty}</td>
+                                    <td>
+                                        <select value={item.Qty} id={item.DishID} onChange={(e)=>{this.qtyChanged(e)}}>
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                            <option value={3}>3</option>
+                                            <option value={4}>4</option>
+                                            <option value={5}>5</option>
+                                            <option value={6}>6</option>
+                                            <option value={7}>7</option>
+                                            <option value={8}>8</option>
+                                            <option value={9}>9</option>
+                                            <option value={10}>10</option>
+                                        </select>
+                                    </td>
                                     <td>${item.Qty * item.DishPrice}</td>
                                     <td>
                                         <button type="button" className="btn btn-dark" id={item.DishID} onClick={(e)=>{this.removeClicked(e)}}>Remove</button>
@@ -243,6 +275,7 @@ class RestaurantViewPage extends React.Component{
         }
         this.setState({favClicked:true});
         console.log(postData);
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
         Axios.post(`${config.BackendURL}/addToFavourites`,postData)
         .then(res=>{
             console.log("Insertion Successful");

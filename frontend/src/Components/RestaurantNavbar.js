@@ -18,8 +18,10 @@ function RestaurantNavbar() {
   const showSidebar = () => setSidebar(!sidebar);
   
   const logout = () =>{
-      console.log("Logout clicked");
-      console.log(dispatch);
+    localStorage.removeItem("resttoken");
+    localStorage.removeItem("restaurant_id");
+    localStorage.removeItem("restaurantname");
+    localStorage.removeItem("type2");
       dispatch(restaurantLogout());
   }
   return (

@@ -61,6 +61,7 @@ class RestaurantDashboard extends React.Component{
             };
             data["ImageURL"]=url;
             details["ImageURL"]=url;
+            Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
             Axios.post(`${config.BackendURL}/updateRestaurantProfile`,data)
             .then(async (res)=>{
                 console.log("Update Successful");
@@ -106,6 +107,7 @@ class RestaurantDashboard extends React.Component{
             
         }
         //console.log("Changed",data);
+        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
         await Axios.post(`${config.BackendURL}/updateRestaurantProfile`,data)
             .then(async (res)=>{
                 //console.log("Update Successful");

@@ -143,6 +143,7 @@ class OrderConfirmation extends React.Component{
         }
         let date=new Date().toLocaleString();
         const {deliveryMode} = this.props;
+        let type=localStorage.getItem("DeliveryType");
         let orderDetails={
             CustomerID:this.props.customerDetails.CustomerID,
             RestaurantID:this.props.cartItems[0].RestaurantID,
@@ -151,10 +152,10 @@ class OrderConfirmation extends React.Component{
             NoOfItems:items,
             OrderTotal:this.state.total,
             OrderTime:date,
-            OrderPickUp:deliveryMode==="Pickup" ?1:0,
-            OrderDelivery:deliveryMode==="Delivery"|| deliveryMode===undefined?1:0,
-            OrderPickUpStatus:deliveryMode==="Pickup" ?"Order Received":null,
-            OrderDeliveryStatus:deliveryMode==="Delivery"|| deliveryMode===undefined?"Order Received":null,
+            OrderPickUp:type==="Pickup" ?1:0,
+            OrderDelivery:type==="Delivery"|| type===undefined?1:0,
+            OrderPickUpStatus:type==="Pickup" ?"Order Received":null,
+            OrderDeliveryStatus:type==="Delivery"|| type===undefined?"Order Received":null,
             Address:this.state.Address,
             menu:this.props.cartItems
         }

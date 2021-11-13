@@ -6,6 +6,8 @@ const Order=require('../models/ordersSchema');
 const Dish = require('../models/dishesSchema');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+const { secret } = require('../../mongoConfig');
 const {uuid} = require("uuidv4");
 
 const restaurantLogin = async (msg,callback) => {
@@ -33,6 +35,11 @@ const restaurantLogin = async (msg,callback) => {
        }else{
         res.status = 200;
         res.data=results;
+        const payload = { _id: results._id, username: results.Name, type:"restaurant"};
+        const token = jwt.sign(payload, secret, {
+            expiresIn: 1008000
+        });
+        res.token="JWT " + token;
         callback(null, res);
        }
     });
@@ -81,12 +88,13 @@ const restaurantProfile = async (msg,callback) => {
 
 const updateRestaurantProfile =async(msg,callback) => {
     let res= {};
-    var filter={RestaurantID:msg.restaurantID};
+    var filter={RestaurantID:msg.RestaurantID};
     var update={};
     for (const [key, value] of Object.entries(msg)) {
-        if(key=="restaurantID") continue;
+        if(key=="RestaurantID") continue;
         update[key]=value;
     }
+    console.log("Check",update);
     Restaurant.findOneAndUpdate(filter,update,async(error,results)=>{
         if(error){
             res.status=500;

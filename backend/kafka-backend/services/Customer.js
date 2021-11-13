@@ -7,21 +7,21 @@ const Order=require('../models/ordersSchema');
 const Dish = require('../models/dishesSchema');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
+const { secret } = require('../../mongoConfig');
 const {uuid} = require("uuidv4");
+
 const customerLogin =async (msg, callback)=>{
     res = {};
     console.log("Parameters",msg);
     const {email,password}=msg;
     Customer.findOne({Email:email},async (error,results)=>{
-        //console.log("error",error);
-        //console.log("results",results);
         if (error) {
             res.status = 500;
             res.data = "Error Occured";
             callback(null, res);
         }
         if(results==null){
-           //callback(error, "Invalid Credentials");
             res.status = 404;
             res.data = "Invalid Credentials";
             callback(null, res);
@@ -35,6 +35,11 @@ const customerLogin =async (msg, callback)=>{
        }else{
         res.status = 200;
         res.data=results;
+        const payload = { _id: results._id, username: results.Name, type:"customer"};
+        const token = jwt.sign(payload, secret, {
+            expiresIn: 1008000
+        });
+        res.token="JWT " + token;
         callback(null, res);
        }
     })
@@ -109,7 +114,7 @@ const getFavouriteRestaurants = async(msg,callback) => {
     filter ={
         CustomerID:msg.customerID
     }
-    console.log(filter);
+   // console.log(filter);
     favRestaurants.find(filter,{RestaurantID:true,_id:false},async (error,results)=>{
         if(error){
             res.status=500;
@@ -117,21 +122,33 @@ const getFavouriteRestaurants = async(msg,callback) => {
             callback(null, res);
         }else{
             let Restaurants=[];
+            if(results.length==0){
+                res.status=200;
+                res.data=Restaurants;
+                callback(null,res);
+                return;
+            }
             console.log("results",results);
-            for(let obj of results){
-               await Restaurant.findOne({RestaurantID:obj.RestaurantID},{Password:false,_id:false},async(error,results)=>{
+            for(let i=0;i<results.length;i++){
+                let obj = results[i];
+                await Restaurant.findOne({RestaurantID:obj.RestaurantID},{Password:false,_id:false},async(error,result)=>{
                     if(error){
                         res.status=500;
                         res.data = "Error Occured";
                         callback(null, res);
                     }else{
-                        Restaurants.push(results);
+                        Restaurants.push(result);
+                        //console.log("Check",Restaurants);
+                    }
+                    if(i==results.length-1){
+                        res.status=200;
+                        res.data=Restaurants;
+                        callback(null,res);
                     }
                 })
             }
-            res.status=200;
-            res.data=Restaurants;
-            callback(null,res);
+
+            
         }
     });
 
@@ -328,6 +345,27 @@ const getRestaurantBasedOnSearch = async (msg,callback) => {
     });
 }
 
+const cancelCustomerOrder = async (msg,callback) => {
+    let res= {};
+    let update= {};
+    update["OrderStatus"]="Cancelled";
+    if(msg.OrderPickUp!==0){
+        update["OrderPickUpStatus"]="Cancelled";
+    }else{
+        update["OrderDeliveryStatus"]="Cancelled";
+    }
+    Order.findOneAndUpdate({OrderID:msg.OrderID},update,(error,results)=>{
+        if(error){
+            res.status = 500;
+            res.data = "Error Occured";
+            callback(null, res);
+        }else{
+            res.status = 200;
+            res.data = "Update Successful";
+            callback(null,res);
+        }
+    });
+}
 handle_request = (msg, callback) => {
     if(msg.path==="customerLogin"){
         delete msg.path;
@@ -372,6 +410,10 @@ handle_request = (msg, callback) => {
     else if(msg.path==="getRestaurantBasedOnSearch"){
         delete msg.path;
         getRestaurantBasedOnSearch(msg,callback);
+    }
+    else if(msg.path==="cancelCustomerOrder"){
+        delete msg.path;
+        cancelCustomerOrder(msg,callback);
     }
 }
 exports.handle_request = handle_request;

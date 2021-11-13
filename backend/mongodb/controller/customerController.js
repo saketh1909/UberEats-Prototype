@@ -39,6 +39,7 @@ module.exports.customerLogin=async(req,res)=>{
             res.statusCode=results.status;
             if(res.statusCode===200)
                 results.data.Password=undefined;
+                results.data["token"]=results.token;
             res.send(results.data);
 
             }
@@ -48,8 +49,8 @@ module.exports.customerLogin=async(req,res)=>{
 module.exports.updateCustomerProfile=async(req,res)=>{
     req.body.path="updateCustomerProfile";
     kafka.make_request('customer_login',req.body, function(err,results){
-        console.log('in result');
-        console.log(results);
+        //console.log('in result');
+        //console.log(results);
         if (err){
             console.log("Inside err");
             res.statusCode=500;
@@ -85,6 +86,7 @@ module.exports.getFavouriteRestaurants=async(req,res)=>{
     request={};
     request.path="getFavouriteRestaurants";
     request.customerID=req.query.customerID;
+    
     kafka.make_request('customer_login',request, function(err,results){
         if (err){
             console.log("Inside err");
@@ -149,6 +151,22 @@ module.exports.getCustomerOrders=async(req,res)=>{
 }
 module.exports.placeCustomerOrder=async(req,res)=>{
     req.body.path="placeCustomerOrder";
+    kafka.make_request('customer_login',req.body, function(err,results){
+        if (err){
+            console.log("Inside err");
+            res.statusCode=500;
+            res.send(err);
+        }else{
+            console.log("Inside else");
+            res.statusCode=results.status;
+            res.send(results.data);
+
+            }
+    });
+}
+
+module.exports.cancelCustomerOrder = async(req,res) => {
+    req.body.path="cancelCustomerOrder";
     kafka.make_request('customer_login',req.body, function(err,results){
         if (err){
             console.log("Inside err");

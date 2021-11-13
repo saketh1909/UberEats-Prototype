@@ -64,7 +64,7 @@ app.post('/addAddress',checkAuth,customerController.addAddress);
 app.get('/getAddress',checkAuth,customerController.getAddress);
 app.post('/placeCustomerOrder',checkAuth,customerController.placeCustomerOrder);
 app.get('/getCustomerOrders',checkAuth,customerController.getCustomerOrders);
-
+app.put('/cancelCustomerOrder',checkAuth,customerController.cancelCustomerOrder);
 
 //Restaurant Search Apis
 app.get('/getRestaurants',checkAuth,restaurantSearchController.getRestaurants);

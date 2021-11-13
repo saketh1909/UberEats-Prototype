@@ -52,6 +52,7 @@ class CustomerDashboard extends React.Component{
     handleChangeDeliveryType=(e)=>{
         const {value}=e.target;
         if(value==="Select type of Delivery"){
+            localStorage.setItem('DeliveryType',"Delivery");
             this.props.setRestaurants(this.props.restaurantData);
             return;
         }
@@ -64,7 +65,9 @@ class CustomerDashboard extends React.Component{
             this.props.setRestaurants(restData);
             return;
         }
+        localStorage.setItem('DeliveryType',value);
         if(value==="Pickup"){
+            
             this.props.searchRestaurants(0,"Pickup");
             return;
         }

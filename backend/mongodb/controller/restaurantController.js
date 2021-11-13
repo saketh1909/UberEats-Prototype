@@ -38,6 +38,7 @@ module.exports.restaurantLogin=async(req,res)=>{
             res.statusCode=results.status;
             if(res.statusCode===200)
                 results.data.Password=undefined;
+                results.data["resttoken"]=results.token;
             res.send(results.data);
 
             }

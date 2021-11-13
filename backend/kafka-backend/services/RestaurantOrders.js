@@ -52,6 +52,7 @@ const getRestaurantOrders = async(msg,callback) => {
                     }
                 });
             }
+           console.log("Check Data",data);
             res.status = 200;
             res.data = data;
             callback(null,res);
@@ -67,14 +68,22 @@ const updateDeliveryStatus = async(msg,callback) => {
         update["OrderPickUpStatus"]=details.OrderPickUpStatus;
         if(details.OrderPickUpStatus=="Picked up"){
             update["OrderStatus"]='Delivered';
-        }else{
+        }
+        else if(details.OrderPickUpStatus=="Cancelled"){
+            update["OrderStatus"]='Cancelled';
+        }
+        else{
             update["OrderStatus"]='New Order';
         }
     }else{
         update['OrderDeliveryStatus']=details.OrderDeliveryStatus;
         if(details.OrderDeliveryStatus==="Delivered"){
             update["OrderStatus"]='Delivered';
-        }else{
+        }
+        else if(details.OrderDeliveryStatus=="Cancelled"){
+            update["OrderStatus"]='Cancelled';
+        }
+        else{
             update["OrderStatus"]='New Order';
         }
     }
