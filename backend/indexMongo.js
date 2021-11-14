@@ -10,7 +10,7 @@ const restaurantSearchController = require('./mongodb/controller/restaurantSearc
 const { checkAuth } = require("./Utils/passport");
 const { auth } = require("./Utils/passport");
 //use cors to allow cross origin resource sharing
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: 'http://18.144.44.207:3000', credentials: true }));
 
 //use express session to maintain session data
 app.use(session({
