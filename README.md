@@ -24,6 +24,8 @@ kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partit
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic restaurant_orders
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic restaurant_dishes
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic response_topic
+
+
 Open a seperate terminal in that folder.
 Run npm install
 Run npm start
