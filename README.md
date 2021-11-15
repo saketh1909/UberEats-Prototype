@@ -20,9 +20,13 @@ kafka-server-start /usr/local/etc/kafka/server.properties
 Create Kafka Topics
 
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic customer_login
+
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic restaurant
+
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic restaurant_orders
+
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic restaurant_dishes
+
 kafka-topics --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic response_topic
 
 
