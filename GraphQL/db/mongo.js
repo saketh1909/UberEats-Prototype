@@ -1,11 +1,10 @@
-const { mongoDB } = require('../../mongoConfig.js');
+const { mongoDB } = require('../mongoConfig.js');
 const mongoose = require('mongoose');
 
 var options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     maxPoolSize: 20,
-    bufferMaxEntries: 0
 };
 
 mongoose.connect(mongoDB, options, (err, res) => {

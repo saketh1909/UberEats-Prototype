@@ -1,4 +1,6 @@
 //import './App.css';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
 import CustomerSignUp from './Components/CustomerSignUp';
 import RestaurantSignUp from './Components/RestaurantSignUp';
 import CustomerLogin from "./Components/CustomerLogin";
@@ -14,8 +16,14 @@ import FavouriteRestaurants from './Components/FavouriteRestaurants';
 import CustomerOrders from './Components/CustomerOrders';
 import OrderConfirmation from './Components/OrderConfirmation';
 import {BrowserRouter as Router ,Switch ,Route} from 'react-router-dom';
+
+const client = new ApolloClient({
+  uri: 'http://localhost:3010/graphql'
+});
+
 function App() {
   return (
+    <ApolloProvider client={client}>
     <div>
       <header>
         <Router>
@@ -38,6 +46,7 @@ function App() {
         </Router>
       </header>
     </div>
+    </ApolloProvider>
   );
 }
 

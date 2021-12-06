@@ -3,6 +3,9 @@ import UberEatsLogo from '../images/UberEatsLogo.png'
 import Card from 'react-bootstrap/Card';
 import CustomerImage from '../images/d68c5f5ddd33d16a8d6855987410673b.svg';
 import RestaurantImage from '../images/Customer.svg';
+import { graphql } from 'react-apollo';
+
+//import {getBooksQuery,getRestaurantsQuery} from '../GraphQLQueries/queries/queries';
 class Home extends React.Component{
     constructor(props){
         super(props);
@@ -10,6 +13,7 @@ class Home extends React.Component{
 
         }
     }
+    
     render(){
         return (
             <div style={{height:"720px",backgroundColor:"papayawhip"}}>
@@ -43,4 +47,4 @@ class Home extends React.Component{
     }
 }
 
-export default Home
+export default Home;

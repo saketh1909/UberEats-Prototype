@@ -37,9 +37,9 @@ class CustomerDashboard extends React.Component{
         });
         const {restaurantData}=this.props;
         const {City}=this.props.customerDetails;
-        let restData=restaurantData.filter(data=>data.Location===City);
-        restData=[...restData,...restaurantData.filter(data=>data.Location!==City)];
-        this.props.setRestaurants(restData);
+        //let restData=restaurantData.filter(data=>data.Location===City);
+        //restData=[...restData,...restaurantData.filter(data=>data.Location!==City)];
+        this.props.setRestaurants(restaurantData);
 
     }
    
@@ -156,7 +156,7 @@ class CustomerDashboard extends React.Component{
     }
     render(){
        // console.log("Updated",this.state.favRestaurants);
-        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
+        if(this.props.customerDetails===undefined){
             return <Redirect to='/'/>
         }
         if(this.props.favRestaurants!==undefined){
@@ -203,7 +203,7 @@ class CustomerDashboard extends React.Component{
     }
 }
 const mapStateToProps = (state) =>{
-   // console.log("state",state)
+   console.log("state",state)
     return {
         restaurantData:state.customerDashBoardReducer.restaurantData,
         favRestaurants:state.customerDashBoardReducer.favRestaurants,
