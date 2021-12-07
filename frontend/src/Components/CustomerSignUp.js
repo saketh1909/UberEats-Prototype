@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import {signup} from '../actions/customerLogin.js';
 import {Redirect} from 'react-router-dom';
 import HomeNavbar from './HomeNavbar';
+import { graphql, compose } from 'react-apollo';
+import {customerSignupMutation} from '../GraphQLQueries/mutation/mutations'
 class CustomerSignUp extends React.Component{
 
     constructor(props){
@@ -20,22 +22,36 @@ class CustomerSignUp extends React.Component{
         this.setState({[event.target.name] : event.target.value});
       }
     
-      handleSubmit=async event=> {
+      handleSubmit=async (event)=> {
         event.preventDefault();
         var customerData={
             name:this.state.name,
             email:this.state.email,
             password:this.state.password
         };
-        await this.props.signup(customerData);
-        //console.log(this.props.customerSignUp);
+        //await this.props.signup(customerData);
+        // this.props.customerSignup({
+        //     variables : {
+        //         name : this.state.name,
+        //         email : this.state.email,
+        //         password : this.state.password
+        //     }
+        // });
+        console.log(this.props,this.props.CustomerSignup,this.props.customerSignupMutation);
+        this.props.signup({
+            variables : {
+                name : this.state.name,
+                email : this.state.email,
+                password : this.state.password
+            },
+        });
       }
 
     render(){
         console.log(this.props);
-        if(this.props.customerSignUp!==undefined && this.props.customerSignUp==="Customer Signup Successful"){
-            return <Redirect to='/customerLogin'/>
-        }
+        // if(this.props.customerSignUp!==undefined && this.props.customerSignUp==="Customer Signup Successful"){
+        //     return <Redirect to='/customerLogin'/>
+        // }
         return <React.Fragment>
             <HomeNavbar/>
             <div className="container" style={{width:'25%'}}>
@@ -71,12 +87,12 @@ class CustomerSignUp extends React.Component{
         </React.Fragment>;
     }
 }
-const mapStateToProps = (state) =>{
-    return {customerSignUp:state.customerLoginReducer.customerSignUp}
-}
-function mapDispatchToProps(dispatch) {
-    return {
-        signup: data => dispatch(signup(data))
-    };
-  }
-export default connect(mapStateToProps,mapDispatchToProps)(CustomerSignUp);
+// const mapStateToProps = (state) =>{
+//     return {customerSignUp:state.customerLoginReducer.customerSignUp}
+// }
+// function mapDispatchToProps(dispatch) {
+//     return {
+//         signup: data => dispatch(signup(data))
+//     };
+//   }
+export default compose(graphql(customerSignupMutation , {name : "signup"}))(CustomerSignUp);

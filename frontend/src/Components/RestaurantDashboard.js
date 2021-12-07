@@ -25,7 +25,8 @@ class RestaurantDashboard extends React.Component{
             ModeOfDelivery:0,
             veg:false,
             noveg:false,
-            vegan:false
+            vegan:false,
+            country:""
         }
     }
     componentDidMount(){
@@ -42,7 +43,8 @@ class RestaurantDashboard extends React.Component{
             ModeOfDelivery:details.ModeOfDelivery!==undefined?details.ModeOfDelivery:0,
             veg:details.Veg===1?true:false,
             nonveg:details.Nonveg===1?true:false,
-            vegan:details.Vegan===1?true:false
+            vegan:details.Vegan===1?true:false,
+            country : details.Country
         });
         if(details.ImageURL!=="" && details.ImageURL!==undefined && details.ImageURL!=null){
             this.setState({ImageUrl:details.ImageURL});
@@ -131,6 +133,9 @@ class RestaurantDashboard extends React.Component{
             this.setState({vegan:!this.state.vegan,changedAttributes:{...this.state.changedAttributes,Vegan:!this.state.vegan}})
         }
     }
+    handleCountryChange = () => {
+
+    }
     render(){
         console.log("Check the state",this.state.changedAttributes);
         if(this.props.restaurantDetails===undefined){
@@ -176,6 +181,15 @@ class RestaurantDashboard extends React.Component{
                                     <td>:</td>
                                         <input type="text" name="Location" disabled={!this.state.edit} value={this.state.Location} onChange={this.handleChange}/>
                                         
+                                </tr>
+                                <tr>
+                                    <td>Country</td>
+                                    <td>:</td>
+                                    <td><select class="form-select form-select-sm md-3" style={{width:"100px"}} value={this.state.country} onChange={this.handleCountryChange}>
+                                            <option>Both</option>
+                                            <option>Pickup</option>
+                                            <option>Delivery</option>
+                                        </select></td>
                                 </tr>
                                 <tr>
                                     <td>Restaurant Address</td>
