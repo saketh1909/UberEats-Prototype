@@ -261,31 +261,13 @@ const RootQuery = new GraphQLObjectType({
                 return customer.getCustomerOrders(args.customerID);
             }
         },
-        restaurantProfile : {
-            type : RestaurantDetails,
-            args:{
-                RestaurantID: { type : GraphQLString}
-            },
-            resolve(parent,args){
-                return restaurant.getRestaurantProfile(args.RestaurantID);
-            }
-        },
         customerProfile : {
             type : CustomerDetails,
             args : {
-                CustomerID : {type : GraphQLString}
+                customerID : {type : GraphQLString}
             },
             resolve(parent,args){
-                return customer.getCustomerProfile(args.CustomerID);
-            }
-        },
-        restaurantOrders : {
-            type : new GraphQLList(Orders),
-            args:{
-                RestaurantID : {type : GraphQLString}
-            },
-            resolve(parent,args){
-                return restaurant.getRestaurantOrders(args.RestaurantID);
+                return customer.getCustomerProfile(args.customerID);
             }
         },
         getRestaurantsOnSearch : {
@@ -298,6 +280,15 @@ const RootQuery = new GraphQLObjectType({
                 return customer.getRestaurantsOnSearch(args.search,args.type);
             }
         },
+        restaurantProfile : {
+            type : RestaurantDetails,
+            args:{
+                RestaurantID: { type : GraphQLString}
+            },
+            resolve(parent,args){
+                return restaurant.getRestaurantProfile(args.RestaurantID);
+            }
+        },
         getRestaurantMenu : {
             type : new GraphQLList(Dish),
             args : {
@@ -305,6 +296,15 @@ const RootQuery = new GraphQLObjectType({
             },
             resolve(parent,args){
                 return restaurant.getRestaurantMenu(args.RestaurantID);
+            }
+        },
+        restaurantOrders : {
+            type : new GraphQLList(Orders),
+            args:{
+                RestaurantID : {type : GraphQLString}
+            },
+            resolve(parent,args){
+                return restaurant.getRestaurantOrders(args.RestaurantID);
             }
         },
         getOrderMenu : {
@@ -423,7 +423,7 @@ const Mutation = new GraphQLObjectType({
             type : Orders,
             description : "Update Delivery Status",
             args : {
-                detaisl : {type : UpdateStatusInputType}
+                details : {type : UpdateStatusInputType}
             },
             resolve(parent,args){
                 return restaurant.updateDeliveryStatus(args.details);

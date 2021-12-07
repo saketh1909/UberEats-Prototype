@@ -114,5 +114,5 @@ const updateDeliveryStatusMutation = gql`
     }
 `;
 
-export {loginMutation,customerSignupMutation, updateCustomerProfileMutation,updateCustomerProfileMutation,restaurantSignupMutation,
+export {loginMutation,customerSignupMutation, updateCustomerProfileMutation,restaurantSignupMutation,
 placeCustomerOrderMutation , updateRestaurantProfileMutation,addDishMutation, updateDishMutation,updateDeliveryStatusMutation};
