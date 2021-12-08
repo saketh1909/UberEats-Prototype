@@ -8,6 +8,8 @@ import {Modal,Button} from 'react-bootstrap'
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import config from '../urlConfig';
 import ReactPaginate from 'react-paginate';
+import { graphql, compose } from 'react-apollo';
+import {getCustomerOrdersQuery} from '../GraphQLQueries/queries/queries';
 import '../App.css';
 const months=["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
 class CustomerOrders extends React.Component{
@@ -30,6 +32,11 @@ class CustomerOrders extends React.Component{
     componentDidMount(){
         const {CustomerID}=this.props.customerDetails;
         Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+        this.props.getOrders({
+            variables : {
+                CustomerID : CustomerID
+            }
+        })
         Axios.get(`${config.BackendURL}/getCustomerOrders?CustomerID=${CustomerID}`)
             .then(res=>{
                 //console.log(res.data);
@@ -291,4 +298,4 @@ function mapDispatchToProps(dispatch) {
     return {
     };
   }
-export default connect(mapStateToProps,mapDispatchToProps)(CustomerOrders);
+export default compose(graphql(getCustomerOrdersQuery , {name : "getOrders"}))(CustomerOrders);

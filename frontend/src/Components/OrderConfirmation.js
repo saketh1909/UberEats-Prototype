@@ -6,6 +6,8 @@ import {Table} from 'react-bootstrap';
 import Axios from 'axios';
 import {updateCartItems} from '../actions/customerDashBoard';
 import config from '../urlConfig';
+import { graphql, compose } from 'react-apollo';
+import {placeCustomerOrderMutation} from '../GraphQLQueries/mutation/mutations';
 class OrderConfirmation extends React.Component{
     constructor(props){
         super(props);
@@ -160,18 +162,23 @@ class OrderConfirmation extends React.Component{
             menu:this.props.cartItems
         }
         //console.log(orderDetails);
+        this.props.placeOrder({
+            variables : {
+                orderDetails : orderDetails
+            }
+        })
         Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-        Axios.post(`${config.BackendURL}/placeCustomerOrder`,orderDetails)
-        .then(res=>{
-            console.log("Insertion Successful");
-            this.setState({orderPlaced:true});
-            this.props.updateCartItems([]);
+        // Axios.post(`${config.BackendURL}/placeCustomerOrder`,orderDetails)
+        // .then(res=>{
+        //     console.log("Insertion Successful");
+        //     this.setState({orderPlaced:true});
+        //     this.props.updateCartItems([]);
 
-        })
-        .catch(err=>{
-            console.log(err);
-        })
-        console.log(orderDetails);
+        // })
+        // .catch(err=>{
+        //     console.log(err);
+        // })
+        // console.log(orderDetails);
     }
     render(){
         //console.log("State Vlaues",this.state);
@@ -273,4 +280,4 @@ function mapDispatchToProps(dispatch) {
         updateCartItems:(data)=>dispatch(updateCartItems(data))
     };
   }
-export default connect(mapStateToProps,mapDispatchToProps)(OrderConfirmation);
+export default  compose(graphql(placeCustomerOrderMutation , {name : "placeOrder"}))(OrderConfirmation);

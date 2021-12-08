@@ -5,6 +5,9 @@ import noProfileImage from '../images/noProfileImage.png';
 import Axios from 'axios'; 
 import firebase  from '../firebaseConfig';
 import { updateCustomerProfile } from '../actions/customerDashBoard.js';
+import { graphql, compose } from 'react-apollo';
+import {getCustomerProfileQuery} from '../GraphQLQueries/queries/queries'
+import { updateCustomerProfileMutation } from '../GraphQLQueries/mutation/mutations.js';
 import config from '../urlConfig';
 import {Redirect} from 'react-router-dom';
 
@@ -70,15 +73,20 @@ class CustomerProfile extends React.Component{
             };
             data["ImageURL"]=url;
             details["ImageURL"]=url;
-            Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-            Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
-            .then(async (res)=>{
-                //console.log("Update Successful");
-                this.props.updateCustomerProfile(details);
+            this.props.updateProfile({
+                variables : {
+                    updateDetails : data
+                }
             })
-            .catch(err=>{
-                console.log("Error");
-            })
+            // Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+            // Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
+            // .then(async (res)=>{
+            //     //console.log("Update Successful");
+            //     this.props.updateCustomerProfile(details);
+            // })
+            // .catch(err=>{
+            //     console.log("Error");
+            // })
         });
     }
     editClicked=()=>{
@@ -95,16 +103,22 @@ class CustomerProfile extends React.Component{
             details[key]=this.state[key];
         }
         //console.log("Changed",data);
-        Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
-        await Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
-            .then(async (res)=>{
-                //console.log("Update Successful");
-                this.props.updateCustomerProfile(details);
-                this.setState({edit:true,changedAttributes:{}});
-            })
-            .catch(err=>{
-                console.log("Error");
-            })
+
+        this.props.updateProfile({
+            variables : {
+                updateDetails : data
+            }
+        })
+        // Axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+        // await Axios.post(`${config.BackendURL}/updateCustomerProfile`,data)
+        //     .then(async (res)=>{
+        //         //console.log("Update Successful");
+        //         this.props.updateCustomerProfile(details);
+        //         this.setState({edit:true,changedAttributes:{}});
+        //     })
+        //     .catch(err=>{
+        //         console.log("Error");
+        //     })
     }
     dateChange(e){
         this.setState({DateOfBirth:e.target.value,changedAttributes:{...this.state.changedAttributes,DateOfBirth:true}});
@@ -232,4 +246,4 @@ function mapDispatchToProps(dispatch) {
         updateCustomerProfile:data=>dispatch(updateCustomerProfile(data))
     };
   }
-export default connect(mapStateToProps,mapDispatchToProps)(CustomerProfile);
+export default compose(graphql(getCustomerProfileQuery , {name : "getProfile"}),graphql(updateCustomerProfileMutation, {name : "updateProfile"}))(CustomerProfile);

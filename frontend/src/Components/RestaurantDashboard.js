@@ -7,6 +7,8 @@ import {Redirect} from 'react-router-dom';
 import Axios from 'axios';
 import config from '../urlConfig';
 import { updateRestaurantProfile } from '../actions/restaurantDashBoard';
+import { graphql, compose } from 'react-apollo';
+import {updateRestaurantProfileMutation} from '../GraphQLQueries/mutation/mutations'
 class RestaurantDashboard extends React.Component{
     constructor(props){
         super(props);
@@ -109,16 +111,21 @@ class RestaurantDashboard extends React.Component{
             
         }
         //console.log("Changed",data);
-        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
-        await Axios.post(`${config.BackendURL}/updateRestaurantProfile`,data)
-            .then(async (res)=>{
-                //console.log("Update Successful");
-                this.props.updateRestaurantProfile(details);
-                this.setState({edit:false,changedAttributes:{}});
-            })
-            .catch(err=>{
-                console.log("Error");
-            })
+        // Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
+        // await Axios.post(`${config.BackendURL}/updateRestaurantProfile`,data)
+        //     .then(async (res)=>{
+        //         //console.log("Update Successful");
+        //         this.props.updateRestaurantProfile(details);
+        //         this.setState({edit:false,changedAttributes:{}});
+        //     })
+        //     .catch(err=>{
+        //         console.log("Error");
+        //     })
+        this.props.updateProfile({
+            variables : {
+                details : data
+            }
+        })
     }
     handleCheckboxes=(e)=>{
         const {name}=e.target;
@@ -276,4 +283,4 @@ function mapDispatchToProps(dispatch) {
         updateRestaurantProfile:(data)=>dispatch(updateRestaurantProfile(data))
     };
   }
-export default connect(mapStateToProps,mapDispatchToProps)(RestaurantDashboard);
+export default compose(graphql(updateRestaurantProfileMutation , {name : "updateProfile"}))(RestaurantDashboard);

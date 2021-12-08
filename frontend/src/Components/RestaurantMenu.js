@@ -7,6 +7,9 @@ import ModalHeader from 'react-bootstrap/ModalHeader'
 import noProfileImage from '../images/noProfileImage.png';
 import firebase  from '../firebaseConfig';
 import {Redirect} from 'react-router-dom';
+import { graphql, compose } from 'react-apollo';
+import { addDishMutation, updateDishMutation } from '../GraphQLQueries/mutation/mutations';
+import {getRestaurantMenu} from '../GraphQLQueries/queries/queries'
 import config from '../urlConfig';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage} from 'mdb-react-ui-kit';
 const {uuid} = require("uuidv4");
@@ -32,12 +35,17 @@ class RestaurantMenu extends React.Component{
         }
     }
     componentDidMount(){
-        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
-        var url=`${config.BackendURL}/getRestaurantMenu?RestaurantID=${this.props.restaurantDetails.RestaurantID}`;
-        Axios.get(url)
-        .then(res=>{
-            //console.log(res.data);
-            this.setState({dishes:res.data})
+        // Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
+        // var url=`${config.BackendURL}/getRestaurantMenu?RestaurantID=${this.props.restaurantDetails.RestaurantID}`;
+        // Axios.get(url)
+        // .then(res=>{
+        //     //console.log(res.data);
+        //     this.setState({dishes:res.data})
+        // })
+        this.props.getMenu({
+            variables : {
+                RestaurantID : this.props.restaurantDetails.RestaurantID
+            }
         })
     }
     buildCarStructure = () =>{
@@ -231,14 +239,19 @@ class RestaurantMenu extends React.Component{
         const dish=this.state.dishes;
         dish.push(dishDetails);
         console.log(dishDetails);
-        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
-        Axios.post(`${config.BackendURL}/addDish`,dishDetails)
-        .then(res=>{
-            console.log("Dish Added Successfully");
-            this.setState({show:false,dishes:dish,changedAttributes:{}});
-        })
-        .catch(err=>{
-            console.log("Error in Dish Addition");
+        // Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
+        // Axios.post(`${config.BackendURL}/addDish`,dishDetails)
+        // .then(res=>{
+        //     console.log("Dish Added Successfully");
+        //     this.setState({show:false,dishes:dish,changedAttributes:{}});
+        // })
+        // .catch(err=>{
+        //     console.log("Error in Dish Addition");
+        // })
+        this.props.addDish({
+            variables : {
+                details : dishDetails
+            }
         })
     }
     handleFileUpload=async(e)=>{
@@ -267,36 +280,64 @@ class RestaurantMenu extends React.Component{
         for (const [key, value] of Object.entries(this.state.changedAttributes)) {
             updateDetails[key]=this.state[key];
           }
-          Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
-          Axios.put(`${config.BackendURL}/updateDish`,updateDetails)
-          .then(res=>{
-            console.log("Update Successful");
-            let dishDetails={
-                DishName:this.state.DishName,
-                DishPrice:this.state.DishPrice,
-                restaurantID:this.props.restaurantDetails.RestaurantID,
-                MainIngredients:this.state.MainIngredients,
-                DishImageURL:this.state.DishImageURL,
-                Description:this.state.Description,
-                DishCategory:this.state.DishCategory,
-                DishType:this.state.DishType,
-                DishID:this.state.DishID
+        //   Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
+        //   Axios.put(`${config.BackendURL}/updateDish`,updateDetails)
+        //   .then(res=>{
+        //     console.log("Update Successful");
+        //     let dishDetails={
+        //         DishName:this.state.DishName,
+        //         DishPrice:this.state.DishPrice,
+        //         restaurantID:this.props.restaurantDetails.RestaurantID,
+        //         MainIngredients:this.state.MainIngredients,
+        //         DishImageURL:this.state.DishImageURL,
+        //         Description:this.state.Description,
+        //         DishCategory:this.state.DishCategory,
+        //         DishType:this.state.DishType,
+        //         DishID:this.state.DishID
+        //     }
+        //     let value=this.state.dishes;
+        //     for(let dish of value){
+        //         if(dish.DishID===dishDetails.DishID){
+        //             for(const [key,value] of Object.entries(dishDetails)){
+        //                 dish[key]=value;
+        //             }
+        //             break;
+        //         }
+        //     }
+        //     console.log(value);
+        //     this.setState({dishes:value});
+        //   })
+        //   .catch(err=>{
+        //       console.log(err);
+        //   })
+        await this.props.updateDish({
+            variables : {
+                detaisl : updateDetails
             }
-            let value=this.state.dishes;
-            for(let dish of value){
-                if(dish.DishID===dishDetails.DishID){
-                    for(const [key,value] of Object.entries(dishDetails)){
-                        dish[key]=value;
-                    }
-                    break;
+        })
+
+        let dishDetails={
+                    DishName:this.state.DishName,
+                    DishPrice:this.state.DishPrice,
+                    restaurantID:this.props.restaurantDetails.RestaurantID,
+                    MainIngredients:this.state.MainIngredients,
+                    DishImageURL:this.state.DishImageURL,
+                    Description:this.state.Description,
+                    DishCategory:this.state.DishCategory,
+                    DishType:this.state.DishType,
+                    DishID:this.state.DishID
                 }
-            }
-            console.log(value);
-            this.setState({dishes:value});
-          })
-          .catch(err=>{
-              console.log(err);
-          })
+                let value=this.state.dishes;
+                for(let dish of value){
+                    if(dish.DishID===dishDetails.DishID){
+                        for(const [key,value] of Object.entries(dishDetails)){
+                            dish[key]=value;
+                        }
+                        break;
+                    }
+                }
+                console.log(value);
+                this.setState({dishes:value});
         this.setState({
             
             changedAttributes:{},
@@ -369,4 +410,7 @@ function mapDispatchToProps(dispatch) {
     return {
     };
   }
-export default connect(mapStateToProps,mapDispatchToProps)(RestaurantMenu);
+export default compose(graphql(addDishMutation , {name : "addDish"}),
+                        graphql(updateDishMutation , {name : "updateDish"}),
+                        graphql(getRestaurantMenu , {name : "getMenu"})
+)(RestaurantMenu);
