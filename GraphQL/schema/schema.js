@@ -111,7 +111,8 @@ const Orders = new GraphQLObjectType({
         OrderDeliveryStatus : {type : GraphQLString},
         Address : {type : GraphQLString},
         status : {type : GraphQLInt},
-        Menu :  {type : GraphQLList(MenuList)}
+        Menu :  {type : GraphQLList(MenuList)},
+        success : {type : GraphQLString}
     })
 })
 
@@ -194,7 +195,8 @@ const UpdateStatusInputType = new GraphQLInputObjectType({
     fields : () => ({
         OrderID : {type : GraphQLString},
         OrderDeliveryStatus : {type : GraphQLString},
-        OrderPickUpStatus : {type : GraphQLString}
+        OrderPickUpStatus : {type : GraphQLString},
+        OrderStatus : {type : GraphQLString},
     })
 })
 
@@ -426,6 +428,7 @@ const Mutation = new GraphQLObjectType({
                 details : {type : UpdateStatusInputType}
             },
             resolve(parent,args){
+                console.log(args.details);
                 return restaurant.updateDeliveryStatus(args.details);
             }
         }

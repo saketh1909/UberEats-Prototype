@@ -156,9 +156,9 @@ class CustomerDashboard extends React.Component{
     }
     render(){
        // console.log("Updated",this.state.favRestaurants);
-        if(this.props.customerDetails===undefined){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.customerDetails===undefined){
+        //     return <Redirect to='/'/>
+        // }
         if(this.props.favRestaurants!==undefined){
             this.addToFavourites();
         }

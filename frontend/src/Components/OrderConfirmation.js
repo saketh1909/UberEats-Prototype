@@ -175,9 +175,9 @@ class OrderConfirmation extends React.Component{
     }
     render(){
         //console.log("State Vlaues",this.state);
-        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
+        //     return <Redirect to='/'/>
+        // }
         if(this.state.orderPlaced){
             return <Redirect to='/customerDashboard'/>
         }

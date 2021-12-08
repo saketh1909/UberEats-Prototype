@@ -111,9 +111,9 @@ class CustomerProfile extends React.Component{
     }
     render(){
        // console.log(this.props.customerDetails);
-       if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
-        return <Redirect to='/'/>
-    }
+    //    if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
+    //     return <Redirect to='/'/>
+    // }
         return (
             <React.Fragment style={{height:"100%",width:"100%"}}>
                 <Navbar/>

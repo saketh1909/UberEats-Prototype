@@ -290,9 +290,9 @@ class RestaurantViewPage extends React.Component{
         if(this.state.place){
             return <Redirect to='/customerOrderConfirmation'/>
         }
-        if(this.props.customerDetails===undefined){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.customerDetails===undefined){
+        //     return <Redirect to='/'/>
+        // }
         return (
             <React.Fragment>
                 <Navbar/>

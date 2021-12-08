@@ -138,9 +138,9 @@ class RestaurantDashboard extends React.Component{
     }
     render(){
         console.log("Check the state",this.state.changedAttributes);
-        if(this.props.restaurantDetails===undefined){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.restaurantDetails===undefined){
+        //     return <Redirect to='/'/>
+        // }
         return(
             <React.Fragment>
                 <RestaurantNavbar/>

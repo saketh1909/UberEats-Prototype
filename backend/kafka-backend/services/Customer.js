@@ -202,6 +202,8 @@ const getCustomerOrders = async(msg,callback) => {
             callback(null, res);
         }else{
             let orders=[];
+            console.log(results);
+            let i=0;
             for(let order of results){
                 await Restaurant.findOne({RestaurantID:order.RestaurantID},(error,results)=>{
                     if(error || results==null){
@@ -218,18 +220,22 @@ const getCustomerOrders = async(msg,callback) => {
                         }
                         orders.push(check);
                     }
+                    if(i==results.length-1){
+                        data["Orders"]=orders;
+                        let ordersMenu=[];
+                        for(let order of orders){
+                            ordersMenu=[...ordersMenu,...order.Menu];
+                        }
+                        data["OrdersMenu"]=ordersMenu;
+                        res.status = 200;
+                        res.data = data;
+                        callback(null,res);
+                    }
+                    i++;
                 });
             }
             //console.log(orders);
-            data["Orders"]=orders;
-            let ordersMenu=[];
-            for(let order of orders){
-                ordersMenu=[...ordersMenu,...order.Menu];
-            }
-            data["OrdersMenu"]=ordersMenu;
-            res.status = 200;
-            res.data = data;
-            callback(null,res);
+            
         }
     })
 }

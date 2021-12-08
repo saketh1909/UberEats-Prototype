@@ -183,9 +183,9 @@ class CustomerOrders extends React.Component{
         });
     }
     render(){
-        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.customerDetails===undefined || localStorage.getItem("token")===null){
+        //     return <Redirect to='/'/>
+        // }
         return(
             <React.Fragment>
                 <Navbar/>

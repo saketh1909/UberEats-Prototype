@@ -49,7 +49,7 @@ export const restaurantLogout = ()=> dispatch =>{
     })
 }
 export const restaurantSignup = (data) => async dispatch =>{
-    //console.log("Action");
+    console.log("Action");
     await Axios.post(`${config.BackendURL}/restaurantSignup`,data,{
         headers:{
             'Accept':'application/json',

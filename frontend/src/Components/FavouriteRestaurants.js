@@ -96,9 +96,9 @@ class FavouriteRestaurants extends React.Component{
         if(this.state.clicked){
             return <Redirect to='/restaurantViewPage'/>
         }
-        if(this.props.customerDetails===undefined || localStorage.getItem("token")===null ){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.customerDetails===undefined || localStorage.getItem("token")===null ){
+        //     return <Redirect to='/'/>
+        // }
         return (<React.Fragment>
                 <Navbar/>
                 <div className="container" style={{textAlign:"center"}}>

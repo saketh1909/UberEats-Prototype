@@ -30,6 +30,7 @@ class RestaurantSignUp extends React.Component{
             email:this.state.email,
             location:this.state.location
         }
+        console.log(restDetails);
         await this.props.signup(restDetails);
         console.log("Check This",this.props);
       }

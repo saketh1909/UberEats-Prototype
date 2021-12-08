@@ -177,7 +177,7 @@ module.exports.updateDeliveryStatus = async (updateDetails) => {
             }
         }
         update = await  Order.findOneAndUpdate({OrderID:details.OrderID},update);
-        return {status : 200};
+        return {status : 200,success : "Yes"};
 
     }
     catch(e){

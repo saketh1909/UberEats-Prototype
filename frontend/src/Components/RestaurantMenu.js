@@ -304,9 +304,9 @@ class RestaurantMenu extends React.Component{
         })
     }
     render(){
-        if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
+        //     return <Redirect to='/'/>
+        // }
         return (
             <React.Fragment>
                 <RestaurantNavbar/>

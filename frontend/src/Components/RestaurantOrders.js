@@ -8,6 +8,8 @@ import noProfileImage from '../images/noProfileImage.png';
 import {Table} from 'react-bootstrap'
 import {Redirect} from 'react-router-dom';
 import config from '../urlConfig';
+import { graphql, compose } from 'react-apollo';
+import {updateDeliveryStatusMutation} from '../GraphQLQueries/mutation/mutations'
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn } from 'mdb-react-ui-kit';
 const pickUpStatus=["Order Received","Preparing","Pickup Ready","Picked up"];
 const deliveryStatus=["Order Received","Preparing","On the way","Delivered"];
@@ -30,11 +32,12 @@ class RestaurantOrders extends React.Component{
         }
     }
     componentDidMount(){
-        const {RestaurantID}=this.props.restaurantDetails;
+        //const {RestaurantID}=this.props.restaurantDetails;
+        let RestaurantID = "5d6755c9-2325-4215-9aae-ef4611feed72";
         Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
         Axios.get(`${config.BackendURL}/getRestaurantOrders?RestaurantID=${RestaurantID}`)
         .then(res=>{
-           // console.log("data",res.data);
+           console.log("data",res.data);
            res.data.sort(function(a,b){
             return new Date(b.OrderTime) - new Date(a.OrderTime);
           });
@@ -298,7 +301,7 @@ class RestaurantOrders extends React.Component{
         }
         return null;
     }
-    saveUpdateStatus=()=>{
+    saveUpdateStatus=async ()=>{
        // console.log(this.state.OrderPickUpStatus,this.state.OrderDeliveryStatus,this.state.OrderID);
 
         let details={
@@ -325,11 +328,15 @@ class RestaurantOrders extends React.Component{
                 
             }
         }
-        Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
-        Axios.post(`${config.BackendURL}/updateDeliveryStatus`,details)
-            .then(res=>{
-                console.log(res.data);
-                let orders=this.state.orders;
+        console.log(details);
+        console.log(this.props);
+        let wait = await this.props.updateStatus({
+            variables : {
+                details : details
+            }
+        });
+        console.log(this.props);
+        let orders=this.state.orders;
                 for(let order of orders){
                     if(order.OrderID===this.state.OrderID){
                         if(details['OrderPickUpStatus']!==undefined){
@@ -349,10 +356,35 @@ class RestaurantOrders extends React.Component{
                 }
                 this.setState({orders:orders});
                 this.handleClose();
-            })
-            .catch(err=>{
-                console.log(err);
-            })
+        // Axios.defaults.headers.common['authorization'] = localStorage.getItem('resttoken');
+
+        // Axios.post(`${config.BackendURL}/updateDeliveryStatus`,details)
+        //     .then(res=>{
+        //         console.log(res.data);
+        //         let orders=this.state.orders;
+        //         for(let order of orders){
+        //             if(order.OrderID===this.state.OrderID){
+        //                 if(details['OrderPickUpStatus']!==undefined){
+        //                     order['OrderPickUpStatus']=details['OrderPickUpStatus'];
+        //                     if(details["OrderStatus"]==="Delivered" || details["OrderStatus"]==="Cancelled"){
+        //                         order['OrderStatus']=details["OrderStatus"]
+        //                     }
+                            
+        //                 }else{
+        //                     order['OrderDeliveryStatus']=details['OrderDeliveryStatus'];
+        //                     if(details["OrderStatus"]==="Delivered" || details["OrderStatus"]==="Cancelled"){
+        //                         order['OrderStatus']=details["OrderStatus"]
+        //                     }
+        //                 }
+        //                 break;
+        //             }
+        //         }
+        //         this.setState({orders:orders});
+        //         this.handleClose();
+        //     })
+        //     .catch(err=>{
+        //         console.log(err);
+        //     })
     }
     onChangeOfStatus=(e)=>{
         const {value}=e.target;
@@ -374,9 +406,9 @@ class RestaurantOrders extends React.Component{
 
     }
     render(){
-        if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
-            return <Redirect to='/'/>
-        }
+        // if(this.props.restaurantDetails===undefined || this.props.restaurantDetails===null){
+        //     return <Redirect to='/'/>
+        // }
         return(
             <React.Fragment>
                 <RestaurantNavbar/>
@@ -453,4 +485,4 @@ function mapDispatchToProps(dispatch) {
     return {
     };
   }
-export default connect(mapStateToProps,mapDispatchToProps)(RestaurantOrders);
+export default compose(graphql(updateDeliveryStatusMutation , {name : "updateStatus"}))(RestaurantOrders);

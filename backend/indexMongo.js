@@ -70,17 +70,17 @@ app.put('/cancelCustomerOrder',customerController.cancelCustomerOrder);
 app.get('/getRestaurants',restaurantSearchController.getRestaurants);
 app.get('/getRestaurantOnSearch',restaurantSearchController.getRestaurantBasedOnSearch);
 //Restaurant Apis
-app.post('/restaurantSignup',checkAuth,restaurantController.restaurantSignup);
-app.post('/restaurantLogin',checkAuth,restaurantController.restaurantLogin);
-app.get('/restaurantProfile',checkAuth,restaurantController.restaurantProfile);
-app.post('/updateRestaurantProfile',checkAuth,restaurantController.updateRestaurantProfile);
-app.get('/getCustomerProfile',checkAuth,restaurantController.getCustomerProfile);
-app.post('/addDish',checkAuth,restaurantController.addDish);
-app.put('/updateDish',checkAuth,restaurantController.updateDish);
-app.get('/getRestaurantMenu',checkAuth,restaurantController.getRestaurantMenu);
-app.get('/getOrderMenu',checkAuth,restaurantController.getOrderMenu);
-app.get('/getRestaurantOrders',checkAuth,restaurantController.getRestaurantOrders);
-app.post('/updateDeliveryStatus',checkAuth,restaurantController.updateDeliveryStatus);
+app.post('/restaurantSignup',restaurantController.restaurantSignup);
+app.post('/restaurantLogin',restaurantController.restaurantLogin);
+app.get('/restaurantProfile',restaurantController.restaurantProfile);
+app.post('/updateRestaurantProfile',restaurantController.updateRestaurantProfile);
+app.get('/getCustomerProfile',restaurantController.getCustomerProfile);
+app.post('/addDish',restaurantController.addDish);
+app.put('/updateDish',restaurantController.updateDish);
+app.get('/getRestaurantMenu',restaurantController.getRestaurantMenu);
+app.get('/getOrderMenu',restaurantController.getOrderMenu);
+app.get('/getRestaurantOrders',restaurantController.getRestaurantOrders);
+app.post('/updateDeliveryStatus',restaurantController.updateDeliveryStatus);
 //start your server on port 3001
 app.listen(3001, () => console.log("Server Listening on port 3001"));
 module.exports=app;

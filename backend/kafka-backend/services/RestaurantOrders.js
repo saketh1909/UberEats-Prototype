@@ -28,15 +28,17 @@ const getRestaurantOrders = async(msg,callback) => {
     let res= {};
     var restaurantID=msg.RestaurantID;
     Order.find({RestaurantID:restaurantID},async (error,results)=>{
+        console.log(results);
         if(error){
             res.status = 500;
             res.data = "Error Occured";
             callback(null, res);
         }else{
             let data=[];
+            let i=0;
             for(let order of results){
                 let obj={};
-                await Customer.findOne({CustomerID:order.CustomerID},(error,results)=>{
+                let wait =await Customer.findOne({CustomerID:order.CustomerID},(error,results)=>{
                     if(error){
                         res.status = 500;
                         res.data = "Error Occured";
@@ -51,11 +53,14 @@ const getRestaurantOrders = async(msg,callback) => {
                         data.push(obj);
                     }
                 });
+                if(i==results.length-1){
+                    res.status = 200;
+                    res.data = data;
+                    callback(null,res);
+                }
+                i++;
             }
-           console.log("Check Data",data);
-            res.status = 200;
-            res.data = data;
-            callback(null,res);
+            
         }
     });
 }

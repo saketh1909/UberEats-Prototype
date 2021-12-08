@@ -17,12 +17,7 @@ const customerSignupMutation = gql`
             status
             Name
             ImageURL
-            Description
-            Veg
-            Nonveg
-            Vegan
-            Address
-            Timings
+            Nickname
         }
     }
 `;
@@ -103,13 +98,7 @@ const updateDeliveryStatusMutation = gql`
     mutation($details : UpdateStatusInputType){
         updateDeliveryStatus(details : $details){
             status
-            DishName
-            DishPrice
-            DishType
-            DishCategory
-            DishImageURL
-            MainIngredients
-            Description
+            success
         }
     }
 `;
